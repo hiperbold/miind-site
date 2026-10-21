@@ -8,7 +8,7 @@ Publicação inicial para revisão visual. Nenhuma divergência comercial foi re
 - [ ] Revisar promessas de renda, projeções, ROI e números de mercado antes de uso em campanha.
 - [ ] Substituir ou identificar corretamente “caso real (hipotético)” e conferir depoimentos e autorização de uso.
 - [ ] Alinhar a certificação Bu1lder com as descrições de parceiro, consultor e revendedor.
-- [ ] Conferir se as páginas por mercado atendem às personas da campanha. Ainda não existem páginas específicas para agência e gestor de tráfego neste pacote.
+- [ ] Conferir se as páginas por mercado atendem às personas da campanha. A página de agência/gestor foi criada em /bu1lder/agencia-marketing/; a página de contabilidade ainda preserva o texto original, a revisar para o dono do escritório.
 - [ ] Revisar textos e destinos de botões, menus, WhatsApp, demonstração e contato.
 
 ## Captação e tecnologia
@@ -21,7 +21,8 @@ Publicação inicial para revisão visual. Nenhuma divergência comercial foi re
 - [ ] Revalidar campos, permissões de contato e regras de tratamento de dados antes de ativar captação.
 
 ## Identidade e arquivos
-- [ ] Decidir se o Bu1lder mantém Geist e a paleta com verde ou segue o DS MIIND (Sora, Manrope, JetBrains Mono).
+- [x] Aplicar o DS MIIND (Sora, Manrope, JetBrains Mono; azul, ciano e violeta) à homepage Bu1lder, programa de parceiros, contabilidade e nova página de agência.
+- [ ] Avaliar aplicação do DS aos outros nove mercados, que mantêm o tema original.
 - [ ] Solicitar o vídeo ambient.mp4 e a imagem original logo-b.png, ausentes da exportação. A prévia usa imagem estática e logo MIIND já fornecidos, sem vídeo substituto inventado.
 - [ ] Validar quais versões de páginas serão finais. A apresentação da plataforma e o hub de parceiros foram preservados em rotas separadas.
 - [ ] Depois da aprovação, revisar SEO, indexação e domínio próprio. Esta publicação é uma prévia com noindex.
@@ -33,3 +34,9 @@ Publicação inicial para revisão visual. Nenhuma divergência comercial foi re
 - Dez páginas de nicho: /miind-site/bu1lder/{nicho}/
 
 Os caminhos incluem o nome do repositório porque esta é uma publicação de projeto no GitHub Pages. Em um domínio próprio, a raiz poderá ser / e a área do produto /bu1lder/.
+
+## Atualização visual e página de agência
+- Página /bu1lder/agencia-marketing/ criada para donos de agência e gestores de tráfego, com oportunidades no funil, papéis da parceria, objeções e link de agendamento confirmado.
+- Sem novos preços, percentuais, prazos ou garantias de resultado na página de agência. Validar oferta, critérios da certificação, uso da marca/white label e aprovação editorial antes de campanha.
+- Os formulários continuam como prévia, com aviso explícito e sem transmissão de dados.
+- Fontes do DS servidas localmente; temas escuro/claro e telas móveis incluídos.

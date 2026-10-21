@@ -19,11 +19,17 @@ const clientSchema = z.object({
 export function LeadForm({
   origem = "hub",
   defaultSegmento,
+  formId = "cadastro",
+  profileOptions = PERFIL_OPTIONS,
 }: {
+  formId?: string;
+  profileOptions?: readonly string[];
   origem?: string;
   defaultSegmento?: string;
 }) {
-  const submit = async (_data:unknown) => {throw new Error('Prévia de revisão: o cadastro ainda não está conectado.');};
+  const submit = async (_data: unknown) => {
+    throw new Error("Prévia de revisão: o cadastro ainda não está conectado.");
+  };
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -67,7 +73,9 @@ export function LeadForm({
       setDone(true);
     } catch (err) {
       console.error(err);
-      setServerError("Prévia de revisão: este formulário ainda não está conectado. Nenhum cadastro foi enviado.");
+      setServerError(
+        "Prévia de revisão: este formulário ainda não está conectado. Nenhum cadastro foi enviado.",
+      );
     } finally {
       setLoading(false);
     }
@@ -76,15 +84,13 @@ export function LeadForm({
   if (done) {
     return (
       <div
-        id="cadastro"
+        id={formId}
         className="surface-card surface-card-feature p-8 text-center"
         role="status"
         aria-live="polite"
       >
         <CheckCircle2 className="mx-auto size-12 text-brand-mint" />
-        <h3 className="mt-4 text-2xl font-semibold text-foreground">
-          Recebemos seu cadastro!
-        </h3>
+        <h3 className="mt-4 text-2xl font-semibold text-foreground">Recebemos seu cadastro!</h3>
         <p className="mt-2 text-muted-foreground">
           Em breve nossa equipe entra em contato pelo WhatsApp para os próximos passos.
         </p>
@@ -93,18 +99,27 @@ export function LeadForm({
   }
 
   return (
-    <form
-      id="cadastro"
-      onSubmit={onSubmit}
-      noValidate
-      className="surface-card p-6 sm:p-8 grid gap-4"
-    >
-      <p role="note" className="text-sm text-muted-foreground">Prévia de revisão: campos para avaliação; envio ainda não conectado.</p>
+    <form id={formId} onSubmit={onSubmit} noValidate className="surface-card p-6 sm:p-8 grid gap-4">
+      <p role="note" className="text-sm text-muted-foreground">
+        Prévia de revisão: campos para avaliação; envio ainda não conectado.
+      </p>
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Nome completo" name="nome" error={errors.nome} required />
         <Field label="E-mail" name="email" type="email" error={errors.email} required />
-        <Field label="WhatsApp" name="whatsapp" error={errors.whatsapp} placeholder="(00) 00000-0000" required />
-        <Field label="Cidade / UF" name="cidade_uf" error={errors.cidade_uf} placeholder="Belo Horizonte / MG" required />
+        <Field
+          label="WhatsApp"
+          name="whatsapp"
+          error={errors.whatsapp}
+          placeholder="(00) 00000-0000"
+          required
+        />
+        <Field
+          label="Cidade / UF"
+          name="cidade_uf"
+          error={errors.cidade_uf}
+          placeholder="Belo Horizonte / MG"
+          required
+        />
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
@@ -114,6 +129,7 @@ export function LeadForm({
           defaultValue={defaultSegmento ?? ""}
           options={[
             { value: "", label: "Mais de um / ainda não sei" },
+            { value: "agencia-marketing", label: "Agência de marketing" },
             ...niches.map((n) => ({ value: n.slug, label: shortName(n.name) })),
           ]}
         />
@@ -122,7 +138,7 @@ export function LeadForm({
           name="perfil"
           options={[
             { value: "", label: "Selecione…" },
-            ...PERFIL_OPTIONS.map((p) => ({ value: p, label: p })),
+            ...profileOptions.map((p) => ({ value: p, label: p })),
           ]}
         />
       </div>
@@ -148,9 +164,7 @@ export function LeadForm({
           <span className="opacity-70">(obrigatório)</span>
         </span>
       </label>
-      {errors.consent && (
-        <p className="text-xs text-brand-violet -mt-2">{errors.consent}</p>
-      )}
+      {errors.consent && <p className="text-xs text-brand-violet -mt-2">{errors.consent}</p>}
 
       {serverError && (
         <p className="text-sm text-brand-violet" role="alert">

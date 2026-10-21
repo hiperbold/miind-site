@@ -21,14 +21,25 @@ export function SegmentNav({ activeSlug }: { activeSlug?: string }) {
     const el = scrollerRef.current;
     if (!el) return;
     el.addEventListener("scroll", updateAffordance, { passive: true });
-    window.addEventListener("resize", updateAffordance);
+    const centerActive = () => {
+      if (!el || !activeRef.current) return;
+      const active = activeRef.current;
+      el.scrollLeft = active.offsetLeft - el.clientWidth / 2 + active.clientWidth / 2;
+      updateAffordance();
+    };
+    window.addEventListener("resize", centerActive);
+    let mounted = true;
+    void document.fonts.ready.then(() => {
+      if (mounted) centerActive();
+    });
     // Center active pill on mount
     if (activeRef.current) {
       activeRef.current.scrollIntoView({ inline: "center", block: "nearest" });
     }
     return () => {
       el.removeEventListener("scroll", updateAffordance);
-      window.removeEventListener("resize", updateAffordance);
+      mounted = false;
+      window.removeEventListener("resize", centerActive);
     };
   }, [updateAffordance, activeSlug]);
 
@@ -83,14 +94,10 @@ export function SegmentNav({ activeSlug }: { activeSlug?: string }) {
           className="flex gap-2 overflow-x-auto py-3 scrollbar-none scroll-smooth snap-x"
           style={{ scrollPaddingInline: "2rem" }}
         >
-          {niches.map((n) => {
+          {[{ slug: "agencia-marketing", name: "Agências de marketing" }, ...niches].map((n) => {
             const active = n.slug === activeSlug;
             return (
-              <li
-                key={n.slug}
-                ref={active ? activeRef : undefined}
-                className="shrink-0 snap-start"
-              >
+              <li key={n.slug} ref={active ? activeRef : undefined} className="shrink-0 snap-start">
                 <Link
                   to="/bu1lders/$slug"
                   params={{ slug: n.slug }}

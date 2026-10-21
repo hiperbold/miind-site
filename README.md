@@ -8,6 +8,7 @@ Prévia unificada para revisão das páginas enviadas pelo cliente.
 - [Bu1lder plataforma](https://hiperbold.github.io/miind-site/bu1lder/)
 - [Programa de parceiros](https://hiperbold.github.io/miind-site/bu1lder/parceiros/)
 - [Contabilidade](https://hiperbold.github.io/miind-site/bu1lder/contabilidade/)
+- [Agência de marketing](https://hiperbold.github.io/miind-site/bu1lder/agencia-marketing/)
 
 Nichos: beleza, odontologia, saúde (saude), oficinas, pet, restaurantes, imobiliárias (imobiliarias), academias, contabilidade e varejo.
 
@@ -32,3 +33,9 @@ npm run preview
 A saída é `dist/`. `SITE_BASE` define o prefixo, com `/miind-site/` como padrão. Para servir localmente sob o mesmo caminho do Pages, use o script `scripts/serve.mjs`.
 
 O build cria entradas HTML para acesso direto e atualização das rotas, com caminhos reais, sem URLs com hash. GitHub Actions publica `dist/` usando o ambiente `github-pages`.
+
+## Design system MIIND
+
+A homepage Bu1lder, o programa de parceiros, contabilidade e agência de marketing usam o DS MIIND, com Sora, Manrope e JetBrains Mono servidas localmente. Os tokens reproduzem o DS institucional e os temas escuro/claro. A nova página de agência complementa os dez mercados recebidos e tem navegação pelo hub e pelo menu de segmentos. Os demais mercados mantêm seus estilos de origem.
+
+A camada de estilo está em `apps/bu1lder/src/miind-ds.css`, ativada por rota em `main-static.tsx`. O desenho vetorial MIIND é preservado no lockup de marca compartilhado.

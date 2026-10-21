@@ -117,7 +117,7 @@ function BuildersLanding() {
             </div>
           </div>
 
-          <div id="cadastro" className="lg:sticky lg:top-24">
+          <div className="lg:sticky lg:top-24">
             <div className="surface-card surface-card-feature p-5 sm:p-7">
               <p className="eyebrow text-brand-violet">Comece em 1 minuto</p>
               <h2 className="mt-2 text-xl sm:text-2xl lg:text-3xl font-semibold tracking-[-0.02em] leading-tight">
@@ -157,6 +157,42 @@ function BuildersLanding() {
         <SectionHeader eyebrow="Como funciona" title="Três passos para sua primeira recorrência" />
         <div className="mt-10">
           <FlowSteps />
+        </div>
+      </section>
+
+      <section className="container-editorial section-pad">
+        <SectionHeader
+          eyebrow="Para quem já atende empresas"
+          title="Sua carteira pode ser o ponto de partida"
+          subtitle="Conheça a abordagem do programa para o seu perfil de negócio."
+        />
+        <div className="agency-grid mt-8">
+          {[
+            {
+              slug: "contabilidade",
+              title: "Escritórios de contabilidade",
+              copy: "Comece pelas rotinas do escritório e identifique oportunidades na sua carteira.",
+            },
+            {
+              slug: "agencia-marketing",
+              title: "Agências de marketing",
+              copy: "Conecte a captação ao atendimento e ofereça soluções de IA aos negócios que você já atende.",
+            },
+          ].map((item) => (
+            <Link
+              key={item.slug}
+              to="/bu1lders/$slug"
+              params={{ slug: item.slug }}
+              className="surface-card p-8"
+            >
+              <p className="eyebrow text-brand-cyan">Programa de parceiros</p>
+              <h3 className="mt-4 text-2xl">{item.title}</h3>
+              <p className="mt-3 text-muted-foreground">{item.copy}</p>
+              <span className="mt-6 inline-flex items-center gap-2 text-brand-cyan text-sm">
+                Conhecer a proposta <ArrowRight className="size-4" />
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -202,8 +238,8 @@ function BuildersLanding() {
               Cadastre-se e monte sua carteira de clientes
             </h2>
             <p className="mt-6 lead max-w-lg">
-              Preencha o formulário e nossa equipe te chama em até 1 dia útil. Sem compromisso,
-              sem custo de adesão.
+              Preencha o formulário e nossa equipe te chama em até 1 dia útil. Sem compromisso, sem
+              custo de adesão.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 text-sm text-muted-foreground">
               <span>✓ Cadastro gratuito</span>
@@ -217,7 +253,7 @@ function BuildersLanding() {
               Ir para o cadastro <ArrowRight className="size-4" />
             </a>
           </div>
-          <LeadForm origem="hub-bottom" />
+          <LeadForm origem="hub-bottom" formId="cadastro-final" />
         </div>
       </section>
 

@@ -1,11 +1,10 @@
-import { assetUrl } from '@/asset-url';
+import { BrandLockup } from "@/components/site/BrandLockup";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { m as motion, useScroll, useSpring, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
-import logoB from "@/assets/logo-b.png.asset.json";
 
 const MobileMenu = lazy(() => import("./MobileMenu"));
 const prefetchMobileMenu = () => {
@@ -58,7 +57,7 @@ export function Header() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]) setActiveId(visible[0].target.id);
       },
-      { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.01, 0.5, 1] }
+      { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.01, 0.5, 1] },
     );
 
     targets.forEach((t) => observer.observe(t));
@@ -84,19 +83,7 @@ export function Header() {
         }`}
       >
         <Link to="/" className="flex items-center gap-2 group">
-          <div
-            className={`relative rounded-lg bg-gradient-to-br from-brand-cyan via-brand-blue to-brand-violet grid place-items-center transition-all duration-500 motion-safe:group-hover:rotate-3 ${
-              scrolled ? "w-7 h-7" : "w-8 h-8"
-            }`}
-          >
-            <img src={assetUrl(logoB.url)} alt="" aria-hidden="true" className="w-full h-full object-contain p-1" />
-            <span className="absolute inset-0 rounded-lg bg-brand-cyan/40 blur-md opacity-50 group-hover:opacity-80 transition-opacity -z-10" />
-          </div>
-          <div className="leading-tight">
-            <div className="font-bold text-lg sm:text-xl tracking-[-0.04em]">
-              Bu<span className="bg-gradient-to-br from-brand-cyan via-brand-blue to-brand-violet bg-clip-text text-transparent">1</span>lder.com
-            </div>
-          </div>
+          <BrandLockup />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8">
