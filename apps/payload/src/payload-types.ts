@@ -604,6 +604,12 @@ export interface BlocoSimulador {
    * Valores vêm do global "Planos".
    */
   plano: 'Essencial' | 'Crescimento' | 'Performance';
+  /**
+   * {plano} vira o nome do plano escolhido.
+   */
+  cabecalhoCartao?: string | null;
+  linhaSetup?: string | null;
+  linhaOperacao?: string | null;
   rotuloValor?: string | null;
   minClientes: number;
   maxClientes: number;
@@ -1104,6 +1110,9 @@ export interface BlocoSimuladorSelect<T extends boolean = true> {
   titulo?: T;
   subtitulo?: T;
   plano?: T;
+  cabecalhoCartao?: T;
+  linhaSetup?: T;
+  linhaOperacao?: T;
   rotuloValor?: T;
   minClientes?: T;
   maxClientes?: T;

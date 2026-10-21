@@ -18,7 +18,8 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "db:up": "docker compose up -d --wait",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "test": "vitest run"
   },
   "dependencies": {
     "@fontsource-variable/geist": "5.3.0",
@@ -31,8 +32,11 @@
     "@radix-ui/react-slider": "1.6.1",
     "clsx": "2.1.1",
     "cross-env": "^7.0.3",
+    "dom-serializer": "^2.0.0",
+    "domhandler": "^5.0.3",
     "framer-motion": "12.43.0",
     "graphql": "^16.8.1",
+    "htmlparser2": "^10.1.0",
     "lucide-react": "0.575.0",
     "next": "16.2.12",
     "payload": "3.85.2",
@@ -51,7 +55,9 @@
     "eslint-config-next": "16.2.12",
     "playwright": "1.62.1",
     "tailwindcss": "4.3.3",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.7"
   },
   "engines": {
     "node": ">=20.9.0"

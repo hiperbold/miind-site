@@ -30,6 +30,9 @@ export function EarningsSimulator({
   showYearly = true,
   showPortfolio = true,
   showPlatformShare = false,
+  headerLabel,
+  setupNote = 'Setup incluso',
+  operationNote = 'A Bu1lder cuida da operação',
 }: {
   plan: SimulatorPlan
   valueLabel?: string
@@ -39,6 +42,9 @@ export function EarningsSimulator({
   showYearly?: boolean
   showPortfolio?: boolean
   showPlatformShare?: boolean
+  headerLabel?: string
+  setupNote?: string | null
+  operationNote?: string | null
 }) {
   const min = Math.max(1, Math.floor(minClients))
   const max = Math.max(min + 1, Math.floor(maxClients))
@@ -66,7 +72,7 @@ export function EarningsSimulator({
       />
 
       <div className="relative">
-        <p className="eyebrow">Quanto você ganha · Plano {plan.key}</p>
+        <p className="eyebrow">{headerLabel ?? `Quanto você ganha · Plano ${plan.key}`}</p>
         <div className="mt-2 grid sm:grid-cols-2 gap-6 items-end">
           <div>
             <p className="text-muted-foreground text-sm">Cliente paga</p>
@@ -74,7 +80,7 @@ export function EarningsSimulator({
               {brl(plan.price)}
               <span className="text-base font-medium text-muted-foreground">/mês</span>
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Setup incluso</p>
+            {setupNote && <p className="text-xs text-muted-foreground mt-1">{setupNote}</p>}
           </div>
           <div>
             <p className="text-[10px] tracking-[0.22em] uppercase font-semibold text-brand-mint">
@@ -84,7 +90,7 @@ export function EarningsSimulator({
               {brl(plan.builderEarns)}
               <span className="text-base font-medium opacity-80">/mês</span>
             </p>
-            <p className="text-xs text-muted-foreground mt-1">A Bu1lder cuida da operação</p>
+            {operationNote && <p className="text-xs text-muted-foreground mt-1">{operationNote}</p>}
             {showPlatformShare && plan.platform != null && (
               <p className="text-xs text-muted-foreground">Plataforma: {brl(plan.platform)}/mês</p>
             )}

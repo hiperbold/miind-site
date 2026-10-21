@@ -1,3 +1,4 @@
+import { AnoAtual } from './AnoAtual'
 import { BrandLockup } from './BrandLockup'
 
 export type FooterLink = { label: string; url: string }
@@ -40,7 +41,7 @@ export function NicheFooter({
       <div className="border-t border-border">
         <div className="container-editorial pt-6 pb-20">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} {rightsText}
+            © <AnoAtual anoDoServidor={new Date().getFullYear()} /> {rightsText}
           </p>
         </div>
       </div>

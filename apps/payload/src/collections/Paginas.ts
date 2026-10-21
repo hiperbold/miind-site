@@ -1,11 +1,60 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import { ValidationError } from 'payload'
 
 import { blocosPagina } from '@/blocks'
 import { logado, publicadoOuLogado } from '@/lib/acesso'
-import { revalidarPaginas } from '@/lib/revalidar'
+import { revalidarAgora, revalidarPaginas } from '@/lib/revalidar'
 
 // Slugs que já são rotas próprias em /bu1lder/* ou reservados.
 export const SLUGS_RESERVADOS = ['parceiros', 'ty-page', 'admin', 'api']
+
+// Formato e reserva. Devolve a mensagem de erro ou true.
+export function validarSlug(value: string | null | undefined): string | true {
+  if (!value) return 'Informe o slug.'
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) return 'Use letras minúsculas, números e hífen.'
+  if (SLUGS_RESERVADOS.includes(value)) return `O slug "${value}" é reservado.`
+  return true
+}
+
+// O Payload não roda a validação dos campos ao salvar rascunho. Este hook
+// confere o slug em todo salvamento (rascunho ou publicação) e também se outra
+// página já usa o mesmo slug, publicada ou em rascunho, com mensagem clara.
+const conferirSlug: CollectionBeforeChangeHook = async ({ data, originalDoc, req }) => {
+  const slug = data?.slug ?? originalDoc?.slug
+  const erro = (message: string) =>
+    new ValidationError({ collection: 'paginas', errors: [{ path: 'slug', message }] }, req.t)
+  const formato = validarSlug(slug)
+  if (formato !== true) throw erro(formato)
+  const id = originalDoc?.id
+  const outras = await req.payload.find({
+    collection: 'paginas',
+    where: { and: [{ slug: { equals: slug } }, ...(id ? [{ id: { not_equals: id } }] : [])] },
+    limit: 1,
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+    req,
+  })
+  const emRascunho = await req.payload.findVersions({
+    collection: 'paginas',
+    where: {
+      and: [
+        { 'version.slug': { equals: slug } },
+        { latest: { equals: true } },
+        ...(id ? [{ parent: { not_equals: id } }] : []),
+      ],
+    },
+    limit: 1,
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+    req,
+  })
+  if (outras.docs.length || emRascunho.docs.length) {
+    throw erro(`Já existe uma página com o slug "${slug}". Escolha outro endereço.`)
+  }
+  return data
+}
 
 export const Paginas: CollectionConfig = {
   slug: 'paginas',
@@ -22,11 +71,25 @@ export const Paginas: CollectionConfig = {
     delete: logado,
     readVersions: logado,
   },
+  endpoints: [
+    {
+      // POST /api/paginas/revalidar (logado): limpa o cache de todas as LPs.
+      // Usado pelo seed, que roda fora do Next e não consegue revalidar sozinho.
+      path: '/revalidar',
+      method: 'post',
+      handler: async (req) => {
+        if (!req.user) return Response.json({ message: 'Não autorizado.' }, { status: 401 })
+        revalidarAgora()
+        return Response.json({ message: 'Páginas revalidadas.' })
+      },
+    },
+  ],
   versions: {
     drafts: true,
     maxPerDoc: 50,
   },
   hooks: {
+    beforeChange: [conferirSlug],
     afterChange: [({ context }) => revalidarPaginas({ context })],
     afterDelete: [({ context }) => revalidarPaginas({ context })],
   },
@@ -40,12 +103,7 @@ export const Paginas: CollectionConfig = {
       unique: true,
       index: true,
       admin: { position: 'sidebar', description: 'Endereço: /bu1lder/{slug}' },
-      validate: (value: string | null | undefined) => {
-        if (!value) return 'Informe o slug.'
-        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) return 'Use letras minúsculas, números e hífen.'
-        if (SLUGS_RESERVADOS.includes(value)) return `O slug "${value}" é reservado.`
-        return true
-      },
+      validate: (value: string | null | undefined) => validarSlug(value),
     },
     {
       name: 'tipo',

@@ -59,6 +59,14 @@ A revisão de copy de contabilidade e agência (chat Estrategista, aguardando OK
 
 ## Pendências que dependem de outros
 
+**Entregue em 21/10/2026:** pacote `@hiperbold/payload-tracking` 1.3.0, em `~/github-projects/tracking-payload-module/hiperbold-payload-tracking-1.3.0.tgz` (fora do git; instalar com `pnpm add file:...`). Ler primeiro `docs/guia-leads.md` do módulo e as seções 17 e 18 do `docs/guia-instalacao-ecommerce.md`. Pontos de instalação para a fase 4:
+- Migração `tracking_1_3_0` antes do primeiro boot.
+- `consentPolicy.pages` na coleção `paginas` (`pathField: 'slug'`, `pathPrefix: '/bu1lder'`) e `exemptPaths: ['/bu1lder/ty-page']`; homepage fica com banner c15t. `canEdit` só para admin. Passar sempre `pagePath` no `trackServerEvent`.
+- Lead: na Server Action, depois de salvar, `newEventId('lead')` + `trackServerEvent('lead', ..., { eventId, pagePath, user: { email, phone }, headers })`; no navegador, `track('lead', ..., { eventId })` e só então `router.push('/bu1lder/ty-page')`. Reunião agendada: evento `schedule` na ty-page.
+- `<TrackingProvider apiBase="/bu1lder/api">`; `subjectCookie: { path: '/bu1lder' }`; `https://www.miind.com.br` nas origens confiáveis.
+- Atribuição: `getAttribution()` no navegador e `readAttribution(headers)` no servidor cobrem UTMs (menos `utm_id`), gclid, gbraid, wbraid, fbclid, fbp, fbc. O site captura por conta própria `utm_id`, `waclid`, `xcod`, `src` e `origem`.
+- Falta a verificação de rede (docs/verificacao-de-rede.md do módulo), a rodar deste lado e devolver ao payload-modules.
+
 O módulo de tracking é cuidado pelo chat "payload-modules". A demanda (itens abaixo, mais Lead com deduplicação, evento de reunião agendada, prefixo `/bu1lder/api` e campos de atribuição) foi enviada a ele em 21/10/2026. Este projeto não altera o módulo; só instala o pacote que ele entregar.
 
 - **Tracking sem consentimento nas LPs de nicho:** o módulo é fechado por padrão; sem consentimento nada dispara, no navegador e no servidor. Liberar por página exige uma opção nova no próprio módulo (projeto `tracking-payload-module`).

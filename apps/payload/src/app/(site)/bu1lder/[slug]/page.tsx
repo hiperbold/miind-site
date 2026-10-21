@@ -8,6 +8,7 @@ import { PaginaWrapper } from '@/components/bu1lder/Pagina'
 import { SegmentNav } from '@/components/bu1lder/SegmentNav'
 import { buscarGlobais, buscarNavegacaoSegmentos, buscarPagina, buscarSlugsPublicados } from '@/lib/paginas'
 import type { Media } from '@/payload-types'
+import { urlMidiaPublica, urlPublica } from '@/lib/url-publica'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -33,10 +34,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = pagina.seo?.title || pagina.titulo
   const description = pagina.seo?.description || undefined
   const og = pagina.seo?.ogImage
-  const ogUrl = og && typeof og === 'object' ? (og as Media).url : null
-  const url = `/bu1lder/${pagina.slug}`
+  const ogUrl = og && typeof og === 'object' ? urlMidiaPublica((og as Media).filename) : null
+  const url = `${urlPublica()}/bu1lder/${pagina.slug}`
   return {
-    metadataBase: process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL) : undefined,
+    metadataBase: new URL(urlPublica()),
     title,
     description,
     alternates: { canonical: url },

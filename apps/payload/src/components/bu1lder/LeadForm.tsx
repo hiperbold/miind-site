@@ -37,6 +37,8 @@ export function LeadForm({
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState<string | null>(null)
 
+  const errId = (name: string) => `${formId}-${name}-erro`
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setServerError(null)
@@ -55,6 +57,7 @@ export function LeadForm({
     if (!EMAIL_RE.test(raw.email)) errs.email = 'E-mail inválido'
     if (raw.whatsapp.length < 8) errs.whatsapp = 'WhatsApp inválido'
     if (raw.cidade_uf.length < 2) errs.cidade_uf = 'Cidade/UF obrigatória'
+    if (!raw.perfil) errs.perfil = 'Selecione seu perfil'
     const extras: Record<string, string | string[]> = {}
     for (const q of extraQuestions) {
       const values = fd.getAll(q.name).map(String).filter(Boolean)
@@ -80,13 +83,21 @@ export function LeadForm({
   return (
     <form id={formId} onSubmit={onSubmit} noValidate className="surface-card p-6 sm:p-8 grid gap-4">
       <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Nome completo" name="nome" error={errors.nome} required />
-        <Field label="E-mail" name="email" type="email" error={errors.email} required />
-        <Field label="WhatsApp" name="whatsapp" error={errors.whatsapp} placeholder="(00) 00000-0000" required />
+        <Field label="Nome completo" name="nome" error={errors.nome} errorId={errId('nome')} required />
+        <Field label="E-mail" name="email" type="email" error={errors.email} errorId={errId('email')} required />
+        <Field
+          label="WhatsApp"
+          name="whatsapp"
+          error={errors.whatsapp}
+          errorId={errId('whatsapp')}
+          placeholder="(00) 00000-0000"
+          required
+        />
         <Field
           label="Cidade / UF"
           name="cidade_uf"
           error={errors.cidade_uf}
+          errorId={errId('cidade_uf')}
           placeholder="Belo Horizonte / MG"
           required
         />
@@ -97,11 +108,14 @@ export function LeadForm({
         <SelectField
           label="Seu perfil"
           name="perfil"
+          required
+          error={errors.perfil}
+          errorId={errId('perfil')}
           options={[{ value: '', label: 'Selecione…' }, ...profileOptions.map((p) => ({ value: p, label: p }))]}
         />
         {extraQuestions.map((q) =>
           q.type === 'multipla' ? (
-            <CheckboxGroup key={q.name} question={q} error={errors[q.name]} />
+            <CheckboxGroup key={q.name} question={q} error={errors[q.name]} errorId={errId(q.name)} />
           ) : (
             <SelectField
               key={q.name}
@@ -109,6 +123,7 @@ export function LeadForm({
               name={q.name}
               required={Boolean(q.required)}
               error={errors[q.name]}
+              errorId={errId(q.name)}
               options={[{ value: '', label: 'Selecione…' }, ...q.options.map((o) => ({ value: o, label: o }))]}
             />
           ),
@@ -119,13 +134,21 @@ export function LeadForm({
         <input
           type="checkbox"
           name="consent"
+          required
+          aria-required="true"
+          aria-invalid={Boolean(errors.consent) || undefined}
+          aria-describedby={errors.consent ? errId('consent') : undefined}
           className="mt-1 size-4 rounded border-white/20 bg-white/5 text-brand-cyan focus:ring-brand-cyan/40"
         />
         <span>
           {consentText} <span className="opacity-70">(obrigatório)</span>
         </span>
       </label>
-      {errors.consent && <p className="text-xs text-brand-violet -mt-2">{errors.consent}</p>}
+      {errors.consent && (
+        <p id={errId('consent')} role="alert" className="text-xs text-brand-violet -mt-2">
+          {errors.consent}
+        </p>
+      )}
 
       {serverError && (
         <p className="text-sm text-brand-violet" role="alert">
@@ -158,6 +181,7 @@ function Field({
   name,
   type = 'text',
   error,
+  errorId,
   required,
   placeholder,
 }: {
@@ -165,6 +189,7 @@ function Field({
   name: string
   type?: string
   error?: string
+  errorId: string
   required?: boolean
   placeholder?: string
 }) {
@@ -178,10 +203,17 @@ function Field({
         name={name}
         type={type}
         placeholder={placeholder}
+        required={required}
+        aria-required={required || undefined}
         aria-invalid={Boolean(error) || undefined}
+        aria-describedby={error ? errorId : undefined}
         className="w-full rounded-lg border border-white/10 bg-white/5 px-3 h-11 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-brand-cyan/60 focus:ring-2 focus:ring-brand-cyan/20"
       />
-      {error && <span className="text-xs text-brand-violet">{error}</span>}
+      {error && (
+        <span id={errorId} role="alert" className="text-xs text-brand-violet">
+          {error}
+        </span>
+      )}
     </label>
   )
 }
@@ -192,12 +224,14 @@ function SelectField({
   options,
   required,
   error,
+  errorId,
 }: {
   label: string
   name: string
   options: { value: string; label: string }[]
   required?: boolean
   error?: string
+  errorId: string
 }) {
   return (
     <label className="grid gap-1.5">
@@ -208,7 +242,10 @@ function SelectField({
       <select
         name={name}
         defaultValue=""
+        required={required}
+        aria-required={required || undefined}
         aria-invalid={Boolean(error) || undefined}
+        aria-describedby={error ? errorId : undefined}
         className="w-full rounded-lg border border-white/10 bg-white/5 px-3 h-11 text-sm text-foreground focus:outline-none focus:border-brand-cyan/60 focus:ring-2 focus:ring-brand-cyan/20"
       >
         {options.map((o) => (
@@ -217,14 +254,23 @@ function SelectField({
           </option>
         ))}
       </select>
-      {error && <span className="text-xs text-brand-violet">{error}</span>}
+      {error && (
+        <span id={errorId} role="alert" className="text-xs text-brand-violet">
+          {error}
+        </span>
+      )}
     </label>
   )
 }
 
-function CheckboxGroup({ question, error }: { question: ExtraQuestion; error?: string }) {
+function CheckboxGroup({ question, error, errorId }: { question: ExtraQuestion; error?: string; errorId: string }) {
   return (
-    <fieldset className="grid gap-2" aria-invalid={Boolean(error) || undefined}>
+    <fieldset
+      className="grid gap-2"
+      aria-required={question.required || undefined}
+      aria-invalid={Boolean(error) || undefined}
+      aria-describedby={error ? errorId : undefined}
+    >
       <legend className="mb-1.5 text-sm font-medium text-foreground">
         {question.label}
         {question.required && <span className="text-brand-cyan ml-1">*</span>}
@@ -242,7 +288,11 @@ function CheckboxGroup({ question, error }: { question: ExtraQuestion; error?: s
           </label>
         ))}
       </div>
-      {error && <span className="text-xs text-brand-violet">{error}</span>}
+      {error && (
+        <span id={errorId} role="alert" className="text-xs text-brand-violet">
+          {error}
+        </span>
+      )}
     </fieldset>
   )
 }

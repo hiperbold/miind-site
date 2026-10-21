@@ -18,6 +18,7 @@ pnpm db:up                # Postgres 17 em 127.0.0.1:5438 (bancos miind_bu1lder 
 pnpm install
 pnpm migrate              # aplica src/migrations
 pnpm seed                 # admin, globais e as 10 LPs publicadas (só cria o que falta; SEED_ATUALIZAR=1 sobrescreve)
+pnpm test                 # vitest; os testes de integração usam o Postgres local migrado
 pnpm dev                  # http://localhost:3010
 ```
 
@@ -50,7 +51,10 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 - Coleção `paginas` (rascunho e versões): layout em blocos (`src/blocks/<Nome>/{config.ts,Component.tsx}`). Globais: `planos`, `faq-plataforma`, `formulario`, `rodape`.
 - `/bu1lder/[slug]` tem layout raiz próprio, para o `<html>` já sair do servidor com `class="light"` e `data-miind-ds`. As páginas provisórias (homepage, parceiros, obrigado) ficam no grupo `(provisorio)`.
 - Estilos portados de `apps/bu1lder` em `src/styles/bu1lder`. O Tailwind das LPs só lê `src/components/bu1lder`, `src/components/ui` e `src/blocks`: classe usada fora dessas pastas não é gerada.
-- Publicar ou editar página ou global revalida todas as LPs (`src/lib/revalidar.ts`).
+- Publicar ou editar página, global ou mídia revalida todas as LPs (`src/lib/revalidar.ts`), via `after()` do Next, depois do commit da transação.
+- O seed roda fora do Next: no fim ele chama `POST /api/paginas/revalidar` (logado) se o servidor estiver no ar. Sem servidor, as páginas saem atualizadas no próximo `pnpm build`.
+- `PUBLIC_SITE_URL` (padrão `http://localhost:3010`; produção `https://www.miind.com.br`) gera canonical, og:url e og:image (servida por `/bu1lder/api/media/...`). É lida no build. `NEXT_PUBLIC_SITE_URL` continua sendo o endereço do admin/servidor.
+- Scripts personalizados do `<head>` passam por um parser HTML (htmlparser2, `src/lib/scripts-head.ts`); tag ou atributo com problema é descartado e registrado no log, sem derrubar a página.
 - Formulário: só valida no navegador e mostra a falha explícita; o envio entra na fase 3.
 
 ## Portas

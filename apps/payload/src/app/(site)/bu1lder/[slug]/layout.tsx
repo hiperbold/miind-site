@@ -21,8 +21,9 @@ export default async function PaginaLayout({
 }) {
   const { slug } = await params
   const pagina = await buscarPagina(slug)
-  const claro = pagina ? pagina.temaClaroPadrao !== false : false
-  const ds = pagina?.visual === 'ds'
+  // Sem página (404): claro e com o DS MIIND.
+  const claro = pagina ? pagina.temaClaroPadrao !== false : true
+  const ds = pagina ? pagina.visual === 'ds' : true
 
   return (
     <html

@@ -60,7 +60,7 @@ export const contabilidade: PaginaSeed = {
         { icone: 'Clock', valor: '1 dia útil', rotulo: 'para a MIIND chamar você', tom: 'mint' },
       ],
     },
-    // 1.3
+    // 1.3 (rótulos "Etapa", aprovados pelo Estrategista)
     {
       blockType: 'linhaDoTempo',
       etiqueta: 'Como funciona',
@@ -68,27 +68,27 @@ export const contabilidade: PaginaSeed = {
       subtitulo: 'Você não programa nada. A MIIND monta e opera a IA enquanto você cuida dos seus clientes.',
       passos: [
         {
-          dia: 'Dia 1',
+          dia: 'Etapa 1',
           titulo: 'Conversa com a MIIND',
           descricao: 'Carteira, regimes e calendário de obrigações do seu escritório.',
         },
         {
-          dia: 'Dia 2',
+          dia: 'Etapa 2',
           titulo: 'WhatsApp oficial e base de clientes',
           descricao: 'Número oficial do escritório e lista de documentos por cliente.',
         },
         {
-          dia: 'Dia 3',
+          dia: 'Etapa 3',
           titulo: 'IA configurada',
           descricao: 'Aprende os prazos, os regimes e as regras de cobrança do escritório.',
         },
         {
-          dia: 'Dia 4',
+          dia: 'Etapa 4',
           titulo: 'Teste com a equipe',
           descricao: 'A equipe valida as mensagens antes de ir para os clientes.',
         },
         {
-          dia: 'Dia 5',
+          dia: 'Etapa 5',
           titulo: 'No ar',
           descricao: 'O escritório passa a cobrar documentos sem ninguém precisar lembrar.',
         },
@@ -134,7 +134,7 @@ export const contabilidade: PaginaSeed = {
           exemplo: 'A folha deste mês fecha dia 25. Quer que eu te lembre na véspera?',
         },
       ],
-      textoEntrega: 'Entrega em poucos dias · WhatsApp + IA',
+      textoEntrega: 'WhatsApp oficial · IA · suporte da MIIND',
       ancora: 'solucoes',
       destaque: false,
     },
@@ -186,6 +186,9 @@ export const contabilidade: PaginaSeed = {
       subtitulo:
         'Exemplo com o plano Performance: o cliente paga R$ 5.000 por mês e você recebe R$ 2.000 por mês enquanto ele estiver ativo. Valores de referência, confirmados na conversa com a MIIND.',
       plano: 'Performance',
+      cabecalhoCartao: 'Exemplo · Plano {plano}',
+      linhaSetup: null,
+      linhaOperacao: 'A MIIND constrói e opera',
       rotuloValor: 'Sua parte por mês (exemplo)',
       minClientes: 1,
       maxClientes: 10,
@@ -293,7 +296,7 @@ export const contabilidade: PaginaSeed = {
             nome: 'empresas_atendidas',
             tipo: 'unica',
             opcoes: ['Até 30', '31 a 100', '101 a 300', 'Mais de 300'],
-            obrigatoria: false,
+            obrigatoria: true,
           },
         ],
         textoConsentimento: 'Autorizo a MIIND a falar comigo por WhatsApp e e-mail sobre o programa Bu1lder.',

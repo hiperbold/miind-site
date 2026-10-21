@@ -19,6 +19,30 @@ export const Simulador: Block = {
       admin: { description: 'Valores vêm do global "Planos".' },
     },
     {
+      name: 'cabecalhoCartao',
+      label: 'Etiqueta no topo do simulador',
+      type: 'text',
+      defaultValue: 'Quanto você ganha · Plano {plano}',
+      admin: { description: '{plano} vira o nome do plano escolhido.' },
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'linhaSetup',
+          label: 'Linha abaixo do preço (opcional)',
+          type: 'text',
+          defaultValue: 'Setup incluso',
+        },
+        {
+          name: 'linhaOperacao',
+          label: 'Linha abaixo do valor por cliente (opcional)',
+          type: 'text',
+          defaultValue: 'A Bu1lder cuida da operação',
+        },
+      ],
+    },
+    {
       name: 'rotuloValor',
       label: 'Rótulo do valor mensal',
       type: 'text',
