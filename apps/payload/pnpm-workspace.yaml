@@ -1,0 +1,5 @@
+# Workspace próprio do app Payload (isolado do restante do repositório).
+allowBuilds:
+  sharp: true
+  esbuild: true
+  unrs-resolver: true
