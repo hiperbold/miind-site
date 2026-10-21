@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    paginas: Pagina;
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
@@ -76,6 +77,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    paginas: PaginasSelect<false> | PaginasSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -87,8 +89,18 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    planos: Plano;
+    'faq-plataforma': FaqPlataforma;
+    formulario: Formulario;
+    rodape: Rodape;
+  };
+  globalsSelect: {
+    planos: PlanosSelect<false> | PlanosSelect<true>;
+    'faq-plataforma': FaqPlataformaSelect<false> | FaqPlataformaSelect<true>;
+    formulario: FormularioSelect<false> | FormularioSelect<true>;
+    rodape: RodapeSelect<false> | RodapeSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -118,6 +130,673 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Páginas em /bu1lder/{slug}.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paginas".
+ */
+export interface Pagina {
+  id: number;
+  titulo: string;
+  /**
+   * Endereço: /bu1lder/{slug}
+   */
+  slug: string;
+  /**
+   * Páginas de nicho publicadas entram na navegação de segmentos.
+   */
+  tipo: 'nicho' | 'outra';
+  navegacao?: {
+    /**
+     * Vazio: usa o título.
+     */
+    rotulo?: string | null;
+    ordem?: number | null;
+  };
+  visual: 'ds' | 'original';
+  temaClaroPadrao?: boolean | null;
+  cabecalho?: {
+    mostrarNavegacaoSegmentos?: boolean | null;
+    mostrarVoltar?: boolean | null;
+  };
+  layout?:
+    | (
+        | BlocoHeroCelular
+        | BlocoFaixaNumeros
+        | BlocoLinhaDoTempo
+        | BlocoModulos
+        | BlocoCartoesSegmento
+        | BlocoTextoLista
+        | BlocoSimulador
+        | BlocoNotasFacilidade
+        | BlocoAntesDepois
+        | BlocoArgumento
+        | BlocoFaq
+        | BlocoChamadaCadastro
+      )[]
+    | null;
+  seo: {
+    title: string;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  /**
+   * Códigos colados aqui (pixels, tags) entram na página exatamente como estão, sem filtro. Só administradores editam.
+   */
+  scriptsPersonalizados?: {
+    /**
+     * Aceita <script>, <noscript>, <style>, <meta> e <link>.
+     */
+    head?: string | null;
+    bodyFim?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroCelular".
+ */
+export interface BlocoHeroCelular {
+  icone?:
+    | (
+        | 'BadgePercent'
+        | 'BarChart3'
+        | 'BellRing'
+        | 'Briefcase'
+        | 'Building2'
+        | 'Calculator'
+        | 'CalendarCheck'
+        | 'CalendarClock'
+        | 'Car'
+        | 'CarFront'
+        | 'ClipboardCheck'
+        | 'ClipboardList'
+        | 'Clock'
+        | 'Code'
+        | 'CreditCard'
+        | 'Dumbbell'
+        | 'FileCheck'
+        | 'FileText'
+        | 'Gift'
+        | 'HeartPulse'
+        | 'Home'
+        | 'Megaphone'
+        | 'MessageCircle'
+        | 'PawPrint'
+        | 'PiggyBank'
+        | 'Plug'
+        | 'Receipt'
+        | 'Repeat'
+        | 'RotateCcw'
+        | 'Scissors'
+        | 'Search'
+        | 'ShieldCheck'
+        | 'Smile'
+        | 'Sparkles'
+        | 'Stethoscope'
+        | 'Store'
+        | 'Syringe'
+        | 'TrendingDown'
+        | 'TrendingUp'
+        | 'Trophy'
+        | 'UserPlus'
+        | 'Users'
+        | 'UtensilsCrossed'
+        | 'Wallet'
+        | 'Wrench'
+        | 'Zap'
+      )
+    | null;
+  etiqueta?: string | null;
+  titulo: string;
+  texto?: string | null;
+  iconeDecisor?:
+    | (
+        | 'BadgePercent'
+        | 'BarChart3'
+        | 'BellRing'
+        | 'Briefcase'
+        | 'Building2'
+        | 'Calculator'
+        | 'CalendarCheck'
+        | 'CalendarClock'
+        | 'Car'
+        | 'CarFront'
+        | 'ClipboardCheck'
+        | 'ClipboardList'
+        | 'Clock'
+        | 'Code'
+        | 'CreditCard'
+        | 'Dumbbell'
+        | 'FileCheck'
+        | 'FileText'
+        | 'Gift'
+        | 'HeartPulse'
+        | 'Home'
+        | 'Megaphone'
+        | 'MessageCircle'
+        | 'PawPrint'
+        | 'PiggyBank'
+        | 'Plug'
+        | 'Receipt'
+        | 'Repeat'
+        | 'RotateCcw'
+        | 'Scissors'
+        | 'Search'
+        | 'ShieldCheck'
+        | 'Smile'
+        | 'Sparkles'
+        | 'Stethoscope'
+        | 'Store'
+        | 'Syringe'
+        | 'TrendingDown'
+        | 'TrendingUp'
+        | 'Trophy'
+        | 'UserPlus'
+        | 'Users'
+        | 'UtensilsCrossed'
+        | 'Wallet'
+        | 'Wrench'
+        | 'Zap'
+      )
+    | null;
+  linhaDecisor?: string | null;
+  botaoPrincipal?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  botaoSecundario?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  celular?: {
+    titulo?: string | null;
+    subtitulo?: string | null;
+    mensagens?:
+      | {
+          de: 'negocio' | 'cliente';
+          hora?: string | null;
+          texto: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroCelular';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaixaNumeros".
+ */
+export interface BlocoFaixaNumeros {
+  itens?:
+    | {
+        icone?:
+          | (
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Code'
+              | 'CreditCard'
+              | 'Dumbbell'
+              | 'FileCheck'
+              | 'FileText'
+              | 'Gift'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'PawPrint'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'Search'
+              | 'ShieldCheck'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        tom?: ('cyan' | 'mint' | 'violet') | null;
+        valor: string;
+        rotulo: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faixaNumeros';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoLinhaDoTempo".
+ */
+export interface BlocoLinhaDoTempo {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  passos?:
+    | {
+        dia: string;
+        titulo: string;
+        descricao?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'linhaDoTempo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoModulos".
+ */
+export interface BlocoModulos {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  itens?:
+    | {
+        icone?:
+          | (
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Code'
+              | 'CreditCard'
+              | 'Dumbbell'
+              | 'FileCheck'
+              | 'FileText'
+              | 'Gift'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'PawPrint'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'Search'
+              | 'ShieldCheck'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        nome: string;
+        beneficio: string;
+        exemplo?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  textoEntrega?: string | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'modulos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCartoesSegmento".
+ */
+export interface BlocoCartoesSegmento {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  cartoes?:
+    | {
+        icone?:
+          | (
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Code'
+              | 'CreditCard'
+              | 'Dumbbell'
+              | 'FileCheck'
+              | 'FileText'
+              | 'Gift'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'PawPrint'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'Search'
+              | 'ShieldCheck'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cartoesSegmento';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoTextoLista".
+ */
+export interface BlocoTextoLista {
+  titulo?: string | null;
+  texto?: string | null;
+  lista?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  nota?: string | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'textoLista';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoSimulador".
+ */
+export interface BlocoSimulador {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  /**
+   * Valores vêm do global "Planos".
+   */
+  plano: 'Essencial' | 'Crescimento' | 'Performance';
+  rotuloValor?: string | null;
+  minClientes: number;
+  maxClientes: number;
+  clientesInicial: number;
+  mostrarAnual?: boolean | null;
+  mostrarPortfolio?: boolean | null;
+  aviso?: string | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'simulador';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoNotasFacilidade".
+ */
+export interface BlocoNotasFacilidade {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  achar: number;
+  explicar: number;
+  roi: number;
+  fechar: number;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'notasFacilidade';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoAntesDepois".
+ */
+export interface BlocoAntesDepois {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  subtitulo?: string | null;
+  antes?: {
+    titulo?: string | null;
+    itens?:
+      | {
+          rotulo: string;
+          valor?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  depois?: {
+    titulo?: string | null;
+    itens?:
+      | {
+          rotulo: string;
+          valor?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  delta?: string | null;
+  citacao?: string | null;
+  autor?: string | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'antesDepois';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoArgumento".
+ */
+export interface BlocoArgumento {
+  texto: string;
+  assinatura?: string | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'argumento';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaq".
+ */
+export interface BlocoFaq {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  incluirPerguntasPlataforma?: boolean | null;
+  itens?:
+    | {
+        pergunta: string;
+        resposta: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoChamadaCadastro".
+ */
+export interface BlocoChamadaCadastro {
+  etiqueta?: string | null;
+  titulo: string;
+  texto?: string | null;
+  bullets?:
+    | {
+        texto: string;
+        id?: string | null;
+      }[]
+    | null;
+  depoimento?: {
+    texto?: string | null;
+    autor?: string | null;
+  };
+  /**
+   * O segmento do cadastro é oculto e igual ao slug da página. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   */
+  formulario?: {
+    /**
+     * Vazio: usa os perfis padrão do global "Formulário".
+     */
+    perfis?: string[] | null;
+    perguntasExtras?:
+      | {
+          rotulo: string;
+          /**
+           * Letras minúsculas, números e _ (ex.: empresas_atendidas).
+           */
+          nome: string;
+          tipo: 'unica' | 'multipla';
+          obrigatoria?: boolean | null;
+          opcoes: string[];
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Vazio: usa o texto padrão do global "Formulário".
+     */
+    textoConsentimento?: string | null;
+    botaoSecundario?: {
+      texto?: string | null;
+      url?: string | null;
+    };
+    /**
+     * Vazio: cadastro-{slug da página}.
+     */
+    formId?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'chamadaCadastro';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -144,25 +823,6 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -185,6 +845,10 @@ export interface PayloadKv {
 export interface PayloadLockedDocument {
   id: number;
   document?:
+    | ({
+        relationTo: 'paginas';
+        value: number | Pagina;
+      } | null)
     | ({
         relationTo: 'users';
         value: number | User;
@@ -234,6 +898,358 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paginas_select".
+ */
+export interface PaginasSelect<T extends boolean = true> {
+  titulo?: T;
+  slug?: T;
+  tipo?: T;
+  navegacao?:
+    | T
+    | {
+        rotulo?: T;
+        ordem?: T;
+      };
+  visual?: T;
+  temaClaroPadrao?: T;
+  cabecalho?:
+    | T
+    | {
+        mostrarNavegacaoSegmentos?: T;
+        mostrarVoltar?: T;
+      };
+  layout?:
+    | T
+    | {
+        heroCelular?: T | BlocoHeroCelularSelect<T>;
+        faixaNumeros?: T | BlocoFaixaNumerosSelect<T>;
+        linhaDoTempo?: T | BlocoLinhaDoTempoSelect<T>;
+        modulos?: T | BlocoModulosSelect<T>;
+        cartoesSegmento?: T | BlocoCartoesSegmentoSelect<T>;
+        textoLista?: T | BlocoTextoListaSelect<T>;
+        simulador?: T | BlocoSimuladorSelect<T>;
+        notasFacilidade?: T | BlocoNotasFacilidadeSelect<T>;
+        antesDepois?: T | BlocoAntesDepoisSelect<T>;
+        argumento?: T | BlocoArgumentoSelect<T>;
+        faq?: T | BlocoFaqSelect<T>;
+        chamadaCadastro?: T | BlocoChamadaCadastroSelect<T>;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  scriptsPersonalizados?:
+    | T
+    | {
+        head?: T;
+        bodyFim?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroCelular_select".
+ */
+export interface BlocoHeroCelularSelect<T extends boolean = true> {
+  icone?: T;
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  iconeDecisor?: T;
+  linhaDecisor?: T;
+  botaoPrincipal?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  botaoSecundario?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  celular?:
+    | T
+    | {
+        titulo?: T;
+        subtitulo?: T;
+        mensagens?:
+          | T
+          | {
+              de?: T;
+              hora?: T;
+              texto?: T;
+              id?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaixaNumeros_select".
+ */
+export interface BlocoFaixaNumerosSelect<T extends boolean = true> {
+  itens?:
+    | T
+    | {
+        icone?: T;
+        tom?: T;
+        valor?: T;
+        rotulo?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoLinhaDoTempo_select".
+ */
+export interface BlocoLinhaDoTempoSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  subtitulo?: T;
+  passos?:
+    | T
+    | {
+        dia?: T;
+        titulo?: T;
+        descricao?: T;
+        id?: T;
+      };
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoModulos_select".
+ */
+export interface BlocoModulosSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  subtitulo?: T;
+  itens?:
+    | T
+    | {
+        icone?: T;
+        nome?: T;
+        beneficio?: T;
+        exemplo?: T;
+        id?: T;
+      };
+  textoEntrega?: T;
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCartoesSegmento_select".
+ */
+export interface BlocoCartoesSegmentoSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  subtitulo?: T;
+  cartoes?:
+    | T
+    | {
+        icone?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoTextoLista_select".
+ */
+export interface BlocoTextoListaSelect<T extends boolean = true> {
+  titulo?: T;
+  texto?: T;
+  lista?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  nota?: T;
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoSimulador_select".
+ */
+export interface BlocoSimuladorSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  subtitulo?: T;
+  plano?: T;
+  rotuloValor?: T;
+  minClientes?: T;
+  maxClientes?: T;
+  clientesInicial?: T;
+  mostrarAnual?: T;
+  mostrarPortfolio?: T;
+  aviso?: T;
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoNotasFacilidade_select".
+ */
+export interface BlocoNotasFacilidadeSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  subtitulo?: T;
+  achar?: T;
+  explicar?: T;
+  roi?: T;
+  fechar?: T;
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoAntesDepois_select".
+ */
+export interface BlocoAntesDepoisSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  subtitulo?: T;
+  antes?:
+    | T
+    | {
+        titulo?: T;
+        itens?:
+          | T
+          | {
+              rotulo?: T;
+              valor?: T;
+              id?: T;
+            };
+      };
+  depois?:
+    | T
+    | {
+        titulo?: T;
+        itens?:
+          | T
+          | {
+              rotulo?: T;
+              valor?: T;
+              id?: T;
+            };
+      };
+  delta?: T;
+  citacao?: T;
+  autor?: T;
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoArgumento_select".
+ */
+export interface BlocoArgumentoSelect<T extends boolean = true> {
+  texto?: T;
+  assinatura?: T;
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaq_select".
+ */
+export interface BlocoFaqSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  incluirPerguntasPlataforma?: T;
+  itens?:
+    | T
+    | {
+        pergunta?: T;
+        resposta?: T;
+        id?: T;
+      };
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoChamadaCadastro_select".
+ */
+export interface BlocoChamadaCadastroSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  bullets?:
+    | T
+    | {
+        texto?: T;
+        id?: T;
+      };
+  depoimento?:
+    | T
+    | {
+        texto?: T;
+        autor?: T;
+      };
+  formulario?:
+    | T
+    | {
+        perfis?: T;
+        perguntasExtras?:
+          | T
+          | {
+              rotulo?: T;
+              nome?: T;
+              tipo?: T;
+              obrigatoria?: T;
+              opcoes?: T;
+              id?: T;
+            };
+        textoConsentimento?: T;
+        botaoSecundario?:
+          | T
+          | {
+              texto?: T;
+              url?: T;
+            };
+        formId?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -314,6 +1330,144 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "planos".
+ */
+export interface Plano {
+  id: number;
+  mostrarParcelaPlataforma?: boolean | null;
+  planos?:
+    | {
+        chave: 'Essencial' | 'Crescimento' | 'Performance';
+        preco: number;
+        parteBu1lder: number;
+        plataforma: number;
+        inclui?: string | null;
+        destaque?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Perguntas comuns, exibidas antes das perguntas da página quando o bloco FAQ pede.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq-plataforma".
+ */
+export interface FaqPlataforma {
+  id: number;
+  perguntas?:
+    | {
+        pergunta: string;
+        resposta: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Padrões do formulário de cadastro, usados quando a página não define os seus.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "formulario".
+ */
+export interface Formulario {
+  id: number;
+  perfis?: string[] | null;
+  textoConsentimento: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Rodapé das LPs: marca Bu1lder by MIIND, menu de links legais e direitos.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rodape".
+ */
+export interface Rodape {
+  id: number;
+  tituloLinks?: string | null;
+  links?:
+    | {
+        rotulo: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  textoDireitos?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "planos_select".
+ */
+export interface PlanosSelect<T extends boolean = true> {
+  mostrarParcelaPlataforma?: T;
+  planos?:
+    | T
+    | {
+        chave?: T;
+        preco?: T;
+        parteBu1lder?: T;
+        plataforma?: T;
+        inclui?: T;
+        destaque?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq-plataforma_select".
+ */
+export interface FaqPlataformaSelect<T extends boolean = true> {
+  perguntas?:
+    | T
+    | {
+        pergunta?: T;
+        resposta?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "formulario_select".
+ */
+export interface FormularioSelect<T extends boolean = true> {
+  perfis?: T;
+  textoConsentimento?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rodape_select".
+ */
+export interface RodapeSelect<T extends boolean = true> {
+  tituloLinks?: T;
+  links?:
+    | T
+    | {
+        rotulo?: T;
+        url?: T;
+        id?: T;
+      };
+  textoDireitos?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

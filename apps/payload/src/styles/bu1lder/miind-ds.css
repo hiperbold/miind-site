@@ -1,0 +1,405 @@
+/* MIIND DS, scoped to the four campaign pages. Other niche layouts retain their original theme. */
+:root[data-miind-ds] {
+  --radius: 0.5rem;
+
+  /* Surfaces — navy-noir */
+  --surface-0: oklch(0.1 0.022 255);
+  --surface-1: oklch(0.14 0.028 255);
+  --surface-2: oklch(0.19 0.035 255);
+
+  /* Brand */
+  --brand-cyan: oklch(0.84 0.16 220);
+  --brand-blue: oklch(0.62 0.22 250);
+  --brand-violet: oklch(0.58 0.22 285);
+
+  /* Warn semantic — kept within brand family (violet) to never break palette */
+  --brand-warn: oklch(0.66 0.2 295);
+
+  /* Semantic (shadcn-compatible — used as raw color values, no hsl() wrapper) */
+  --background: oklch(0.075 0.02 255);
+  --foreground: oklch(0.97 0.01 240);
+  --card: oklch(0.13 0.028 255);
+  --card-foreground: oklch(0.97 0.01 240);
+  --popover: oklch(0.13 0.028 255);
+  --popover-foreground: oklch(0.97 0.01 240);
+  --primary: oklch(0.84 0.16 220);
+  --primary-foreground: oklch(0.1 0.02 245);
+  --secondary: oklch(0.2 0.035 255);
+  --secondary-foreground: oklch(0.97 0.01 240);
+  --muted: oklch(0.18 0.03 255);
+  --muted-foreground: oklch(0.78 0.022 245);
+  --accent: oklch(0.62 0.22 250);
+  --accent-foreground: oklch(0.97 0.01 240);
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.97 0.01 240);
+  --border: oklch(1 0 0 / 10%);
+  --border-strong: oklch(1 0 0 / 18%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.84 0.16 220);
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --glass-bg-from: oklch(1 0 0 / 0.04);
+  --glass-bg-to: oklch(1 0 0 / 0.01);
+  --glass-border: oklch(1 0 0 / 0.08);
+  --grid-line: oklch(1 0 0 / 0.045);
+  --hero-text-gradient: linear-gradient(
+    120deg,
+    oklch(0.98 0.01 240) 0%,
+    oklch(0.86 0.13 220) 38%,
+    oklch(0.62 0.22 250) 72%,
+    oklch(0.58 0.22 285) 100%
+  );
+
+  --sidebar-background: var(--surface-1);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+
+  --brand-mint: var(--brand-cyan);
+  --font-sans: "Manrope", sans-serif;
+  --font-display: "Sora", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --institutional-blue: #1d3cab;
+}
+:root.light[data-miind-ds] {
+  --surface-0: oklch(0.985 0.006 240);
+  --surface-1: oklch(0.96 0.01 245);
+  --surface-2: oklch(0.92 0.016 250);
+  --brand-cyan: oklch(0.62 0.18 230);
+  --brand-blue: oklch(0.52 0.22 255);
+  --brand-violet: oklch(0.52 0.22 290);
+  --background: oklch(0.985 0.006 240);
+  --foreground: oklch(0.16 0.035 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.16 0.035 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.16 0.035 255);
+  --primary: oklch(0.52 0.22 255);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.94 0.014 250);
+  --secondary-foreground: oklch(0.16 0.035 255);
+  --muted: oklch(0.94 0.014 250);
+  --muted-foreground: oklch(0.36 0.035 258);
+  --accent: oklch(0.52 0.22 290);
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(0.16 0.035 255 / 12%);
+  --border-strong: oklch(0.16 0.035 255 / 22%);
+  --input: oklch(0.16 0.035 255 / 14%);
+  --ring: oklch(0.52 0.22 255);
+  --glass-bg-from: oklch(1 0 0 / 0.72);
+  --glass-bg-to: oklch(1 0 0 / 0.42);
+  --glass-border: oklch(0.16 0.035 255 / 0.08);
+  --grid-line: oklch(0.16 0.035 255 / 0.06);
+  --hero-text-gradient: linear-gradient(
+    120deg,
+    oklch(0.16 0.035 255) 0%,
+    oklch(0.52 0.22 255) 55%,
+    oklch(0.52 0.22 290) 100%
+  );
+
+  --brand-mint: var(--brand-cyan);
+}
+html[data-miind-ds] {
+  scroll-padding-top: 96px;
+}
+[data-miind-ds] body {
+  font-family: "Manrope", sans-serif;
+  line-height: 1.65;
+}
+[data-miind-ds] :is(h1, h2, h3, h4, .font-display, .display-l, .display-m) {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+[data-miind-ds] h1 {
+  font-size: clamp(36px, 5.4vw, 68px);
+  line-height: 1.08;
+}
+[data-miind-ds] .display-m {
+  font-size: clamp(28px, 3.6vw, 44px);
+  line-height: 1.12;
+}
+[data-miind-ds] :is(.eyebrow, .font-mono) {
+  font-family: "JetBrains Mono", monospace;
+}
+[data-miind-ds] .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  font-weight: 500;
+}
+[data-miind-ds] .lead {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+}
+[data-miind-ds] .container-editorial {
+  max-width: 1440px;
+  padding-inline: 48px;
+}
+[data-miind-ds] .container-editorial.max-w-3xl {
+  max-width: 900px;
+}
+[data-miind-ds] .section-pad {
+  padding-block: 88px;
+}
+[data-miind-ds] :is(.surface-card, .card-marco, .glass) {
+  border-color: var(--glass-border);
+  background: linear-gradient(145deg, var(--glass-bg-from), var(--glass-bg-to));
+  backdrop-filter: blur(6px);
+}
+[data-miind-ds] :is(.surface-card, .card-marco) {
+  border-radius: 24px;
+  box-shadow: 0 18px 60px -42px color-mix(in oklch, var(--brand-blue) 40%, transparent);
+}
+[data-miind-ds] .surface-card-feature {
+  border-color: color-mix(in oklch, var(--brand-cyan) 28%, transparent);
+}
+[data-miind-ds] form.surface-card {
+  border-radius: 24px;
+  transform: none;
+}
+[data-miind-ds] form :is(input, textarea, select) {
+  border-color: var(--input);
+  background: var(--surface-1);
+  line-height: 1.5;
+}
+[data-miind-ds] :is(input, select, textarea):focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+}
+[data-miind-ds] .text-gradient {
+  background-image: var(--hero-text-gradient);
+}
+[data-miind-ds] :is(.tabular-nums, [data-num]) {
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: -0.045em;
+}
+[data-miind-ds] header {
+  background: color-mix(in oklch, var(--background) 88%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+[data-miind-ds] header nav {
+  gap: 24px;
+}
+.miind-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.miind-lockup strong {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.miind-lockup small {
+  display: grid;
+  gap: 3px;
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+.miind-lockup img {
+  width: 56px;
+  height: 12px;
+  object-fit: contain;
+}
+.miind-lockup .miind-logo-light {
+  display: none;
+}
+.light .miind-lockup .miind-logo-light {
+  display: block;
+}
+.light .miind-lockup .miind-logo-dark {
+  display: none;
+}
+[data-miind-ds] .agency-hero {
+  padding-top: 80px;
+  padding-bottom: 88px;
+  position: relative;
+  isolation: isolate;
+}
+[data-miind-ds] .agency-hero:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 80% 30%,
+    color-mix(in oklch, var(--brand-blue) 16%, transparent),
+    transparent 60%
+  );
+}
+[data-miind-ds] .ds-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  background: linear-gradient(105deg, var(--brand-cyan), var(--brand-blue));
+  color: var(--primary-foreground);
+  transition: transform 0.2s;
+}
+[data-miind-ds] .ds-button:hover {
+  transform: translateY(-2px);
+}
+[data-miind-ds] .ds-button-secondary {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+[data-miind-ds] .agency-flow {
+  border-radius: 32px;
+  padding: 32px;
+  background: linear-gradient(145deg, var(--glass-bg-from), var(--glass-bg-to));
+  border: 1px solid var(--glass-border);
+}
+[data-miind-ds] .agency-stage {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-1);
+}
+[data-miind-ds] .agency-stage svg {
+  color: var(--brand-cyan);
+  flex-shrink: 0;
+}
+[data-miind-ds] .agency-connector {
+  display: block;
+  margin: 12px auto;
+  color: var(--brand-blue);
+}
+[data-miind-ds] .ds-callout {
+  border-radius: 32px;
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(
+    125deg,
+    color-mix(in oklch, var(--brand-blue) 12%, var(--background)),
+    var(--background)
+  );
+  padding: 40px;
+}
+[data-miind-ds] .agency-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+[data-miind-ds] .agency-split {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 64px;
+}
+[data-miind-ds] .agency-copy {
+  max-width: 640px;
+}
+[data-miind-ds] .agency-copy p {
+  margin-top: 20px;
+}
+[data-miind-ds] .agency-step {
+  padding: 32px;
+}
+[data-miind-ds] .agency-step h3 {
+  font-size: 22px;
+  margin: 20px 0 12px;
+}
+[data-miind-ds] .agency-step p {
+  color: var(--muted-foreground);
+  font-size: 15px;
+}
+[data-miind-ds] .agency-step svg {
+  color: var(--brand-cyan);
+}
+[data-miind-ds] .agency-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+@media (max-width: 1023px) {
+  [data-miind-ds] .agency-split {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  [data-miind-ds] .agency-hero {
+    padding-top: 96px;
+  }
+}
+@media (max-width: 767px) {
+  [data-miind-ds] .container-editorial {
+    padding-inline: 24px;
+  }
+  [data-miind-ds] .section-pad {
+    padding-block: 56px;
+  }
+  [data-miind-ds] .agency-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  [data-miind-ds] :is(.agency-flow, .ds-callout) {
+    padding: 24px;
+    border-radius: 24px;
+  }
+  [data-miind-ds] .agency-hero {
+    padding-bottom: 56px;
+  }
+  [data-miind-ds] .agency-stage {
+    padding: 16px;
+    gap: 12px;
+  }
+  [data-miind-ds] .agency-links .ds-button {
+    width: 100%;
+  }
+  .miind-lockup {
+    gap: 8px;
+  }
+  .miind-lockup strong {
+    font-size: 18px;
+  }
+  .miind-lockup small {
+    padding-left: 8px;
+  }
+  .miind-lockup img {
+    width: 44px;
+    height: 10px;
+  }
+}
+
+/* Maintain contrast on filled CTAs in the MIIND light theme. */
+:root.light[data-miind-ds] :is(a, button)[class*="from-brand-cyan"][class*="to-brand-blue"],
+:root.light[data-miind-ds] .ds-button:not(.ds-button-secondary) {
+  background: var(--institutional-blue);
+  color: white;
+}
+
+/* Shared minimal footer for every niche LP, including those on the original theme. */
+.niche-footer .miind-lockup strong {
+  font-size: 28px;
+}
+.niche-footer .miind-lockup img {
+  width: 72px;
+  height: 16px;
+}
+.niche-footer .miind-lockup small {
+  font-size: 9px;
+  gap: 5px;
+}

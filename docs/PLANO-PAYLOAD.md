@@ -24,6 +24,15 @@ O site institucional (`apps/institucional`) fica fora: `miind.com.br` continua s
 - **Conteúdo em blocos.** Uma coleção `paginas` com layout em blocos. Os modelos de página viram blocos reutilizáveis: hero com celular, faixa de números, linha do tempo, módulos, simulador, notas de facilidade, caso antes e depois, argumento, FAQ, chamada com formulário, e os blocos da agência (fluxo, oportunidades, passos, destaque, checklist). Uma LP nova, como a de gestor de tráfego, se monta no admin sem código.
 - **Dados comuns em globais:** planos (Essencial, Crescimento, Performance), FAQ da plataforma, perfis do formulário, cabeçalho e rodapé, página de obrigado.
 - **Cadastros na coleção `cadastros`:** nome, e-mail, WhatsApp, cidade/UF, segmento, perfil, consentimento, página de origem, UTMs, gclid, fbclid, fbp, fbc e situação do envio ao n8n. O envio ao n8n entra quando o Filipe passar o webhook.
+- **Nomes dos campos alinhados ao Hiperbold CRM** (funil "Bu1lder · Aquisição"): `perfil`, `empresas_atendidas`, `clientes_atendidos`, `segmentos`, `uso`, `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `fbclid`, `fbp`, `fbc`. O site envia ao webhook do n8n; o n8n envia à fonte "Receber dados" do CRM. A URL do webhook vai no `.env` (local e VPS), nunca no repositório.
+- **Campos ocultos de todo formulário** (pedido do Filipe, 21/10/2026), todos enviados ao webhook:
+  - `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `utm_id`;
+  - `gclid`, `gbraid`, `wbraid` (Google), `waclid`, `fbclid`, `fbc`, `fbp` (Meta);
+  - `xcod`, `src`;
+  - `origem`: URL completa da página onde o cadastro foi feito, com a query string;
+  - `ip` e `user_agent` completos, lidos no servidor no momento do envio (IP do cabeçalho `CF-Connecting-IP`, com reserva em `X-Forwarded-For`), nunca confiando no valor vindo do navegador.
+  - Os parâmetros de URL são guardados no navegador ao chegar (cookie primário de 90 dias) para não se perderem se a pessoa navegar antes de enviar; um valor novo na URL substitui o antigo. `fbc` é montado a partir do `fbclid` quando o cookie `_fbc` não existir.
+- **Corpo do webhook (contrato com o fluxo do n8n `builder-form`):** JSON com as chaves `nome`, `whatsapp`, `email`, `id` (identificador do cadastro no Payload), `perfil`, `empresas_atendidas`, `clientes_atendidos`, `segmentos`, `uso`, `cidade_uf`, todos os campos ocultos acima com os mesmos nomes, `ip` e `user_agent`. O n8n usa os nomes como estão; `ip`, `user_agent` e `cidade_uf` não têm campo no CRM.
 - **Página de obrigado:** o envio do formulário devolve um identificador opaco do cadastro e o `event_id`. A página recebe `?nicho=...&cadastro=...` (sem dado pessoal na URL), lê o contexto guardado no `sessionStorage` e o expõe como `window.bu1lderLead`, com o evento `bu1lder:lead` e um push no `dataLayer`. Um campo de scripts personalizados na página de obrigado e em cada página permite colar códigos.
 - **Tema e DS:** o DS MIIND vira o padrão das páginas novas. As 11 LPs abrem em claro, com o botão de tema mantido.
 - **Banco local:** Postgres 17 no OrbStack (`docker compose`), porta 5438, bancos `miind_bu1lder` e `miind_bu1lder_c15t`. Next na porta 3010.
@@ -55,4 +64,4 @@ O módulo de tracking é cuidado pelo chat "payload-modules". A demanda (itens a
 - **Tracking sem consentimento nas LPs de nicho:** o módulo é fechado por padrão; sem consentimento nada dispara, no navegador e no servidor. Liberar por página exige uma opção nova no próprio módulo (projeto `tracking-payload-module`).
 - **Pacote do módulo:** a versão 1.2.0 está só na branch `feat/v1.2-ecommerce` e o `piloto.tgz` da raiz está como 0.0.0. Precisa de um pacote com versão definida, gerado no projeto do módulo.
 - **Copy de contabilidade e agência:** em revisão pelo chat Estrategista; aplicada nos campos do Payload depois de aprovada.
-- **Webhook do n8n:** instruções a receber do Filipe.
+- **Webhook do n8n:** recebido em 21/10/2026 e guardado como `N8N_WEBHOOK_URL` no `.env` local (fora do git). O fluxo do n8n é cuidado por outro agente; este projeto só envia o cadastro para a URL. Na VPS, entra como variável de ambiente.

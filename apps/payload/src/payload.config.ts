@@ -7,7 +7,12 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Media } from './collections/Media'
+import { Paginas } from './collections/Paginas'
 import { Users } from './collections/Users'
+import { FaqPlataforma } from './globals/FaqPlataforma'
+import { Formulario } from './globals/Formulario'
+import { Planos } from './globals/Planos'
+import { Rodape } from './globals/Rodape'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,7 +28,8 @@ export default buildConfig({
     supportedLanguages: { pt },
     fallbackLanguage: 'pt',
   },
-  collections: [Users, Media],
+  collections: [Paginas, Users, Media],
+  globals: [Planos, FaqPlataforma, Formulario, Rodape],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || '',
