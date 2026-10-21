@@ -105,7 +105,7 @@
   --brand-mint: var(--brand-cyan);
 }
 html[data-miind-ds] {
-  scroll-padding-top: 140px;
+  scroll-padding-top: 96px;
 }
 [data-miind-ds] body {
   font-family: "Manrope", sans-serif;
@@ -342,7 +342,7 @@ html[data-miind-ds] {
     gap: 40px;
   }
   [data-miind-ds] .agency-hero {
-    padding-top: 56px;
+    padding-top: 96px;
   }
 }
 @media (max-width: 767px) {

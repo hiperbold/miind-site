@@ -13,7 +13,6 @@ import {
   Check,
 } from "lucide-react";
 import { BuildersHeader } from "@/components/bu1lders/BuildersHeader";
-import { SegmentNav } from "@/components/bu1lders/SegmentNav";
 import { LeadForm } from "@/components/bu1lders/LeadForm";
 import {
   Accordion,
@@ -101,8 +100,7 @@ const faqs = [
 function AgencyPage() {
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <BuildersHeader />
-      <SegmentNav activeSlug="agencia-marketing" />
+      <BuildersHeader showBackLink={false} />
       <main>
         <section className="agency-hero">
           <div className="container-editorial agency-split">

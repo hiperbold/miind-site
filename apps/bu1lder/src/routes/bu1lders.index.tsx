@@ -46,7 +46,7 @@ const stats = [
 function BuildersLanding() {
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <BuildersHeader />
+      <BuildersHeader showBackLink={false} />
 
       {/* HERO + FORM */}
       <section className="relative overflow-hidden pt-24 pb-14 sm:pt-28 sm:pb-16 lg:pt-32 lg:pb-20">

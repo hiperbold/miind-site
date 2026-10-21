@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
 
-export function BuildersHeader() {
+export function BuildersHeader({ showBackLink = true }: { showBackLink?: boolean }) {
   return (
     <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/80">
       <div className="container-editorial flex items-center justify-between gap-2 h-14">
@@ -12,12 +12,14 @@ export function BuildersHeader() {
         </Link>
 
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <Link
-            to="/"
-            className="hidden md:inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="size-3.5" /> Voltar ao site
-          </Link>
+          {showBackLink && (
+            <Link
+              to="/"
+              className="hidden md:inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="size-3.5" /> Voltar ao site
+            </Link>
+          )}
           <div className="hidden sm:block">
             <ThemeToggle />
           </div>

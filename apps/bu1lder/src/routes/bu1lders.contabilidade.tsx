@@ -21,7 +21,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { BuildersHeader } from "@/components/bu1lders/BuildersHeader";
-import { SegmentNav } from "@/components/bu1lders/SegmentNav";
 import { ModuleCard } from "@/components/bu1lders/ModuleCard";
 import { EarningsSimulator } from "@/components/bu1lders/EarningsSimulator";
 import { EaseBadges } from "@/components/bu1lders/EaseBadges";
@@ -155,11 +154,10 @@ function ContabilidadePage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <BuildersHeader />
-      <SegmentNav activeSlug={SLUG} />
+      <BuildersHeader showBackLink={false} />
 
       {/* HERO SPLIT */}
-      <section className="relative overflow-hidden pt-14 pb-16 lg:pt-20 lg:pb-24">
+      <section className="relative overflow-hidden pt-24 pb-16 lg:pt-28 lg:pb-24">
         <div
           aria-hidden
           className="pointer-events-none absolute -z-20 top-[10%] -right-32 w-[560px] h-[560px] rounded-full bg-brand-violet/25 [.light_&]:bg-brand-violet/12 blur-[150px] aurora-drift"
