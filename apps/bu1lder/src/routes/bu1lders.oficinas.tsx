@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { NicheFooter } from "@/components/bu1lders/NicheFooter";
+import { NicheFaq } from "@/components/bu1lders/NicheFaq";
+import { createFileRoute } from "@tanstack/react-router";
 import {
-  ArrowLeft,
   ArrowRight,
   Wrench,
   BellRing,
@@ -14,12 +15,6 @@ import {
   Sparkles,
   Quote,
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { BuildersHeader } from "@/components/bu1lders/BuildersHeader";
 import { SegmentNav } from "@/components/bu1lders/SegmentNav";
 import { ModuleCard } from "@/components/bu1lders/ModuleCard";
@@ -31,7 +26,7 @@ import { StatBand } from "@/components/bu1lders/StatBand";
 import { Timeline } from "@/components/bu1lders/Timeline";
 import { BeforeAfter } from "@/components/bu1lders/BeforeAfter";
 import { Reveal } from "@/components/bu1lders/useInView";
-import { getNicheBySlug, getPlanByKey, niches } from "@/data/niches";
+import { getNicheBySlug, getPlanByKey } from "@/data/niches";
 
 const SLUG = "oficinas";
 const TITLE =
@@ -149,9 +144,6 @@ const heroMessages = [
 function OficinasPage() {
   const plan = getPlanByKey("Crescimento");
   const niche = getNicheBySlug(SLUG)!;
-  const idx = niches.findIndex((n) => n.slug === SLUG);
-  const prev = idx > 0 ? niches[idx - 1] : niches[niches.length - 1];
-  const next = idx < niches.length - 1 ? niches[idx + 1] : niches[0];
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -370,33 +362,7 @@ function OficinasPage() {
         </Reveal>
       </section>
 
-      {/* FAQ */}
-      <section className="border-y border-foreground/5 bg-foreground/[0.015]">
-        <div className="container-editorial section-pad">
-          <SectionHeader
-            eyebrow="Perguntas frequentes"
-            title="Tudo o que você precisa saber"
-          />
-          <div className="mt-8 max-w-3xl">
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((f, i) => (
-                <AccordionItem
-                  value={`item-${i}`}
-                  key={f.q}
-                  className="border-b border-foreground/10"
-                >
-                  <AccordionTrigger className="text-foreground hover:no-underline text-left py-5">
-                    {f.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
-                    {f.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </div>
-      </section>
+      <NicheFaq items={faqs} />
 
       {/* CTA + FORM */}
       <section id="cadastro" className="relative overflow-hidden">
@@ -444,42 +410,11 @@ function OficinasPage() {
               <p className="mt-2 eyebrow text-brand-violet">— Bu1lder em atividade</p>
             </div>
           </div>
-          <LeadForm origem={SLUG} defaultSegmento={SLUG} />
+          <LeadForm origem={SLUG} defaultSegmento={SLUG} formId={`cadastro-${SLUG}`} />
         </div>
       </section>
 
-      {/* PREV/NEXT */}
-      <nav className="container-editorial py-10 grid sm:grid-cols-2 gap-3">
-        <Link
-          to="/bu1lders/$slug"
-          params={{ slug: prev.slug }}
-          className="surface-card group p-5"
-        >
-          <span className="inline-flex items-center gap-2 eyebrow">
-            <ArrowLeft className="size-3.5" /> Segmento anterior
-          </span>
-          <p className="mt-2 text-foreground font-semibold">{shortName(prev.name)}</p>
-        </Link>
-        <Link
-          to="/bu1lders/$slug"
-          params={{ slug: next.slug }}
-          className="surface-card group p-5 sm:text-right"
-        >
-          <span className="inline-flex items-center gap-2 eyebrow sm:justify-end sm:w-full">
-            Próximo segmento <ArrowRight className="size-3.5" />
-          </span>
-          <p className="mt-2 text-foreground font-semibold">{shortName(next.name)}</p>
-        </Link>
-      </nav>
-
-      <footer className="border-t border-foreground/10 text-muted-foreground text-sm">
-        <div className="container-editorial py-8 flex flex-wrap items-center justify-between gap-4">
-          <span>Bu1lder by MIIND · Porto Alegre · Brasil</span>
-          <Link to="/bu1lders" className="hover:text-foreground transition-colors">
-            ← Voltar ao hub
-          </Link>
-        </div>
-      </footer>
+      <NicheFooter />
 
       <span hidden aria-hidden>{niche.slug}</span>
     </div>
@@ -506,8 +441,4 @@ function SectionHeader({
       </div>
     </Reveal>
   );
-}
-
-function shortName(name: string) {
-  return name.split(/,/)[0].trim();
 }

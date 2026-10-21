@@ -12,7 +12,6 @@ const clientSchema = z.object({
   cidade_uf: z.string().trim().min(2, "Cidade/UF obrigatória"),
   segmento: z.string().optional(),
   perfil: z.string().optional(),
-  mensagem: z.string().optional(),
   consent: z.literal(true, { message: "Confirme o consentimento LGPD" }),
 });
 
@@ -44,9 +43,8 @@ export function LeadForm({
       email: String(fd.get("email") || ""),
       whatsapp: String(fd.get("whatsapp") || ""),
       cidade_uf: String(fd.get("cidade_uf") || ""),
-      segmento: String(fd.get("segmento") || ""),
+      segmento: defaultSegmento ?? String(fd.get("segmento") || ""),
       perfil: String(fd.get("perfil") || ""),
-      mensagem: String(fd.get("mensagem") || ""),
       consent: fd.get("consent") === "on" ? true : false,
     };
     const parsed = clientSchema.safeParse(raw);
@@ -66,7 +64,6 @@ export function LeadForm({
           ...parsed.data,
           segmento: parsed.data.segmento || null,
           perfil: parsed.data.perfil || null,
-          mensagem: parsed.data.mensagem || null,
           origem,
         },
       });
@@ -122,17 +119,21 @@ export function LeadForm({
         />
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <SelectField
-          label="Segmento de interesse"
-          name="segmento"
-          defaultValue={defaultSegmento ?? ""}
-          options={[
-            { value: "", label: "Mais de um / ainda não sei" },
-            { value: "agencia-marketing", label: "Agência de marketing" },
-            ...niches.map((n) => ({ value: n.slug, label: shortName(n.name) })),
-          ]}
-        />
+      <div className={defaultSegmento ? "grid gap-4" : "grid sm:grid-cols-2 gap-4"}>
+        {defaultSegmento ? (
+          <input type="hidden" name="segmento" value={defaultSegmento} />
+        ) : (
+          <SelectField
+            label="Segmento de interesse"
+            name="segmento"
+            defaultValue=""
+            options={[
+              { value: "", label: "Mais de um / ainda não sei" },
+              { value: "agencia-marketing", label: "Agência de marketing" },
+              ...niches.map((n) => ({ value: n.slug, label: shortName(n.name) })),
+            ]}
+          />
+        )}
         <SelectField
           label="Seu perfil"
           name="perfil"
@@ -142,16 +143,6 @@ export function LeadForm({
           ]}
         />
       </div>
-
-      <label className="grid gap-1.5">
-        <span className="text-sm font-medium text-foreground">Mensagem (opcional)</span>
-        <textarea
-          name="mensagem"
-          rows={3}
-          maxLength={1000}
-          className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-brand-cyan/60 focus:ring-2 focus:ring-brand-cyan/20"
-        />
-      </label>
 
       <label className="flex items-start gap-3 text-sm text-muted-foreground">
         <input

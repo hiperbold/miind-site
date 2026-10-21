@@ -37,6 +37,12 @@ Os caminhos incluem o nome do repositório porque esta é uma publicação de pr
 
 ## Atualização visual e página de agência
 - Página /bu1lder/agencia-marketing/ criada para donos de agência e gestores de tráfego, com oportunidades no funil, papéis da parceria, objeções e link de agendamento confirmado.
-- Sem novos preços, percentuais, prazos ou garantias de resultado na página de agência. Validar oferta, critérios da certificação, uso da marca/white label e aprovação editorial antes de campanha.
+- A calculadora da página de agência usa os três planos de referência já presentes no projeto, incluindo a participação de 40% adotada no simulador de contabilidade. Isso não resolve a divergência comercial de 40% x 70%. Validar oferta, critérios da certificação, uso da marca/white label e aprovação editorial antes de campanha.
 - Os formulários continuam como prévia, com aviso explícito e sem transmissão de dados.
 - Fontes do DS servidas localmente; temas escuro/claro e telas móveis incluídos.
+
+## Ajustes das LPs de nicho
+- Rodapé das 11 LPs limitado a Bu1lder by MIIND, links para privacidade/termos e direitos reservados. Removidos anterior/próximo segmento e retorno ao hub.
+- Campo mensagem removido do cadastro de parceiros; segmento oculto e predefinido nas LPs. No hub geral, o segmento continua selecionável.
+- FAQ da homepage compartilhada com todas as LPs, preservando perguntas específicas de cada nicho.
+- Calculadora de agências permite escolher Essencial, Crescimento e Performance e variar de 1 a 50 clientes. Projeções usam carteira ativa por 12 meses, antes de impostos e despesas. Condições ainda dependem de validação comercial.

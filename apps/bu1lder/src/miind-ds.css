@@ -391,3 +391,16 @@ html[data-miind-ds] {
   background: var(--institutional-blue);
   color: white;
 }
+
+/* Shared minimal footer for every niche LP, including those on the original theme. */
+.niche-footer .miind-lockup strong {
+  font-size: 28px;
+}
+.niche-footer .miind-lockup img {
+  width: 72px;
+  height: 16px;
+}
+.niche-footer .miind-lockup small {
+  font-size: 9px;
+  gap: 5px;
+}

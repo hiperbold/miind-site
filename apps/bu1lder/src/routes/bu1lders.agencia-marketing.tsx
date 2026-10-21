@@ -1,4 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { NicheFooter } from "@/components/bu1lders/NicheFooter";
+import { NicheFaq } from "@/components/bu1lders/NicheFaq";
+import { AgencyEarningsSimulator } from "@/components/bu1lders/AgencyEarningsSimulator";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowRight,
   ArrowDown,
@@ -14,12 +17,6 @@ import {
 } from "lucide-react";
 import { BuildersHeader } from "@/components/bu1lders/BuildersHeader";
 import { LeadForm } from "@/components/bu1lders/LeadForm";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/bu1lders/agencia-marketing")({
   head: () => ({
@@ -202,7 +199,9 @@ function AgencyPage() {
           </div>
         </section>
 
-        <section className="container-editorial pb-12">
+        <AgencyEarningsSimulator />
+
+        <section className="container-editorial py-12">
           <div className="ds-callout agency-split">
             <div>
               <p className="eyebrow text-brand-cyan">Para quem já sabe fazer automação</p>
@@ -270,22 +269,7 @@ function AgencyPage() {
           </div>
         </section>
 
-        <section className="border-y border-border">
-          <div className="container-editorial section-pad max-w-3xl">
-            <p className="eyebrow text-brand-cyan">Perguntas frequentes</p>
-            <h2 className="display-m mt-4">Antes de dar o próximo passo</h2>
-            <Accordion type="single" collapsible className="mt-8">
-              {faqs.map((faq, i) => (
-                <AccordionItem value={String(i)} key={faq.q}>
-                  <AccordionTrigger className="text-left py-6">{faq.q}</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
-                    {faq.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </section>
+        <NicheFaq items={faqs} />
 
         <section className="container-editorial section-pad agency-split items-start">
           <div className="agency-copy">
@@ -318,14 +302,7 @@ function AgencyPage() {
           />
         </section>
       </main>
-      <footer className="border-t border-border">
-        <div className="container-editorial py-8 flex flex-wrap gap-6 justify-between text-sm text-muted-foreground">
-          <span>© {new Date().getFullYear()} MIIND · Programa Bu1lder</span>
-          <Link to="/bu1lders">
-            Conhecer o programa de parceiros <ArrowRight className="inline ml-2" size={16} />
-          </Link>
-        </div>
-      </footer>
+      <NicheFooter />
     </div>
   );
 }

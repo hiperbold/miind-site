@@ -39,3 +39,5 @@ O build cria entradas HTML para acesso direto e atualização das rotas, com cam
 A homepage Bu1lder, o programa de parceiros, contabilidade e agência de marketing usam o DS MIIND, com Sora, Manrope e JetBrains Mono servidas localmente. Os tokens reproduzem o DS institucional e os temas escuro/claro. A nova página de agência complementa os dez mercados recebidos e tem navegação pelo hub e pelo menu de segmentos. Os demais mercados mantêm seus estilos de origem.
 
 A camada de estilo está em `apps/bu1lder/src/miind-ds.css`, ativada por rota em `main-static.tsx`. O desenho vetorial MIIND é preservado no lockup de marca compartilhado.
+
+As LPs usam rodapé mínimo com marca e menu Legal, FAQ compartilhada com a homepage e perguntas específicas do nicho. Nos cadastros de LP, o segmento é um campo oculto predefinido; o cadastro do hub mantém o seletor. A página de agências inclui o simulador dos três planos de referência do programa.
