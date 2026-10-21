@@ -4,10 +4,17 @@ import '@/styles/bu1lder/styles.css'
 import '@/styles/bu1lder/miind-fonts.css'
 import '@/styles/bu1lder/miind-ds.css'
 
+import type { Metadata } from 'next'
 import React from 'react'
 
+import { metadataRobots } from '@/lib/noindex'
 import { buscarPagina } from '@/lib/paginas'
 import { ScriptsBodyFim, ScriptsHead } from '@/lib/scripts-personalizados'
+
+// SITE_NOINDEX=1: robots noindex,nofollow em todas as LPs.
+export function generateMetadata(): Metadata {
+  return metadataRobots()
+}
 
 // Layout raiz das páginas /bu1lder/{slug}. É raiz (tem <html>) para que o
 // servidor já entregue a classe do tema e o atributo do DS no <html>, sem

@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url'
 import { Media } from './collections/Media'
 import { Paginas } from './collections/Paginas'
 import { Users } from './collections/Users'
+import { criarAdminInicial } from './lib/admin-inicial'
+import { migrations } from './migrations'
 import { FaqPlataforma } from './globals/FaqPlataforma'
 import { Formulario } from './globals/Formulario'
 import { Planos } from './globals/Planos'
@@ -16,6 +18,11 @@ import { Rodape } from './globals/Rodape'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// `next build` também carrega esta config (generateStaticParams). Nessa fase
+// não se migra o banco nem se cria usuário.
+const emBuild = process.env.NEXT_PHASE === 'phase-production-build'
+const emProducao = process.env.NODE_ENV === 'production'
 
 export default buildConfig({
   admin: {
@@ -44,7 +51,14 @@ export default buildConfig({
     // Fora do dev o schema muda apenas por `payload migrate`.
     push: process.env.NODE_ENV === 'development',
     migrationDir: path.resolve(dirname, 'migrations'),
+    // Em produção (NODE_ENV=production) as migrações de src/migrations rodam
+    // sozinhas no init do Payload, sem passo manual.
+    prodMigrations: emBuild ? undefined : migrations,
   }),
+  onInit: async (payload) => {
+    if (emBuild || !emProducao) return
+    await criarAdminInicial(payload)
+  },
   sharp,
   plugins: [],
 })

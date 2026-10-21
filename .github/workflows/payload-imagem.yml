@@ -1,0 +1,62 @@
+name: Imagem do app Payload (GHCR)
+
+# Monta a imagem de apps/payload no GitHub e publica no GHCR. A VPS só baixa.
+on:
+  push:
+    branches: [feat/payload, main]
+    paths:
+      - 'apps/payload/**'
+      - '.github/workflows/payload-imagem.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: payload-imagem-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGEM: ghcr.io/hiperbold/miind-bu1lder
+
+jobs:
+  imagem:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tags
+        id: tags
+        env:
+          BRANCH: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          branch=$(printf '%s' "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9._-]+/-/g; s/^[.-]+//; s/-+$//' | cut -c1-120)
+          {
+            echo 'lista<<FIM'
+            echo "${IMAGEM}:sha-${SHA}"
+            echo "${IMAGEM}:${branch}"
+            if [ "$BRANCH" = "main" ]; then echo "${IMAGEM}:latest"; fi
+            echo 'FIM'
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: apps/payload
+          file: apps/payload/Dockerfile
+          push: true
+          tags: ${{ steps.tags.outputs.lista }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=payload-imagem
+          cache-to: type=gha,mode=max,scope=payload-imagem

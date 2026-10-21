@@ -1,11 +1,20 @@
 import type { Metadata } from 'next'
+import { connection } from 'next/server'
 import React from 'react'
+
+import { metadataRobots } from '@/lib/noindex'
 
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Bu1lder by MIIND',
-  description: 'Páginas do Bu1lder (versão provisória)',
+// Páginas sem banco seriam geradas no build; connection() faz o SITE_NOINDEX
+// ser lido no servidor, no ambiente de execução.
+export async function generateMetadata(): Promise<Metadata> {
+  await connection()
+  return {
+    title: 'Bu1lder by MIIND',
+    description: 'Páginas do Bu1lder (versão provisória)',
+    ...metadataRobots(),
+  }
 }
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
