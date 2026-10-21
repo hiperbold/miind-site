@@ -11,6 +11,7 @@ import { Paginas } from './collections/Paginas'
 import { Users } from './collections/Users'
 import { criarAdminInicial } from './lib/admin-inicial'
 import { migrations } from './migrations'
+import { seedNoInit } from './seed/executar'
 import { FaqPlataforma } from './globals/FaqPlataforma'
 import { Formulario } from './globals/Formulario'
 import { Homepage } from './globals/Homepage'
@@ -60,6 +61,9 @@ export default buildConfig({
   onInit: async (payload) => {
     if (emBuild || !emProducao) return
     await criarAdminInicial(payload)
+    // SEED_CONTEUDO_NO_INIT=1: cria globais e LPs que faltam (nunca sobrescreve).
+    // Erro só vai para o log; o servidor sobe mesmo assim.
+    if (process.env.SEED_CONTEUDO_NO_INIT?.trim() === '1') await seedNoInit(payload)
   },
   sharp,
   plugins: [],

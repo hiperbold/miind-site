@@ -4,10 +4,18 @@ import '@/styles/bu1lder/styles.css'
 import '@/styles/bu1lder/miind-fonts.css'
 import '@/styles/bu1lder/miind-ds.css'
 
+import type { Metadata } from 'next'
 import React from 'react'
 
+import { metadataRobots } from '@/lib/noindex'
 import { buscarParceiros, lerOuAdiarNoBuild } from '@/lib/paginas'
 import { ScriptsBodyFim, ScriptsHead } from '@/lib/scripts-personalizados'
+
+// SITE_NOINDEX=1: robots noindex,nofollow. Como em [slug]: na imagem Docker o
+// build não tem banco, a rota é gerada no servidor e lê o ambiente de execução.
+export function generateMetadata(): Metadata {
+  return metadataRobots()
+}
 
 // Layout raiz do programa de parceiros (/bu1lder/parceiros). Como na prévia,
 // abre no tema escuro (o visitante alterna no botão) e com o DS MIIND ativo.

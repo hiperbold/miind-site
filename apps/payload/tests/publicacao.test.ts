@@ -6,6 +6,8 @@ import { GET as saude } from '@/app/(payload)/api/saude/route'
 import robots from '@/app/robots'
 import { criarAdminInicial } from '@/lib/admin-inicial'
 import { metadataRobots } from '@/lib/noindex'
+import { executarSeed, seedNoInit } from '@/seed/executar'
+import { paginasSeed } from '@/seed/paginas'
 
 // Integração com o Postgres local. Usuário de teste com e-mail
 // teste-vitest-admin@example.com, apagado no fim.
@@ -78,5 +80,33 @@ describe('/api/saude', () => {
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
     expect(res.headers.get('cache-control')).toBe('no-store')
+  })
+})
+
+describe('conteúdo inicial (executarSeed / seedNoInit)', () => {
+  it('sem atualizar, rodar de novo não duplica nem grava nada', async () => {
+    await executarSeed(payload, { log: () => {} })
+    const contar = () => payload.count({ collection: 'paginas', overrideAccess: true }).then((r) => r.totalDocs)
+    const antes = await contar()
+    const segunda = await executarSeed(payload, { log: () => {} })
+    expect(segunda.mudou).toBe(false)
+    expect(await contar()).toBe(antes)
+    for (const { slug } of paginasSeed) {
+      const { totalDocs } = await payload.count({ collection: 'paginas', where: { slug: { equals: slug } } })
+      expect(totalDocs).toBe(1)
+    }
+    const home = await payload.findGlobal({ slug: 'homepage', depth: 0 })
+    expect(home.updatedAt).toBeTruthy()
+  })
+
+  it('erro no seed do init vai para o log e não é lançado', async () => {
+    const falho = {
+      findGlobal: async () => {
+        throw new Error('banco fora')
+      },
+      logger: { info: vi.fn(), error: vi.fn() },
+    } as unknown as Payload
+    await expect(seedNoInit(falho)).resolves.toBe('erro')
+    expect(falho.logger.error).toHaveBeenCalledWith(expect.stringContaining('banco fora'))
   })
 })

@@ -1,6 +1,6 @@
 # apps/payload: páginas do Bu1lder em Next.js + Payload
 
-App da migração descrita em `docs/PLANO-PAYLOAD.md`. Fase 1: base com admin, banco local e rotas provisórias. Fase 2a: coleção `paginas` (blocos), globais e as 11 LPs (10 nichos e agência) em `/bu1lder/{slug}`.
+App da migração descrita em `docs/PLANO-PAYLOAD.md`. Fase 1: base com admin, banco local e rotas provisórias. Fase 2a: coleção `paginas` (blocos), globais e as 11 LPs (10 nichos e agência) em `/bu1lder/{slug}`. Fase 2c: homepage (`/bu1lder/`) e programa de parceiros (`/bu1lder/parceiros`) nos globais `homepage` e `parceiros`. Só a página de obrigado continua provisória.
 
 Versões: Next.js 16.2 (Turbopack no dev e no build), Payload 3.85 (`@payloadcms/db-postgres`), React 19, Tailwind CSS 4, pnpm, Postgres 17.
 
@@ -28,10 +28,11 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 
 | O quê | URL |
 | --- | --- |
-| Homepage do Bu1lder | http://localhost:3010/bu1lder/ |
-| Programa de parceiros | http://localhost:3010/bu1lder/parceiros |
-| LP de nicho | http://localhost:3010/bu1lder/{slug} (páginas publicadas da coleção `paginas`) |
-| Página de obrigado | http://localhost:3010/bu1lder/ty-page |
+| Homepage do Bu1lder | http://localhost:3010/bu1lder/ (global `homepage`) |
+| Programa de parceiros | http://localhost:3010/bu1lder/parceiros (global `parceiros`) |
+| LP de nicho | http://localhost:3010/bu1lder/{slug} (páginas publicadas da coleção `paginas`): academias, agencia-marketing, beleza, contabilidade, imobiliarias, odontologia, oficinas, pet, restaurantes, saude, varejo |
+| Página de obrigado (provisória) | http://localhost:3010/bu1lder/ty-page |
+| Saúde | http://localhost:3010/api/saude e /bu1lder/api/saude |
 | Admin | http://localhost:3010/admin |
 | API REST | http://localhost:3010/api/... e também /bu1lder/api/... (reescrita) |
 
@@ -49,10 +50,11 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 ## Páginas (fase 2a)
 
 - Coleção `paginas` (rascunho e versões): layout em blocos (`src/blocks/<Nome>/{config.ts,Component.tsx}`). Globais: `planos`, `faq-plataforma`, `formulario`, `rodape`.
-- `/bu1lder/[slug]` tem layout raiz próprio, para o `<html>` já sair do servidor com `class="light"` e `data-miind-ds`. As páginas provisórias (homepage, parceiros, obrigado) ficam no grupo `(provisorio)`.
+- `/bu1lder/[slug]` tem layout raiz próprio, para o `<html>` já sair do servidor com `class="light"` e `data-miind-ds`. Homepage e parceiros têm layout raiz próprio em `(home)` e `(hub)`. Só a página de obrigado continua provisória, no grupo `(provisorio)`.
+- `SITE_NOINDEX` entra pela `generateMetadata` dos layouts `(home)`, `(hub)`, `[slug]` e `(provisorio)`. Na imagem Docker o build não tem banco, então essas rotas são geradas no servidor e leem a variável do ambiente de execução (a mesma imagem serve teste e produção). Num `pnpm build` local com banco, o valor é o do momento do build.
 - Estilos portados de `apps/bu1lder` em `src/styles/bu1lder`. O Tailwind das LPs só lê `src/components/bu1lder`, `src/components/ui` e `src/blocks`: classe usada fora dessas pastas não é gerada.
 - Publicar ou editar página, global ou mídia revalida todas as LPs (`src/lib/revalidar.ts`), via `after()` do Next, depois do commit da transação.
-- O seed roda fora do Next: no fim ele chama `POST /api/paginas/revalidar` (logado) se o servidor estiver no ar. Sem servidor, as páginas saem atualizadas no próximo `pnpm build`.
+- O seed (`pnpm seed`, `src/seed.ts`) cria o admin e chama `executarSeed` (`src/seed/executar.ts`), que grava globais e LPs. Ele roda fora do Next: no fim ele chama `POST /api/paginas/revalidar` (logado) se o servidor estiver no ar. Sem servidor, as páginas saem atualizadas no próximo `pnpm build`.
 - `PUBLIC_SITE_URL` (padrão `http://localhost:3010`; produção `https://www.miind.com.br`) gera canonical, og:url e og:image (servida por `/bu1lder/api/media/...`). É lida no build. `NEXT_PUBLIC_SITE_URL` continua sendo o endereço do admin/servidor.
 - Scripts personalizados do `<head>` passam por um parser HTML (htmlparser2, `src/lib/scripts-head.ts`); tag ou atributo com problema é descartado e registrado no log, sem derrubar a página.
 - Formulário: só valida no navegador e mostra a falha explícita; o envio entra na fase 3.
@@ -68,7 +70,8 @@ A imagem é montada no GitHub Actions (`.github/workflows/payload-imagem.yml`) e
 - **Volume:** `/app/media` (uploads; `MEDIA_DIR=/app/media` já vem na imagem).
 - **Saúde:** `GET /api/saude` (também `/bu1lder/api/saude`): 200 `{"ok":true}` com o banco respondendo, 503 `{"ok":false}` sem detalhes. A imagem tem `HEALTHCHECK` nesse endereço.
 - **Migrações:** com `NODE_ENV=production`, as migrações de `src/migrations` rodam sozinhas no init (`prodMigrations`), sem passo manual. O banco de produção nunca deve receber `pnpm dev` (push): migração com push anterior para e pede confirmação.
-- **Admin inicial:** no init em produção, se `SEED_ADMIN_EMAIL` e `SEED_ADMIN_PASSWORD` estiverem definidas e não houver usuário com esse e-mail, ele é criado. A senha não vai para o log. O seed de conteúdo continua sendo `pnpm seed`.
+- **Admin inicial:** no init em produção, se `SEED_ADMIN_EMAIL` e `SEED_ADMIN_PASSWORD` estiverem definidas e não houver usuário com esse e-mail, ele é criado. A senha não vai para o log.
+- **Conteúdo inicial:** com `SEED_CONTEUDO_NO_INIT=1`, depois do admin inicial, o init em produção roda `executarSeed` sem sobrescrever: cria os globais nunca salvos e as LPs que faltam, publicados; o que já existe não é tocado. Seguro deixar ligado: nos boots seguintes não grava nada. Erro no seed vai para o log (só a mensagem) e o servidor sobe mesmo assim. Para sobrescrever com o conteúdo do seed, usar `SEED_ATUALIZAR=1 pnpm seed` apontando para o banco.
 
 Variáveis de produção (valores no EasyPanel, nunca no repositório):
 
@@ -81,6 +84,7 @@ Variáveis de produção (valores no EasyPanel, nunca no repositório):
 | `PUBLIC_SITE_URL` | endereço público das LPs (canonical, og:url, og:image) |
 | `SITE_NOINDEX` | `1` tira o site dos buscadores (homologação); sem a variável, robots normal |
 | `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | admin criado no primeiro init |
+| `SEED_CONTEUDO_NO_INIT` | `1` cria no init os globais e as LPs que faltam (nunca sobrescreve) |
 | `N8N_WEBHOOK_URL` | webhook do formulário (fase 3) |
 | `MEDIA_DIR` | pasta dos uploads (`/app/media` na imagem) |
 
