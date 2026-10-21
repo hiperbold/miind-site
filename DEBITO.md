@@ -1,0 +1,35 @@
+# MIIND / Bu1lder: pendências da prévia
+
+Publicação inicial para revisão visual. Nenhuma divergência comercial foi resolvida nesta etapa.
+
+## Oferta e conteúdo
+- [ ] Consolidar a comissão: o hub diz 70%, os planos utilizam 40% para o parceiro.
+- [ ] Validar preço, composição dos planos, prazos de implantação e participação do parceiro no excedente.
+- [ ] Revisar promessas de renda, projeções, ROI e números de mercado antes de uso em campanha.
+- [ ] Substituir ou identificar corretamente “caso real (hipotético)” e conferir depoimentos e autorização de uso.
+- [ ] Alinhar a certificação Bu1lder com as descrições de parceiro, consultor e revendedor.
+- [ ] Conferir se as páginas por mercado atendem às personas da campanha. Ainda não existem páginas específicas para agência e gestor de tráfego neste pacote.
+- [ ] Revisar textos e destinos de botões, menus, WhatsApp, demonstração e contato.
+
+## Captação e tecnologia
+- [ ] Conectar o formulário institucional Bu1lder a um destino real; o original apenas simulava sucesso.
+- [ ] Definir destino dos cadastros de parceiros: Supabase, CRM, e-mail ou outro fluxo.
+- [ ] Conectar CRM, SDR, agenda e notificações. O Pages não executa as funções de servidor do pacote original.
+- [ ] Confirmar o agendamento em /typ-agendar e as páginas de captura e entrega dos e-books. Não estão implementados neste pacote.
+- [ ] Configurar e validar tags de mídia, atribuição e eventos depois da revisão. A prévia está com mensuração desativada.
+- [ ] Configurar o backend de blog, newsletter e administração. A prévia não consulta nem grava dados da operação real.
+- [ ] Revalidar campos, permissões de contato e regras de tratamento de dados antes de ativar captação.
+
+## Identidade e arquivos
+- [ ] Decidir se o Bu1lder mantém Geist e a paleta com verde ou segue o DS MIIND (Sora, Manrope, JetBrains Mono).
+- [ ] Solicitar o vídeo ambient.mp4 e a imagem original logo-b.png, ausentes da exportação. A prévia usa imagem estática e logo MIIND já fornecidos, sem vídeo substituto inventado.
+- [ ] Validar quais versões de páginas serão finais. A apresentação da plataforma e o hub de parceiros foram preservados em rotas separadas.
+- [ ] Depois da aprovação, revisar SEO, indexação e domínio próprio. Esta publicação é uma prévia com noindex.
+
+## Estrutura publicada
+- Institucional: /miind-site/
+- Bu1lder plataforma: /miind-site/bu1lder/
+- Hub de parceiros: /miind-site/bu1lder/parceiros/
+- Dez páginas de nicho: /miind-site/bu1lder/{nicho}/
+
+Os caminhos incluem o nome do repositório porque esta é uma publicação de projeto no GitHub Pages. Em um domínio próprio, a raiz poderá ser / e a área do produto /bu1lder/.

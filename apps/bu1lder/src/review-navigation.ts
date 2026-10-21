@@ -1,0 +1,3 @@
+const base=import.meta.env.BASE_URL.replace(/bu1lder\/$/,'');
+const nav=document.createElement('nav');nav.setAttribute('aria-label','Navegação da prévia');nav.style.cssText='position:fixed;bottom:12px;left:12px;z-index:9999;display:flex;gap:8px;max-width:calc(100vw - 88px);overflow:auto;background:#071321f2;padding:9px 12px;border:1px solid #385775;border-radius:12px;box-shadow:0 4px 20px #0005;font:12px system-ui;color:white';
+nav.innerHTML='<span style="color:#93b1ce;white-space:nowrap">Prévia</span>'+[['MIIND',''],['Bu1lder','bu1lder/'],['Parceiros','bu1lder/parceiros/']].map(([label,url])=>'<a style="color:#65dcff;white-space:nowrap;text-decoration:none" href="'+base+url+'">'+label+'</a>').join('');document.body.append(nav);

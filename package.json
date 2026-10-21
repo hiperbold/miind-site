@@ -1,0 +1,10 @@
+{
+  "name": "miind-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "npm --prefix apps/institucional ci && npm --prefix apps/bu1lder ci",
+    "build": "node scripts/build.mjs",
+    "preview": "python3 -m http.server 4173 --directory dist"
+  }
+}
