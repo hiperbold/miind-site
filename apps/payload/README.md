@@ -44,7 +44,7 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 - **API em `/bu1lder/api/*`:** reescrita para `/api/*` em `next.config.ts`.
 - **Idioma do admin:** português (`@payloadcms/translations`, `pt`).
 - **Schema do banco:** `push` só no `pnpm dev`. Mudança de coleção: `pnpm migrate:create <nome>` e versionar o arquivo em `src/migrations`. Fora do dev o schema só muda por `pnpm migrate`. Depois de rodar o dev, o `payload migrate` avisa que o banco recebeu push e pede confirmação: é esperado no banco local.
-- **Uploads:** coleção `media` grava em `apps/payload/media`, ignorada pelo git.
+- **Uploads:** coleção `media` grava em `MEDIA_DIR` (caminho absoluto) ou, sem a variável, em `apps/payload/media`, ignorada pelo git.
 
 ## Páginas (fase 2a)
 
@@ -56,6 +56,37 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 - `PUBLIC_SITE_URL` (padrão `http://localhost:3010`; produção `https://www.miind.com.br`) gera canonical, og:url e og:image (servida por `/bu1lder/api/media/...`). É lida no build. `NEXT_PUBLIC_SITE_URL` continua sendo o endereço do admin/servidor.
 - Scripts personalizados do `<head>` passam por um parser HTML (htmlparser2, `src/lib/scripts-head.ts`); tag ou atributo com problema é descartado e registrado no log, sem derrubar a página.
 - Formulário: só valida no navegador e mostra a falha explícita; o envio entra na fase 3.
+
+## Publicação
+
+A imagem é montada no GitHub Actions (`.github/workflows/payload-imagem.yml`) e publicada no GHCR. A VPS (EasyPanel) só baixa a imagem; nunca montar a imagem na VPS.
+
+- **Imagem:** `ghcr.io/hiperbold/miind-bu1lder`. Tags: `sha-<sha completo do commit>`, o branch saneado (`feat-payload`, `main`) e `latest` (só na `main`). Dispara em push para `feat/payload` e `main` que mude `apps/payload/**` ou o workflow, e manualmente (workflow_dispatch).
+- **Dockerfile:** multi-stage em `node:22-bookworm-slim`, pnpm pela corepack na versão do lock, `output: 'standalone'`. A imagem final tem só o standalone, `.next/static` e `public`, roda como usuário `node` (não-root).
+- **Build sem banco:** o estágio de build usa `PAYLOAD_SECRET` e `DATABASE_URI` fictícios. `generateStaticParams` cai no fallback e as LPs são geradas no servidor na primeira visita (e depois revalidadas ao publicar). Na fase de build o Payload não migra nem cria usuário.
+- **Porta:** 3000 (`PORT=3000`, `HOSTNAME=0.0.0.0`).
+- **Volume:** `/app/media` (uploads; `MEDIA_DIR=/app/media` já vem na imagem).
+- **Saúde:** `GET /api/saude` (também `/bu1lder/api/saude`): 200 `{"ok":true}` com o banco respondendo, 503 `{"ok":false}` sem detalhes. A imagem tem `HEALTHCHECK` nesse endereço.
+- **Migrações:** com `NODE_ENV=production`, as migrações de `src/migrations` rodam sozinhas no init (`prodMigrations`), sem passo manual. O banco de produção nunca deve receber `pnpm dev` (push): migração com push anterior para e pede confirmação.
+- **Admin inicial:** no init em produção, se `SEED_ADMIN_EMAIL` e `SEED_ADMIN_PASSWORD` estiverem definidas e não houver usuário com esse e-mail, ele é criado. A senha não vai para o log. O seed de conteúdo continua sendo `pnpm seed`.
+
+Variáveis de produção (valores no EasyPanel, nunca no repositório):
+
+| Nome | Para quê |
+| --- | --- |
+| `NODE_ENV` | `production` (já vem na imagem) |
+| `DATABASE_URI` | Postgres de produção |
+| `PAYLOAD_SECRET` | segredo do Payload (`openssl rand -hex 32`) |
+| `NEXT_PUBLIC_SITE_URL` | endereço do admin/servidor |
+| `PUBLIC_SITE_URL` | endereço público das LPs (canonical, og:url, og:image) |
+| `SITE_NOINDEX` | `1` tira o site dos buscadores (homologação); sem a variável, robots normal |
+| `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | admin criado no primeiro init |
+| `N8N_WEBHOOK_URL` | webhook do formulário (fase 3) |
+| `MEDIA_DIR` | pasta dos uploads (`/app/media` na imagem) |
+
+Observação: o `robots.txt` do app fica em `/robots.txt`. Atrás do Cloudflare da MIIND, que só encaminha `/bu1lder/*`, o que vale para as LPs é a meta robots de cada página.
+
+Teste local da imagem (OrbStack): `docker build -t miind-bu1lder:teste .` e `docker run -p 127.0.0.1:3020:3000 -e DATABASE_URI=postgres://<usuário>:<senha>@host.docker.internal:5438/miind_bu1lder -e PAYLOAD_SECRET=<segredo> -e SITE_NOINDEX=1 miind-bu1lder:teste`.
 
 ## Portas
 

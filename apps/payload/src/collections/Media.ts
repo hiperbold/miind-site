@@ -24,7 +24,8 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    // Pasta local ignorada pelo git (apps/payload/media).
-    staticDir: path.resolve(dirname, '../../media'),
+    // MEDIA_DIR (caminho absoluto) na imagem Docker: /app/media, montado como
+    // volume. Sem a variável: pasta local ignorada pelo git (apps/payload/media).
+    staticDir: process.env.MEDIA_DIR?.trim() || path.resolve(dirname, '../../media'),
   },
 }
