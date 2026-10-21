@@ -152,9 +152,6 @@ function AgencyPage() {
                   </div>
                 </div>
               ))}
-              <p className="mt-6 text-xs text-muted-foreground">
-                Jornada ilustrativa. O fluxo e as integrações dependem do escopo de cada cliente.
-              </p>
             </div>
           </div>
         </section>

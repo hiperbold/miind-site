@@ -19,6 +19,14 @@ import { Route as P6 } from "./routes/bu1lders.imobiliarias";
 import { Route as P7 } from "./routes/bu1lders.academias";
 import { Route as P8 } from "./routes/bu1lders.contabilidade";
 import { Route as P9 } from "./routes/bu1lders.varejo";
+import { niches } from "./data/niches";
+
+// Landing pages always open in light mode. The visitor can switch to dark on the page.
+const initialSlug = window.location.pathname.replace(/\/+$/, "").split("/").pop();
+if (niches.some((niche) => niche.slug === initialSlug) || initialSlug === "agencia-marketing") {
+  document.documentElement.classList.add("light");
+  document.documentElement.style.colorScheme = "light";
+}
 const queryClient = new QueryClient();
 function Page({ config }: any) {
   const location = useLocation();

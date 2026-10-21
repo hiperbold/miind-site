@@ -8,7 +8,7 @@ await cp('apps/institucional/dist','dist',{recursive:true});await cp('apps/bu1ld
 const niches=['beleza','odontologia','saude','oficinas','pet','restaurantes','imobiliarias','academias','contabilidade','varejo'];
 const institution=await readFile('dist/index.html','utf8'),builder=await readFile('dist/bu1lder/index.html','utf8');
 for(const route of ['arquivo','portfolio','gramado','tecnologias','blog','blog/admin','termos-de-servico','politica-de-privacidade','unsubscribe']){await mkdir('dist/'+route,{recursive:true});await writeFile('dist/'+route+'/index.html',institution);}
-for(const route of ['parceiros','agencia-marketing',...niches]){await mkdir('dist/bu1lder/'+route,{recursive:true});await writeFile('dist/bu1lder/'+route+'/index.html',builder);}
+for(const route of ['parceiros','agencia-marketing',...niches]){await mkdir('dist/bu1lder/'+route,{recursive:true});await writeFile('dist/bu1lder/'+route+'/index.html',route==='parceiros'?builder:builder.replace('<html lang="pt-BR">','<html lang="pt-BR" class="light" style="color-scheme:light">'));}
 // Preserve old institutional niche addresses as redirects to the canonical product hierarchy.
 for(const prefix of ['builders','bu1lders'])for(const niche of niches){const target=base+'bu1lder/'+niche+'/';await mkdir('dist/'+prefix+'/'+niche,{recursive:true});await writeFile('dist/'+prefix+'/'+niche+'/index.html',`<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${target}"><a href="${target}">Abrir página</a>`);}
 await writeFile('dist/404.html',institution);await writeFile('dist/.nojekyll','');await writeFile('dist/robots.txt','User-agent: *\nDisallow: /\n');

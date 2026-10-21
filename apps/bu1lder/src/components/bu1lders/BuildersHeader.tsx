@@ -20,9 +20,7 @@ export function BuildersHeader({ showBackLink = true }: { showBackLink?: boolean
               <ArrowLeft className="size-3.5" /> Voltar ao site
             </Link>
           )}
-          <div className="hidden sm:block">
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
           <a
             href="#cadastro"
             className="inline-flex items-center whitespace-nowrap rounded-full bg-gradient-to-r from-brand-cyan to-brand-blue text-background text-xs sm:text-sm font-semibold px-3 sm:px-4 h-9 shadow-[0_8px_30px_-8px_oklch(0.82_0.14_210/0.6)] hover:shadow-[0_12px_40px_-10px_oklch(0.82_0.14_210/0.8)] motion-safe:hover:-translate-y-0.5 transition-all"

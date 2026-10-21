@@ -97,9 +97,6 @@ export function LeadForm({
 
   return (
     <form id={formId} onSubmit={onSubmit} noValidate className="surface-card p-6 sm:p-8 grid gap-4">
-      <p role="note" className="text-sm text-muted-foreground">
-        Prévia de revisão: campos para avaliação; envio ainda não conectado.
-      </p>
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Nome completo" name="nome" error={errors.nome} required />
         <Field label="E-mail" name="email" type="email" error={errors.email} required />
