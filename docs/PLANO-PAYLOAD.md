@@ -48,6 +48,11 @@ A revisão de copy de contabilidade e agência (chat Estrategista, aguardando OK
 - Simulador configurável por página: rótulo do valor, faixa de clientes (mínimo, máximo, inicial), mostrar ou esconder renda anual e total do portfólio, aviso de rodapé.
 - Formulário configurável por página: lista de perfis, perguntas extras de qualificação (escolha única e múltipla escolha), texto do consentimento e botão secundário opcional.
 
+## Andamento
+
+- 21/10/2026: fases 1 e 2 concluídas (base, blocos, as 14 páginas). Publicação de teste no EasyPanel, projeto `client-project-5` (serviço `bu1lder-site`, banco `bu1lder-db`), em https://client-project-5-bu1lder-site.z0oemb.easypanel.host/bu1lder/ com `SITE_NOINDEX=1`. Conferido no ar: 14 páginas 200, 404 para slug inexistente, redirecionamentos de barra, 51 links e recursos sem erro, sem erro de console, sem rolagem lateral no celular, login do admin.
+- Próximo: fase 3 (formulário real, campos ocultos, webhook do n8n, ty-page) e fase 4 (módulo de tracking 1.3.0).
+
 ## Fases
 
 1. **Base:** app Next + Payload, banco local, admin, rotas `/bu1lder/*` com conteúdo provisório.
