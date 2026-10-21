@@ -73,6 +73,12 @@ export const buscarParceiros = cache(async () => {
   return payload.findGlobal({ slug: 'parceiros', draft: false, depth: 1 })
 })
 
+// Página de obrigado (global sem rascunho).
+export const buscarTyPage = cache(async () => {
+  const payload = await getPayload({ config })
+  return payload.findGlobal({ slug: 'ty-page', depth: 0 })
+})
+
 // Páginas de nicho publicadas para o programa de parceiros: todas entram no
 // seletor de segmento; só as marcadas entram na grade de cartões.
 export const buscarNichosHub = cache(async () => {

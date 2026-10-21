@@ -1,9 +1,12 @@
 import { TextoMarcado } from '@/components/bu1lder/plataforma/TextoMarcado'
 import { FormularioContato } from '@/components/bu1lder/plataforma/FormularioContato'
+import { formIdContato } from '@/lib/cadastros/ids'
 import type { BlocoContato } from '@/payload-types'
 
+import type { ContextoPlataforma } from '../contexto-plataforma'
+
 // Porte de FinalSection (Sections.tsx) com o ContactForm.
-export function ContatoBloco({ bloco }: { bloco: BlocoContato }) {
+export function ContatoBloco({ bloco, contexto }: { bloco: BlocoContato; contexto: ContextoPlataforma }) {
   const itens = bloco.itens ?? []
   const form = bloco.formulario
   return (
@@ -52,7 +55,8 @@ export function ContatoBloco({ bloco }: { bloco: BlocoContato }) {
 
           <div className="lg:sticky lg:top-28">
             <FormularioContato
-              formId={`${bloco.ancora || 'contato'}-form`}
+              pagina={contexto.pagina}
+              formId={formIdContato(bloco.ancora)}
               opcoesVolume={(form?.opcoesVolume ?? []).map((o) => ({ valor: o.valor, rotulo: o.rotulo }))}
               aviso={form?.aviso ?? ''}
               textoBotao={form?.textoBotao || 'Enviar'}

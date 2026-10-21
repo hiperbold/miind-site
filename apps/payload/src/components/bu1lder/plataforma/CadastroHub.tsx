@@ -10,21 +10,21 @@ type FormularioHub = {
 
 // LeadForm do programa de parceiros: seletor de segmento visível com as páginas
 // de nicho publicadas; perfis e consentimento do global "Formulário". Como na
-// prévia, o perfil não é obrigatório aqui.
+// prévia, o perfil não é obrigatório aqui. O campo "Origem" do bloco não é
+// enviado: o formulário é identificado pelo id e a página pela rota.
 export function CadastroHub({
   formulario,
   contexto,
-  padraoOrigem,
   padraoId,
 }: {
   formulario: FormularioHub
   contexto: ContextoPlataforma
-  padraoOrigem: string
   padraoId: string
 }) {
   return (
     <LeadForm
-      origem={formulario?.origem || padraoOrigem}
+      pagina={contexto.pagina}
+      tipo="hub"
       segmento=""
       formId={formulario?.formId || padraoId}
       profileOptions={contexto.formulario.perfis ?? []}

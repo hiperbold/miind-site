@@ -1,6 +1,7 @@
 import { Quote, Sparkles } from 'lucide-react'
 
 import { LeadForm, type ExtraQuestion } from '@/components/bu1lder/LeadForm'
+import { formIdLp } from '@/lib/cadastros/ids'
 import type { BlocoChamadaCadastro } from '@/payload-types'
 
 import type { ContextoBloco } from '../contexto'
@@ -60,9 +61,10 @@ export function ChamadaCadastroBloco({ bloco, contexto }: { bloco: BlocoChamadaC
           )}
         </div>
         <LeadForm
-          origem={contexto.slug}
+          pagina={contexto.slug}
+          tipo="lp"
           segmento={contexto.slug}
-          formId={form?.formId || `cadastro-${contexto.slug}`}
+          formId={formIdLp(contexto.slug, form?.formId)}
           profileOptions={perfis}
           extraQuestions={extras}
           consentText={consentimento}

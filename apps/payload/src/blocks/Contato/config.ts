@@ -47,7 +47,7 @@ export const Contato: Block = {
       name: 'formulario',
       label: 'Formulário',
       type: 'group',
-      admin: { description: 'Nesta fase o formulário só valida no navegador; o envio entra na fase 3.' },
+      admin: { description: 'O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado.' },
       fields: [
         {
           name: 'opcoesVolume',

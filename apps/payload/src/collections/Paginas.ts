@@ -7,7 +7,8 @@ import { logado, publicadoOuLogado } from '@/lib/acesso'
 import { revalidarAgora, revalidarPaginas } from '@/lib/revalidar'
 
 // Slugs que já são rotas próprias em /bu1lder/* ou reservados.
-export const SLUGS_RESERVADOS = ['parceiros', 'ty-page', 'admin', 'api']
+// 'homepage' identifica a homepage no envio dos formulários (lib/cadastros).
+export const SLUGS_RESERVADOS = ['parceiros', 'ty-page', 'admin', 'api', 'homepage']
 
 // Formato e reserva. Devolve a mensagem de erro ou true.
 export function validarSlug(value: string | null | undefined): string | true {

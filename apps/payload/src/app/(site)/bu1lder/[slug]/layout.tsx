@@ -7,6 +7,7 @@ import '@/styles/bu1lder/miind-ds.css'
 import type { Metadata } from 'next'
 import React from 'react'
 
+import { CapturaParametros } from '@/components/bu1lder/CamposOcultos'
 import { metadataRobots } from '@/lib/noindex'
 import { buscarPagina } from '@/lib/paginas'
 import { ScriptsBodyFim, ScriptsHead } from '@/lib/scripts-personalizados'
@@ -44,6 +45,7 @@ export default async function PaginaLayout({
         <ScriptsHead html={pagina?.scriptsPersonalizados?.head} />
       </head>
       <body>
+        <CapturaParametros />
         {children}
         <ScriptsBodyFim html={pagina?.scriptsPersonalizados?.bodyFim} />
       </body>

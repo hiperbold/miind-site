@@ -1,7 +1,11 @@
 'use client'
 
 import { Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+
+import { CamposOcultos } from './CamposOcultos'
+import { enviarFormulario, guardarContextoLead, urlObrigado } from './envio-formulario'
 
 export type ExtraQuestion = {
   label: string
@@ -13,11 +17,13 @@ export type ExtraQuestion = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-// Porte de LeadForm. Nesta fase o formulário só valida no navegador: o envio
-// real entra na fase 3. Ao enviar, mostra a falha explícita da prévia e nunca
-// simula sucesso.
+// Porte de LeadForm. Valida no navegador e envia para o servidor
+// (/bu1lder/api/cadastros/enviar), que valida de novo pela configuração
+// publicada, grava o cadastro e o envia ao n8n. Sucesso: leva à página de
+// obrigado. Falha: mostra o erro real do servidor, nunca simula sucesso.
 export function LeadForm({
-  origem,
+  pagina,
+  tipo,
   segmento,
   formId = 'cadastro',
   profileOptions,
@@ -27,7 +33,9 @@ export function LeadForm({
   perfilRequired = true,
   segmentSelect,
 }: {
-  origem: string
+  // slug da página (LP) ou "parceiros"/"homepage"; vai como ?nicho= na página de obrigado
+  pagina: string
+  tipo: 'lp' | 'hub'
   segmento: string
   formId?: string
   profileOptions: string[]
@@ -40,6 +48,7 @@ export function LeadForm({
   // o campo oculto `segmento` (LPs).
   segmentSelect?: { label: string; emptyLabel: string; options: { value: string; label: string }[] }
 }) {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState<string | null>(null)
@@ -48,14 +57,15 @@ export function LeadForm({
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (loading) return
     setServerError(null)
-    const fd = new FormData(e.currentTarget)
+    const form = e.currentTarget
+    const fd = new FormData(form)
     const raw = {
       nome: String(fd.get('nome') || '').trim(),
       email: String(fd.get('email') || '').trim(),
       whatsapp: String(fd.get('whatsapp') || '').trim(),
       cidade_uf: String(fd.get('cidade_uf') || '').trim(),
-      segmento: segmentSelect ? String(fd.get('segmento') || '') : segmento,
       perfil: String(fd.get('perfil') || ''),
       consent: fd.get('consent') === 'on',
     }
@@ -65,10 +75,8 @@ export function LeadForm({
     if (raw.whatsapp.length < 8) errs.whatsapp = 'WhatsApp inválido'
     if (raw.cidade_uf.length < 2) errs.cidade_uf = 'Cidade/UF obrigatória'
     if (perfilRequired && !raw.perfil) errs.perfil = 'Selecione seu perfil'
-    const extras: Record<string, string | string[]> = {}
     for (const q of extraQuestions) {
       const values = fd.getAll(q.name).map(String).filter(Boolean)
-      extras[q.name] = q.type === 'multipla' ? values : (values[0] ?? '')
       if (q.required && values.length === 0) {
         errs[q.name] = q.type === 'multipla' ? 'Marque ao menos uma opção' : 'Selecione uma opção'
       }
@@ -79,16 +87,31 @@ export function LeadForm({
       return
     }
     setErrors({})
-    // Fase 3: enviar { ...raw, extras, origem } para a API e gravar em `cadastros`.
-    // Até lá, falha explícita: nada é enviado e nada é simulado.
-    void extras
-    void origem
-    setLoading(false)
-    setServerError('Prévia de revisão: este formulário ainda não está conectado. Nenhum cadastro foi enviado.')
+    setLoading(true)
+    const { resposta, campos } = await enviarFormulario(form, { pagina, formulario: formId })
+    if (!resposta.ok) {
+      setErrors(resposta.erros ?? {})
+      setServerError(resposta.erro)
+      setLoading(false)
+      return
+    }
+    guardarContextoLead({
+      token: resposta.token,
+      eventId: resposta.eventId,
+      nicho: pagina,
+      pagina,
+      formulario: formId,
+      tipo,
+      campos,
+      contato: { nome: raw.nome, email: raw.email, whatsapp: raw.whatsapp },
+    })
+    // o botão continua em "Enviando..." até a página de obrigado abrir
+    router.push(urlObrigado(pagina, resposta.token))
   }
 
   return (
-    <form id={formId} onSubmit={onSubmit} noValidate className="surface-card p-6 sm:p-8 grid gap-4">
+    <form id={formId} onSubmit={onSubmit} noValidate aria-busy={loading || undefined} className="relative surface-card p-6 sm:p-8 grid gap-4">
+      <CamposOcultos formId={formId} />
       <div className="grid sm:grid-cols-2 gap-4">
         <Field label="Nome completo" name="nome" error={errors.nome} errorId={errId('nome')} required />
         <Field label="E-mail" name="email" type="email" error={errors.email} errorId={errId('email')} required />
@@ -178,7 +201,7 @@ export function LeadForm({
         className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-cyan to-brand-blue text-background font-semibold px-6 h-12 shadow-[0_12px_30px_-10px_oklch(0.82_0.14_210/0.55)] hover:shadow-[0_16px_40px_-12px_oklch(0.82_0.14_210/0.7)] motion-safe:hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading && <Loader2 className="size-4 animate-spin" />}
-        {loading ? 'Enviando…' : 'Quero ser um Bu1lder'}
+        {loading ? 'Enviando...' : 'Quero ser um Bu1lder'}
       </button>
       {secondaryButton?.text && secondaryButton.url && (
         <a

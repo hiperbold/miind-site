@@ -74,6 +74,7 @@ export default async function HomepageBu1lder() {
         <RenderPlataforma
           blocos={home.layout}
           contexto={{
+            pagina: 'homepage',
             faqPlataforma: globais.faqPlataforma,
             formulario: globais.formulario,
             nichos: [],

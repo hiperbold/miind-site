@@ -10,6 +10,8 @@ export type NichoHub = {
 
 // Dados que os blocos da homepage e do programa precisam além do próprio conteúdo.
 export type ContextoPlataforma = {
+  // identifica a página no envio dos formulários: 'homepage' ou 'parceiros'
+  pagina: 'homepage' | 'parceiros'
   faqPlataforma: FaqPlataforma
   formulario: Formulario
   // páginas de nicho publicadas que aparecem na grade do programa

@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     paginas: Pagina;
+    cadastros: Cadastro;
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
@@ -78,6 +79,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     paginas: PaginasSelect<false> | PaginasSelect<true>;
+    cadastros: CadastrosSelect<false> | CadastrosSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -96,6 +98,7 @@ export interface Config {
     'faq-plataforma': FaqPlataforma;
     formulario: Formulario;
     rodape: Rodape;
+    'ty-page': TyPage;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
@@ -104,6 +107,7 @@ export interface Config {
     'faq-plataforma': FaqPlataformaSelect<false> | FaqPlataformaSelect<true>;
     formulario: FormularioSelect<false> | FormularioSelect<true>;
     rodape: RodapeSelect<false> | RodapeSelect<true>;
+    'ty-page': TyPageSelect<false> | TyPageSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1388,7 +1392,7 @@ export interface BlocoChamadaCadastro {
     autor?: string | null;
   };
   /**
-   * O segmento do cadastro é oculto e igual ao slug da página. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   * O segmento do cadastro é oculto e igual ao slug da página. O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado.
    */
   formulario?: {
     /**
@@ -1445,6 +1449,86 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Cadastros recebidos pelos formulários do site. Dado pessoal: não exportar nem compartilhar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cadastros".
+ */
+export interface Cadastro {
+  id: number;
+  nome?: string | null;
+  email?: string | null;
+  whatsapp?: string | null;
+  cidade_uf?: string | null;
+  perfil?: string | null;
+  segmento?: string | null;
+  empresas_atendidas?: string | null;
+  clientes_atendidos?: string | null;
+  segmentos?: string[] | null;
+  uso?: string | null;
+  /**
+   * Todas as perguntas extras do formulário, pelo nome do campo.
+   */
+  extras?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  contato?: {
+    empresa?: string | null;
+    cargo?: string | null;
+    volume?: string | null;
+    desafio?: string | null;
+  };
+  consentimento?: {
+    aceito?: boolean | null;
+    data?: string | null;
+    texto?: string | null;
+  };
+  tipo?: ('lp' | 'hub' | 'contato-plataforma') | null;
+  pagina?: string | null;
+  formulario?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_content?: string | null;
+  utm_term?: string | null;
+  utm_id?: string | null;
+  gclid?: string | null;
+  gbraid?: string | null;
+  wbraid?: string | null;
+  waclid?: string | null;
+  fbclid?: string | null;
+  xcod?: string | null;
+  src?: string | null;
+  fbc?: string | null;
+  fbp?: string | null;
+  origem?: string | null;
+  ip?: string | null;
+  user_agent?: string | null;
+  envio?: {
+    status?: ('pendente' | 'enviado' | 'falha') | null;
+    tentativas?: number | null;
+    respostaStatus?: number | null;
+    ultimoErro?: string | null;
+    enviadoEm?: string | null;
+  };
+  /**
+   * Identificador opaco usado na URL da página de obrigado.
+   */
+  token?: string | null;
+  /**
+   * Reservado para o rastreamento (fase 4).
+   */
+  event_id?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -1496,6 +1580,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'paginas';
         value: number | Pagina;
+      } | null)
+    | ({
+        relationTo: 'cadastros';
+        value: number | Cadastro;
       } | null)
     | ({
         relationTo: 'users';
@@ -2030,6 +2118,72 @@ export interface BlocoChamadaCadastroSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cadastros_select".
+ */
+export interface CadastrosSelect<T extends boolean = true> {
+  nome?: T;
+  email?: T;
+  whatsapp?: T;
+  cidade_uf?: T;
+  perfil?: T;
+  segmento?: T;
+  empresas_atendidas?: T;
+  clientes_atendidos?: T;
+  segmentos?: T;
+  uso?: T;
+  extras?: T;
+  contato?:
+    | T
+    | {
+        empresa?: T;
+        cargo?: T;
+        volume?: T;
+        desafio?: T;
+      };
+  consentimento?:
+    | T
+    | {
+        aceito?: T;
+        data?: T;
+        texto?: T;
+      };
+  tipo?: T;
+  pagina?: T;
+  formulario?: T;
+  utm_source?: T;
+  utm_medium?: T;
+  utm_campaign?: T;
+  utm_content?: T;
+  utm_term?: T;
+  utm_id?: T;
+  gclid?: T;
+  gbraid?: T;
+  wbraid?: T;
+  waclid?: T;
+  fbclid?: T;
+  xcod?: T;
+  src?: T;
+  fbc?: T;
+  fbp?: T;
+  origem?: T;
+  ip?: T;
+  user_agent?: T;
+  envio?:
+    | T
+    | {
+        status?: T;
+        tentativas?: T;
+        respostaStatus?: T;
+        ultimoErro?: T;
+        enviadoEm?: T;
+      };
+  token?: T;
+  event_id?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -2432,7 +2586,7 @@ export interface BlocoHeroCadastro {
     texto?: string | null;
   };
   /**
-   * Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   * Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado. O campo "Origem" não é enviado.
    */
   formulario?: {
     origem?: string | null;
@@ -3164,7 +3318,7 @@ export interface BlocoContato {
     autor?: string | null;
   };
   /**
-   * Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   * O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado.
    */
   formulario?: {
     opcoesVolume?:
@@ -3199,7 +3353,7 @@ export interface BlocoChamadaFinalCadastro {
     url?: string | null;
   };
   /**
-   * Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   * Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado. O campo "Origem" não é enviado.
    */
   formulario?: {
     origem?: string | null;
@@ -3345,6 +3499,68 @@ export interface Rodape {
       }[]
     | null;
   textoDireitos?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Página /bu1lder/ty-page. Sempre fora dos buscadores (noindex).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ty-page".
+ */
+export interface TyPage {
+  id: number;
+  etiqueta?: string | null;
+  titulo: string;
+  texto?: string | null;
+  proximosPassos?:
+    | {
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  agenda?: {
+    titulo?: string | null;
+    /**
+     * Ex.: o link do Calendly. Só https.
+     */
+    url?: string | null;
+    altura?: number | null;
+    /**
+     * Alternativa ao iframe (ex.: widget do Calendly). Entra como foi colado; os <script> rodam.
+     */
+    embed?: string | null;
+  };
+  botao?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  /**
+   * Quando ?nicho= for igual ao slug, troca título e texto.
+   */
+  variacoes?:
+    | {
+        slug: string;
+        titulo?: string | null;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Desligado: window.bu1lderLead traz só dados de origem, primeiro nome e hashes SHA-256 de e-mail e telefone. Ligado: também nome, e-mail e WhatsApp em texto.
+   */
+  exporContatoAosScripts?: boolean | null;
+  /**
+   * Os scripts do fim do <body> rodam depois que window.bu1lderLead, o evento "bu1lder:lead" e o dataLayer estão prontos.
+   */
+  scriptsPersonalizados?: {
+    /**
+     * Aceita <script>, <noscript>, <style>, <meta> e <link>.
+     */
+    head?: string | null;
+    bodyFim?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -4043,6 +4259,54 @@ export interface RodapeSelect<T extends boolean = true> {
         id?: T;
       };
   textoDireitos?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ty-page_select".
+ */
+export interface TyPageSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  proximosPassos?:
+    | T
+    | {
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  agenda?:
+    | T
+    | {
+        titulo?: T;
+        url?: T;
+        altura?: T;
+        embed?: T;
+      };
+  botao?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  variacoes?:
+    | T
+    | {
+        slug?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  exporContatoAosScripts?: T;
+  scriptsPersonalizados?:
+    | T
+    | {
+        head?: T;
+        bodyFim?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

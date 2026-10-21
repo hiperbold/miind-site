@@ -84,7 +84,7 @@ export function HeroCadastroBloco({ bloco, contexto }: { bloco: BlocoHeroCadastr
             )}
             {cartao?.texto && <p className="mt-3 text-sm text-muted-foreground">{cartao.texto}</p>}
             <div className="mt-5 sm:mt-6">
-              <CadastroHub formulario={bloco.formulario} contexto={contexto} padraoOrigem="hub-hero" padraoId="cadastro" />
+              <CadastroHub formulario={bloco.formulario} contexto={contexto} padraoId="cadastro" />
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import '@/styles/bu1lder/miind-ds.css'
 import type { Metadata } from 'next'
 import React from 'react'
 
+import { CapturaParametros } from '@/components/bu1lder/CamposOcultos'
 import { metadataRobots } from '@/lib/noindex'
 import { buscarHomepage, lerOuAdiarNoBuild } from '@/lib/paginas'
 import { ScriptsBodyFim, ScriptsHead } from '@/lib/scripts-personalizados'
@@ -27,6 +28,7 @@ export default async function HomeLayout({ children }: { children: React.ReactNo
         <ScriptsHead html={home.scriptsPersonalizados?.head} />
       </head>
       <body>
+        <CapturaParametros />
         {children}
         <ScriptsBodyFim html={home.scriptsPersonalizados?.bodyFim} />
       </body>

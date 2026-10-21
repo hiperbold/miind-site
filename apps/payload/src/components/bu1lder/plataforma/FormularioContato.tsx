@@ -1,16 +1,19 @@
 'use client'
 
-import { Send } from 'lucide-react'
+import { Loader2, Send } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { CamposOcultos } from '@/components/bu1lder/CamposOcultos'
+import { enviarFormulario, guardarContextoLead, urlObrigado } from '@/components/bu1lder/envio-formulario'
 import { botaoClasses } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 // Porte de ContactForm (apps/bu1lder/src/components/site/ContactForm.tsx), com
-// as mesmas regras de validação. Nesta fase não há envio: ao validar, mostra a
-// falha explícita da prévia e nunca simula sucesso (o envio real é a fase 3).
+// as mesmas regras de validação. Envia para /bu1lder/api/cadastros/enviar, que
+// valida de novo, grava e envia ao n8n. Sucesso: página de obrigado. Falha:
+// mostra o erro real do servidor, nunca simula sucesso.
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const MENSAGEM_SEM_ENVIO = 'Prévia de revisão: formulário ainda não conectado. Nenhum contato foi enviado.'
 
 const CLASSE_INPUT =
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
@@ -35,11 +38,14 @@ export function validarContato(d: Record<Campo, string>): Partial<Record<Campo, 
 }
 
 export function FormularioContato({
+  pagina,
   formId,
   opcoesVolume,
   aviso,
   textoBotao,
 }: {
+  // 'homepage' ou 'parceiros'; vai como ?nicho= na página de obrigado
+  pagina: string
   formId: string
   opcoesVolume: { valor: string; rotulo: string }[]
   aviso: string
@@ -48,11 +54,15 @@ export function FormularioContato({
   const [erros, setErros] = useState<Partial<Record<Campo, string>>>({})
   const [falha, setFalha] = useState<string | null>(null)
   const [volume, setVolume] = useState('')
+  const [enviando, setEnviando] = useState(false)
+  const router = useRouter()
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (enviando) return
     setFalha(null)
-    const fd = new FormData(e.currentTarget)
+    const form = e.currentTarget
+    const fd = new FormData(form)
     const dados = Object.fromEntries(
       (['name', 'company', 'role', 'email', 'phone', 'volume', 'challenge'] as Campo[]).map((c) => [
         c,
@@ -62,7 +72,26 @@ export function FormularioContato({
     const novos = validarContato(dados)
     setErros(novos)
     if (Object.keys(novos).length > 0) return
-    setFalha(MENSAGEM_SEM_ENVIO)
+    setEnviando(true)
+    const { resposta, campos } = await enviarFormulario(form, { pagina, formulario: formId })
+    if (!resposta.ok) {
+      setErros((resposta.erros ?? {}) as Partial<Record<Campo, string>>)
+      setFalha(resposta.erro)
+      setEnviando(false)
+      return
+    }
+    guardarContextoLead({
+      token: resposta.token,
+      eventId: resposta.eventId,
+      nicho: pagina,
+      pagina,
+      formulario: formId,
+      tipo: 'contato-plataforma',
+      campos,
+      contato: { nome: dados.name, email: dados.email, whatsapp: dados.phone },
+    })
+    // o botão continua em "Enviando..." até a página de obrigado abrir
+    router.push(urlObrigado(pagina, resposta.token))
   }
 
   const idErro = (c: Campo) => `${formId}-${c}-erro`
@@ -78,7 +107,8 @@ export function FormularioContato({
       <div className="absolute -top-20 -right-20 w-72 h-72 bg-brand-violet/20 blur-3xl rounded-full" />
       <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-brand-cyan/20 blur-3xl rounded-full" />
 
-      <form id={formId} onSubmit={onSubmit} className="relative grid md:grid-cols-2 gap-4" noValidate>
+      <form id={formId} onSubmit={onSubmit} aria-busy={enviando || undefined} className="relative grid md:grid-cols-2 gap-4" noValidate>
+        <CamposOcultos formId={formId} />
         <CampoRotulado rotulo="Nome" htmlFor={`${formId}-name`} erro={erros.name} idErro={idErro('name')}>
           <input {...props('name')} placeholder="Seu nome" className={CLASSE_INPUT} />
         </CampoRotulado>
@@ -132,13 +162,22 @@ export function FormularioContato({
           {aviso && <p className="text-xs text-muted-foreground">{aviso}</p>}
           <button
             type="submit"
+            disabled={enviando}
             className={botaoClasses({
               size: 'lg',
               className:
                 'bg-gradient-to-r from-brand-cyan to-brand-blue text-background hover:opacity-90 shadow-[0_10px_40px_-10px_oklch(0.82_0.14_210/0.6)]',
             })}
           >
-            {textoBotao} <Send className="ml-1 size-4" />
+            {enviando ? (
+              <>
+                <Loader2 className="mr-1 size-4 animate-spin" /> Enviando...
+              </>
+            ) : (
+              <>
+                {textoBotao} <Send className="ml-1 size-4" />
+              </>
+            )}
           </button>
         </div>
       </form>

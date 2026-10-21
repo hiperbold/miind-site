@@ -29,7 +29,7 @@ export const ChamadaCadastro: Block = {
       type: 'group',
       admin: {
         description:
-          'O segmento do cadastro é oculto e igual ao slug da página. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.',
+          'O segmento do cadastro é oculto e igual ao slug da página. O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado.',
       },
       fields: [
         {

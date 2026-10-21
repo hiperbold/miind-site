@@ -6,6 +6,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { Cadastros } from './collections/Cadastros'
 import { Media } from './collections/Media'
 import { Paginas } from './collections/Paginas'
 import { Users } from './collections/Users'
@@ -18,6 +19,7 @@ import { Homepage } from './globals/Homepage'
 import { Parceiros } from './globals/Parceiros'
 import { Planos } from './globals/Planos'
 import { Rodape } from './globals/Rodape'
+import { TyPage } from './globals/TyPage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -38,8 +40,8 @@ export default buildConfig({
     supportedLanguages: { pt },
     fallbackLanguage: 'pt',
   },
-  collections: [Paginas, Users, Media],
-  globals: [Homepage, Parceiros, Planos, FaqPlataforma, Formulario, Rodape],
+  collections: [Paginas, Cadastros, Users, Media],
+  globals: [Homepage, Parceiros, Planos, FaqPlataforma, Formulario, Rodape, TyPage],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || '',

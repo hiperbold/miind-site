@@ -1,7 +1,7 @@
 import type { DataFromGlobalSlug, GlobalSlug, Payload } from 'payload'
 
 import { cartoesHubSeed } from './cartoes-hub'
-import { faqPlataformaSeed, formularioSeed, planosSeed, rodapeSeed } from './globais'
+import { faqPlataformaSeed, formularioSeed, planosSeed, rodapeSeed, tyPageSeed } from './globais'
 import { homepageSeed } from './homepage'
 import { paginasSeed } from './paginas'
 import { parceirosSeed } from './parceiros'
@@ -14,7 +14,7 @@ export type OpcoesSeed = {
 
 // Conteúdo inicial idempotente, usado pelo `pnpm seed` (src/seed.ts) e pelo
 // onInit em produção (SEED_CONTEUDO_NO_INIT=1):
-// 1. globais (homepage, parceiros, planos, FAQ da plataforma, formulário, rodapé)
+// 1. globais (homepage, parceiros, planos, FAQ da plataforma, formulário, rodapé, página de obrigado)
 //    que nunca foram salvos; homepage e parceiros saem publicados;
 // 2. as 11 LPs (10 nichos e agência), publicadas, procuradas pelo slug (cria as que faltam);
 //    o grupo "No programa de parceiros" (cartaoHub) vem de seed/cartoes-hub.ts e é
@@ -44,6 +44,7 @@ export async function executarSeed(payload: Payload, opcoes: OpcoesSeed = {}): P
   await gravarGlobal('faq-plataforma', faqPlataformaSeed)
   await gravarGlobal('formulario', formularioSeed)
   await gravarGlobal('rodape', rodapeSeed)
+  await gravarGlobal('ty-page', tyPageSeed)
 
   // Páginas: procura o slug no documento (publicado) e nos rascunhos.
   async function acharPagina(slug: string) {

@@ -77,7 +77,7 @@ export const campoFormularioHub = (origem: string, formId: string): Field => ({
   type: 'group',
   admin: {
     description:
-      'Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.',
+      'Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. O envio grava em "Cadastros", vai ao webhook do n8n e leva à página de obrigado. O campo "Origem" não é enviado.',
   },
   fields: [
     {

@@ -49,7 +49,7 @@ export function ChamadaFinalCadastroBloco({
             </a>
           )}
         </div>
-        <CadastroHub formulario={bloco.formulario} contexto={contexto} padraoOrigem="hub-bottom" padraoId="cadastro-final" />
+        <CadastroHub formulario={bloco.formulario} contexto={contexto} padraoId="cadastro-final" />
       </div>
     </section>
   )

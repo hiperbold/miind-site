@@ -63,7 +63,7 @@ function renderBloco(bloco: BlocoPlataforma, contexto: ContextoPlataforma) {
     case 'convite':
       return <ConviteBloco bloco={bloco} />
     case 'contato':
-      return <ContatoBloco bloco={bloco} />
+      return <ContatoBloco bloco={bloco} contexto={contexto} />
     case 'chamadaFinalCadastro':
       return <ChamadaFinalCadastroBloco bloco={bloco} contexto={contexto} />
     default:

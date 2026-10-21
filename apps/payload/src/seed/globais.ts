@@ -85,3 +85,20 @@ export const rodapeSeed = {
   ],
   textoDireitos: 'MIIND. Todos os direitos reservados.',
 }
+
+// Página de obrigado: mensagem de sucesso da revisão de copy (seções 1.12 e
+// 2.9; a agência usa a mesma da contabilidade). Próximos passos, agenda e
+// botão ficam vazios até a MIIND definir o agendamento.
+const SUCESSO_TITULO = 'Cadastro recebido.'
+const SUCESSO_TEXTO = 'A equipe da MIIND chama você no WhatsApp em até 1 dia útil.'
+
+export const tyPageSeed = {
+  titulo: SUCESSO_TITULO,
+  texto: SUCESSO_TEXTO,
+  proximosPassos: [],
+  variacoes: [
+    { slug: 'contabilidade', titulo: SUCESSO_TITULO, texto: SUCESSO_TEXTO },
+    { slug: 'agencia-marketing', titulo: SUCESSO_TITULO, texto: SUCESSO_TEXTO },
+  ],
+  exporContatoAosScripts: false,
+}

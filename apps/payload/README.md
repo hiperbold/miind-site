@@ -1,6 +1,6 @@
 # apps/payload: páginas do Bu1lder em Next.js + Payload
 
-App da migração descrita em `docs/PLANO-PAYLOAD.md`. Fase 1: base com admin, banco local e rotas provisórias. Fase 2a: coleção `paginas` (blocos), globais e as 11 LPs (10 nichos e agência) em `/bu1lder/{slug}`. Fase 2c: homepage (`/bu1lder/`) e programa de parceiros (`/bu1lder/parceiros`) nos globais `homepage` e `parceiros`. Só a página de obrigado continua provisória.
+App da migração descrita em `docs/PLANO-PAYLOAD.md`. Fase 1: base com admin, banco local e rotas provisórias. Fase 2a: coleção `paginas` (blocos), globais e as 11 LPs (10 nichos e agência) em `/bu1lder/{slug}`. Fase 2c: homepage (`/bu1lder/`) e programa de parceiros (`/bu1lder/parceiros`) nos globais `homepage` e `parceiros`. Fase 3: formulários enviando de verdade (coleção `cadastros`, webhook do n8n) e página de obrigado (`/bu1lder/ty-page`, global `ty-page`).
 
 Versões: Next.js 16.2 (Turbopack no dev e no build), Payload 3.85 (`@payloadcms/db-postgres`), React 19, Tailwind CSS 4, pnpm, Postgres 17.
 
@@ -31,7 +31,7 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 | Homepage do Bu1lder | http://localhost:3010/bu1lder/ (global `homepage`) |
 | Programa de parceiros | http://localhost:3010/bu1lder/parceiros (global `parceiros`) |
 | LP de nicho | http://localhost:3010/bu1lder/{slug} (páginas publicadas da coleção `paginas`): academias, agencia-marketing, beleza, contabilidade, imobiliarias, odontologia, oficinas, pet, restaurantes, saude, varejo |
-| Página de obrigado (provisória) | http://localhost:3010/bu1lder/ty-page |
+| Página de obrigado | http://localhost:3010/bu1lder/ty-page (global `ty-page`) |
 | Saúde | http://localhost:3010/api/saude e /bu1lder/api/saude |
 | Admin | http://localhost:3010/admin |
 | API REST | http://localhost:3010/api/... e também /bu1lder/api/... (reescrita) |
@@ -50,14 +50,28 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 ## Páginas (fase 2a)
 
 - Coleção `paginas` (rascunho e versões): layout em blocos (`src/blocks/<Nome>/{config.ts,Component.tsx}`). Globais: `planos`, `faq-plataforma`, `formulario`, `rodape`.
-- `/bu1lder/[slug]` tem layout raiz próprio, para o `<html>` já sair do servidor com `class="light"` e `data-miind-ds`. Homepage e parceiros têm layout raiz próprio em `(home)` e `(hub)`. Só a página de obrigado continua provisória, no grupo `(provisorio)`.
-- `SITE_NOINDEX` entra pela `generateMetadata` dos layouts `(home)`, `(hub)`, `[slug]` e `(provisorio)`. Na imagem Docker o build não tem banco, então essas rotas são geradas no servidor e leem a variável do ambiente de execução (a mesma imagem serve teste e produção). Num `pnpm build` local com banco, o valor é o do momento do build.
+- `/bu1lder/[slug]` tem layout raiz próprio, para o `<html>` já sair do servidor com `class="light"` e `data-miind-ds`. Homepage e parceiros têm layout raiz próprio em `(home)` e `(hub)`. A página de obrigado tem layout raiz próprio em `(obrigado)`.
+- `SITE_NOINDEX` entra pela `generateMetadata` dos layouts `(home)`, `(hub)` e `[slug]`; a página de obrigado é sempre noindex. Na imagem Docker o build não tem banco, então essas rotas são geradas no servidor e leem a variável do ambiente de execução (a mesma imagem serve teste e produção). Num `pnpm build` local com banco, o valor é o do momento do build.
 - Estilos portados de `apps/bu1lder` em `src/styles/bu1lder`. O Tailwind das LPs só lê `src/components/bu1lder`, `src/components/ui` e `src/blocks`: classe usada fora dessas pastas não é gerada.
 - Publicar ou editar página, global ou mídia revalida todas as LPs (`src/lib/revalidar.ts`), via `after()` do Next, depois do commit da transação.
 - O seed (`pnpm seed`, `src/seed.ts`) cria o admin e chama `executarSeed` (`src/seed/executar.ts`), que grava globais e LPs. Ele roda fora do Next: no fim ele chama `POST /api/paginas/revalidar` (logado) se o servidor estiver no ar. Sem servidor, as páginas saem atualizadas no próximo `pnpm build`.
 - `PUBLIC_SITE_URL` (padrão `http://localhost:3010`; produção `https://www.miind.com.br`) gera canonical, og:url e og:image (servida por `/bu1lder/api/media/...`). É lida no build. `NEXT_PUBLIC_SITE_URL` continua sendo o endereço do admin/servidor.
 - Scripts personalizados do `<head>` passam por um parser HTML (htmlparser2, `src/lib/scripts-head.ts`); tag ou atributo com problema é descartado e registrado no log, sem derrubar a página.
-- Formulário: só valida no navegador e mostra a falha explícita; o envio entra na fase 3.
+
+## Formulários (fase 3)
+
+- Todos os formulários (LeadForm das LPs e do programa de parceiros, contato da homepage) enviam para `POST /bu1lder/api/cadastros/enviar` (reescrito para `/api/cadastros/enviar`, endpoint da coleção `cadastros`). Rota de API e não Server Action: resposta JSON com status HTTP, testável sem o Next, e o mesmo caminho `/bu1lder/*` que o Cloudflare encaminha.
+- O servidor acha a configuração do formulário pelo conteúdo publicado (`pagina` + id do formulário; homepage = `homepage`, programa = `parceiros`) e valida com zod: obrigatórios, opções da lista, perguntas extras obrigatórias do bloco, consentimento, tamanho dos campos, honeypot (`website`) e limite de 5 envios por IP a cada 10 minutos (em memória). Segmento da LP é sempre o slug da página.
+- IP: `CF-Connecting-IP`, senão o primeiro de `X-Forwarded-For`, senão `X-Real-IP`. `user_agent` do cabeçalho. Nunca do navegador.
+- Coleção `cadastros`: dado pessoal. Ler, editar e apagar só logado; criar só pelo servidor. Cada cadastro tem `token` (opaco, usado na URL da página de obrigado) e `event_id` (`lead_<uuid>`, para o tracking da fase 4).
+- Webhook (`N8N_WEBHOOK_URL`): POST JSON com as chaves do contrato (`src/lib/cadastros/webhook.ts`, `CHAVES_WEBHOOK`), timeout de 8 s e uma nova tentativa em erro de rede, tempo esgotado ou 5xx. Roda depois da resposta (`after()`): a pessoa vai para a página de obrigado mesmo com o n8n fora. Situação em `envio` (pendente, enviado, falha; tentativas, último erro sem dados, status HTTP). Sem a variável: falha "webhook não configurado". Reenvio: botão "Reenviar ao n8n" na aba "Envio ao n8n" do cadastro, ou `POST /api/cadastros/:id/reenviar` (logado).
+- Campos ocultos (`src/lib/cadastros/parametros.ts`, `components/bu1lder/CamposOcultos.tsx`): na chegada a qualquer página, os parâmetros `utm_*`, `gclid`, `gbraid`, `wbraid`, `waclid`, `fbclid`, `xcod`, `src` vão para o cookie `bu1lder_origem` (path `/bu1lder`, 90 dias, SameSite=Lax, Secure em https). `fbp` = cookie `_fbp`; `fbc` = cookie `_fbc` ou `fb.1.<ms da chegada>.<fbclid>`; `origem` = URL completa no envio. Ficam como inputs hidden no form.
+- Testes de envio usam um webhook falso local; `tests/setup.ts` apaga `N8N_WEBHOOK_URL` para nenhum teste chegar ao n8n real. Para rodar o app sem o n8n real: `N8N_WEBHOOK_URL=http://127.0.0.1:<porta> pnpm start`.
+
+## Página de obrigado
+
+- `/bu1lder/ty-page?nicho=<slug>&cadastro=<token>`, conteúdo no global `ty-page` (título, texto, próximos passos, agenda por iframe ou código, botão, variações por nicho, scripts, "Expor nome, e-mail e WhatsApp aos scripts", desligado por padrão). Tema claro, sempre noindex, sem canonical.
+- O formulário guarda o contexto em `sessionStorage['bu1lder:lead']`. Com o mesmo token da URL, a página define `window.bu1lderLead` (origem, perfil, segmentos, `primeiroNome`, `emailSha256`, `telefoneSha256` do E.164 com `+55`, `novo`), dispara `bu1lder:lead` e `dataLayer.push({event: 'bu1lder_lead'})` uma vez por token (o reload não repete; `novo: false`). Os scripts do fim do `<body>` rodam depois disso, no navegador. Nenhum dado pessoal vai na URL.
 
 ## Publicação
 
@@ -85,7 +99,7 @@ Variáveis de produção (valores no EasyPanel, nunca no repositório):
 | `SITE_NOINDEX` | `1` tira o site dos buscadores (homologação); sem a variável, robots normal |
 | `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | admin criado no primeiro init |
 | `SEED_CONTEUDO_NO_INIT` | `1` cria no init os globais e as LPs que faltam (nunca sobrescreve) |
-| `N8N_WEBHOOK_URL` | webhook do formulário (fase 3) |
+| `N8N_WEBHOOK_URL` | webhook do n8n que recebe os cadastros (sem ela, o cadastro é gravado com falha "webhook não configurado") |
 | `MEDIA_DIR` | pasta dos uploads (`/app/media` na imagem) |
 
 Observação: o `robots.txt` do app fica em `/robots.txt`. Atrás do Cloudflare da MIIND, que só encaminha `/bu1lder/*`, o que vale para as LPs é a meta robots de cada página.

@@ -3,6 +3,7 @@ import * as migration_20261021_201555_paginas_e_globais from './20261021_201555_
 import * as migration_20261021_204804_simulador_textos from './20261021_204804_simulador_textos';
 import * as migration_20261021_211137_agencia_blocos from './20261021_211137_agencia_blocos';
 import * as migration_20261021_220422_homepage_parceiros from './20261021_220422_homepage_parceiros';
+import * as migration_20261021_232122_cadastros_ty_page from './20261021_232122_cadastros_ty_page';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261021_220422_homepage_parceiros.up,
     down: migration_20261021_220422_homepage_parceiros.down,
-    name: '20261021_220422_homepage_parceiros'
+    name: '20261021_220422_homepage_parceiros',
+  },
+  {
+    up: migration_20261021_232122_cadastros_ty_page.up,
+    down: migration_20261021_232122_cadastros_ty_page.down,
+    name: '20261021_232122_cadastros_ty_page'
   },
 ];

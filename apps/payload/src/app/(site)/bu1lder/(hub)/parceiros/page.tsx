@@ -29,6 +29,7 @@ export default async function ParceirosBu1lder() {
       <RenderPlataforma
         blocos={hub.layout}
         contexto={{
+          pagina: 'parceiros',
           faqPlataforma: globais.faqPlataforma,
           formulario: globais.formulario,
           nichos: nichos.nichos,
