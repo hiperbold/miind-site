@@ -1,6 +1,6 @@
 # apps/payload: páginas do Bu1lder em Next.js + Payload
 
-App da migração descrita em `docs/PLANO-PAYLOAD.md`. Fase 1: base com admin, banco local e rotas provisórias. Fase 2a: coleção `paginas` (blocos), globais e as 10 LPs de nicho em `/bu1lder/{slug}`.
+App da migração descrita em `docs/PLANO-PAYLOAD.md`. Fase 1: base com admin, banco local e rotas provisórias. Fase 2a: coleção `paginas` (blocos), globais e as 11 LPs (10 nichos e agência) em `/bu1lder/{slug}`.
 
 Versões: Next.js 16.2 (Turbopack no dev e no build), Payload 3.85 (`@payloadcms/db-postgres`), React 19, Tailwind CSS 4, pnpm, Postgres 17.
 
@@ -17,7 +17,7 @@ cp .env.example .env      # troque PAYLOAD_SECRET e a credencial do admin
 pnpm db:up                # Postgres 17 em 127.0.0.1:5438 (bancos miind_bu1lder e miind_bu1lder_c15t)
 pnpm install
 pnpm migrate              # aplica src/migrations
-pnpm seed                 # admin, globais e as 10 LPs publicadas (só cria o que falta; SEED_ATUALIZAR=1 sobrescreve)
+pnpm seed                 # admin, globais e as 11 LPs publicadas (só cria o que falta; SEED_ATUALIZAR=1 sobrescreve)
 pnpm test                 # vitest; os testes de integração usam o Postgres local migrado
 pnpm dev                  # http://localhost:3010
 ```

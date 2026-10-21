@@ -162,11 +162,15 @@ export interface Pagina {
   layout?:
     | (
         | BlocoHeroCelular
+        | BlocoHeroFluxo
         | BlocoFaixaNumeros
         | BlocoLinhaDoTempo
         | BlocoModulos
+        | BlocoCartoes
         | BlocoCartoesSegmento
         | BlocoTextoLista
+        | BlocoDestaque
+        | BlocoChecklist
         | BlocoSimulador
         | BlocoNotasFacilidade
         | BlocoAntesDepois
@@ -221,6 +225,7 @@ export interface BlocoHeroCelular {
         | 'FileText'
         | 'Gift'
         | 'HeartPulse'
+        | 'Layers'
         | 'Home'
         | 'Megaphone'
         | 'MessageCircle'
@@ -245,6 +250,7 @@ export interface BlocoHeroCelular {
         | 'Users'
         | 'UtensilsCrossed'
         | 'Wallet'
+        | 'Workflow'
         | 'Wrench'
         | 'Zap'
       )
@@ -274,6 +280,7 @@ export interface BlocoHeroCelular {
         | 'FileText'
         | 'Gift'
         | 'HeartPulse'
+        | 'Layers'
         | 'Home'
         | 'Megaphone'
         | 'MessageCircle'
@@ -298,6 +305,7 @@ export interface BlocoHeroCelular {
         | 'Users'
         | 'UtensilsCrossed'
         | 'Wallet'
+        | 'Workflow'
         | 'Wrench'
         | 'Zap'
       )
@@ -329,6 +337,91 @@ export interface BlocoHeroCelular {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroFluxo".
+ */
+export interface BlocoHeroFluxo {
+  etiqueta?: string | null;
+  titulo: string;
+  tituloDestaque?: string | null;
+  texto?: string | null;
+  textoSecundario?: string | null;
+  botaoPrincipal?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  botaoSecundario?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  nota?: string | null;
+  fluxo?: {
+    etiqueta?: string | null;
+    etapas?:
+      | {
+          icone?:
+            | (
+                | 'BadgePercent'
+                | 'BarChart3'
+                | 'BellRing'
+                | 'Briefcase'
+                | 'Building2'
+                | 'Calculator'
+                | 'CalendarCheck'
+                | 'CalendarClock'
+                | 'Car'
+                | 'CarFront'
+                | 'ClipboardCheck'
+                | 'ClipboardList'
+                | 'Clock'
+                | 'Code'
+                | 'CreditCard'
+                | 'Dumbbell'
+                | 'FileCheck'
+                | 'FileText'
+                | 'Gift'
+                | 'HeartPulse'
+                | 'Layers'
+                | 'Home'
+                | 'Megaphone'
+                | 'MessageCircle'
+                | 'PawPrint'
+                | 'PiggyBank'
+                | 'Plug'
+                | 'Receipt'
+                | 'Repeat'
+                | 'RotateCcw'
+                | 'Scissors'
+                | 'Search'
+                | 'ShieldCheck'
+                | 'Smile'
+                | 'Sparkles'
+                | 'Stethoscope'
+                | 'Store'
+                | 'Syringe'
+                | 'TrendingDown'
+                | 'TrendingUp'
+                | 'Trophy'
+                | 'UserPlus'
+                | 'Users'
+                | 'UtensilsCrossed'
+                | 'Wallet'
+                | 'Workflow'
+                | 'Wrench'
+                | 'Zap'
+              )
+            | null;
+          titulo: string;
+          texto?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroFluxo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BlocoFaixaNumeros".
  */
 export interface BlocoFaixaNumeros {
@@ -356,6 +449,7 @@ export interface BlocoFaixaNumeros {
               | 'FileText'
               | 'Gift'
               | 'HeartPulse'
+              | 'Layers'
               | 'Home'
               | 'Megaphone'
               | 'MessageCircle'
@@ -380,6 +474,7 @@ export interface BlocoFaixaNumeros {
               | 'Users'
               | 'UtensilsCrossed'
               | 'Wallet'
+              | 'Workflow'
               | 'Wrench'
               | 'Zap'
             )
@@ -451,6 +546,7 @@ export interface BlocoModulos {
               | 'FileText'
               | 'Gift'
               | 'HeartPulse'
+              | 'Layers'
               | 'Home'
               | 'Megaphone'
               | 'MessageCircle'
@@ -475,6 +571,7 @@ export interface BlocoModulos {
               | 'Users'
               | 'UtensilsCrossed'
               | 'Wallet'
+              | 'Workflow'
               | 'Wrench'
               | 'Zap'
             )
@@ -494,6 +591,90 @@ export interface BlocoModulos {
   id?: string | null;
   blockName?: string | null;
   blockType: 'modulos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCartoes".
+ */
+export interface BlocoCartoes {
+  etiqueta?: string | null;
+  /**
+   * Enter quebra a linha.
+   */
+  titulo?: string | null;
+  texto?: string | null;
+  colunas?: ('2' | '3') | null;
+  cartoes?:
+    | {
+        /**
+         * Ícone ou número; vazio = sem.
+         */
+        icone?:
+          | (
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Code'
+              | 'CreditCard'
+              | 'Dumbbell'
+              | 'FileCheck'
+              | 'FileText'
+              | 'Gift'
+              | 'HeartPulse'
+              | 'Layers'
+              | 'Home'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'PawPrint'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'Search'
+              | 'ShieldCheck'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        numero?: string | null;
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  destaque?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cartoes';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -527,6 +708,7 @@ export interface BlocoCartoesSegmento {
               | 'FileText'
               | 'Gift'
               | 'HeartPulse'
+              | 'Layers'
               | 'Home'
               | 'Megaphone'
               | 'MessageCircle'
@@ -551,6 +733,7 @@ export interface BlocoCartoesSegmento {
               | 'Users'
               | 'UtensilsCrossed'
               | 'Wallet'
+              | 'Workflow'
               | 'Wrench'
               | 'Zap'
             )
@@ -594,6 +777,152 @@ export interface BlocoTextoLista {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDestaque".
+ */
+export interface BlocoDestaque {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  texto?: string | null;
+  itens?:
+    | {
+        icone?:
+          | (
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Code'
+              | 'CreditCard'
+              | 'Dumbbell'
+              | 'FileCheck'
+              | 'FileText'
+              | 'Gift'
+              | 'HeartPulse'
+              | 'Layers'
+              | 'Home'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'PawPrint'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'Search'
+              | 'ShieldCheck'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  ancora?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'destaque';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoChecklist".
+ */
+export interface BlocoChecklist {
+  etiqueta?: string | null;
+  titulo?: string | null;
+  texto?: string | null;
+  cartao?: {
+    icone?:
+      | (
+          | 'BadgePercent'
+          | 'BarChart3'
+          | 'BellRing'
+          | 'Briefcase'
+          | 'Building2'
+          | 'Calculator'
+          | 'CalendarCheck'
+          | 'CalendarClock'
+          | 'Car'
+          | 'CarFront'
+          | 'ClipboardCheck'
+          | 'ClipboardList'
+          | 'Clock'
+          | 'Code'
+          | 'CreditCard'
+          | 'Dumbbell'
+          | 'FileCheck'
+          | 'FileText'
+          | 'Gift'
+          | 'HeartPulse'
+          | 'Layers'
+          | 'Home'
+          | 'Megaphone'
+          | 'MessageCircle'
+          | 'PawPrint'
+          | 'PiggyBank'
+          | 'Plug'
+          | 'Receipt'
+          | 'Repeat'
+          | 'RotateCcw'
+          | 'Scissors'
+          | 'Search'
+          | 'ShieldCheck'
+          | 'Smile'
+          | 'Sparkles'
+          | 'Stethoscope'
+          | 'Store'
+          | 'Syringe'
+          | 'TrendingDown'
+          | 'TrendingUp'
+          | 'Trophy'
+          | 'UserPlus'
+          | 'Users'
+          | 'UtensilsCrossed'
+          | 'Wallet'
+          | 'Workflow'
+          | 'Wrench'
+          | 'Zap'
+        )
+      | null;
+    titulo?: string | null;
+    itens?:
+      | {
+          texto: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  ancora?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'checklist';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BlocoSimulador".
  */
 export interface BlocoSimulador {
@@ -601,9 +930,10 @@ export interface BlocoSimulador {
   titulo?: string | null;
   subtitulo?: string | null;
   /**
-   * Valores vêm do global "Planos".
+   * Valores vêm do global "Planos". Com a escolha de plano ligada, é o plano inicial.
    */
   plano: 'Essencial' | 'Crescimento' | 'Performance';
+  permitirEscolherPlano?: boolean | null;
   /**
    * {plano} vira o nome do plano escolhido.
    */
@@ -617,6 +947,10 @@ export interface BlocoSimulador {
   mostrarAnual?: boolean | null;
   mostrarPortfolio?: boolean | null;
   aviso?: string | null;
+  botao?: {
+    texto?: string | null;
+    url?: string | null;
+  };
   /**
    * id da seção para links com # (opcional).
    */
@@ -931,11 +1265,15 @@ export interface PaginasSelect<T extends boolean = true> {
     | T
     | {
         heroCelular?: T | BlocoHeroCelularSelect<T>;
+        heroFluxo?: T | BlocoHeroFluxoSelect<T>;
         faixaNumeros?: T | BlocoFaixaNumerosSelect<T>;
         linhaDoTempo?: T | BlocoLinhaDoTempoSelect<T>;
         modulos?: T | BlocoModulosSelect<T>;
+        cartoes?: T | BlocoCartoesSelect<T>;
         cartoesSegmento?: T | BlocoCartoesSegmentoSelect<T>;
         textoLista?: T | BlocoTextoListaSelect<T>;
+        destaque?: T | BlocoDestaqueSelect<T>;
+        checklist?: T | BlocoChecklistSelect<T>;
         simulador?: T | BlocoSimuladorSelect<T>;
         notasFacilidade?: T | BlocoNotasFacilidadeSelect<T>;
         antesDepois?: T | BlocoAntesDepoisSelect<T>;
@@ -993,6 +1331,45 @@ export interface BlocoHeroCelularSelect<T extends boolean = true> {
           | {
               de?: T;
               hora?: T;
+              texto?: T;
+              id?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroFluxo_select".
+ */
+export interface BlocoHeroFluxoSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  tituloDestaque?: T;
+  texto?: T;
+  textoSecundario?: T;
+  botaoPrincipal?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  botaoSecundario?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  nota?: T;
+  fluxo?:
+    | T
+    | {
+        etiqueta?: T;
+        etapas?:
+          | T
+          | {
+              icone?: T;
+              titulo?: T;
               texto?: T;
               id?: T;
             };
@@ -1063,6 +1440,29 @@ export interface BlocoModulosSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCartoes_select".
+ */
+export interface BlocoCartoesSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  colunas?: T;
+  cartoes?:
+    | T
+    | {
+        icone?: T;
+        numero?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  ancora?: T;
+  destaque?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BlocoCartoesSegmento_select".
  */
 export interface BlocoCartoesSegmentoSelect<T extends boolean = true> {
@@ -1103,6 +1503,50 @@ export interface BlocoTextoListaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDestaque_select".
+ */
+export interface BlocoDestaqueSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  itens?:
+    | T
+    | {
+        icone?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  ancora?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoChecklist_select".
+ */
+export interface BlocoChecklistSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  cartao?:
+    | T
+    | {
+        icone?: T;
+        titulo?: T;
+        itens?:
+          | T
+          | {
+              texto?: T;
+              id?: T;
+            };
+      };
+  ancora?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BlocoSimulador_select".
  */
 export interface BlocoSimuladorSelect<T extends boolean = true> {
@@ -1110,6 +1554,7 @@ export interface BlocoSimuladorSelect<T extends boolean = true> {
   titulo?: T;
   subtitulo?: T;
   plano?: T;
+  permitirEscolherPlano?: T;
   cabecalhoCartao?: T;
   linhaSetup?: T;
   linhaOperacao?: T;
@@ -1120,6 +1565,12 @@ export interface BlocoSimuladorSelect<T extends boolean = true> {
   mostrarAnual?: T;
   mostrarPortfolio?: T;
   aviso?: T;
+  botao?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
   ancora?: T;
   destaque?: T;
   id?: T;

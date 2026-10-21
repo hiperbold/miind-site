@@ -22,6 +22,7 @@ export const NOMES_ICONES = [
   'FileText',
   'Gift',
   'HeartPulse',
+  'Layers',
   'Home',
   'Megaphone',
   'MessageCircle',
@@ -46,6 +47,7 @@ export const NOMES_ICONES = [
   'Users',
   'UtensilsCrossed',
   'Wallet',
+  'Workflow',
   'Wrench',
   'Zap',
 ] as const

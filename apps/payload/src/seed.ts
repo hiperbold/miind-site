@@ -7,7 +7,7 @@ import { paginasSeed } from './seed/paginas'
 // Seed idempotente:
 // 1. admin de SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD, se o e-mail ainda não existir;
 // 2. globais (planos, FAQ da plataforma, formulário, rodapé) que nunca foram salvos;
-// 3. as 10 LPs de nicho, publicadas, procuradas pelo slug (cria as que faltam).
+// 3. as 11 LPs (10 nichos e agência), publicadas, procuradas pelo slug (cria as que faltam).
 // O que já existe não é tocado, para não apagar edições feitas no admin.
 // Para sobrescrever com o conteúdo do seed: SEED_ATUALIZAR=1 pnpm seed
 // No fim, se o servidor estiver no ar, pede a revalidação das LPs.

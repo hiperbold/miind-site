@@ -16,7 +16,13 @@ export const Simulador: Block = {
       required: true,
       defaultValue: 'Crescimento',
       options: CHAVES_PLANOS.map((chave) => ({ label: chave, value: chave })),
-      admin: { description: 'Valores vêm do global "Planos".' },
+      admin: { description: 'Valores vêm do global "Planos". Com a escolha de plano ligada, é o plano inicial.' },
+    },
+    {
+      name: 'permitirEscolherPlano',
+      label: 'Visitante pode escolher o plano (seletor acima do simulador)',
+      type: 'checkbox',
+      defaultValue: false,
     },
     {
       name: 'cabecalhoCartao',
@@ -71,6 +77,20 @@ export const Simulador: Block = {
       ],
     },
     { name: 'aviso', label: 'Aviso abaixo do simulador', type: 'textarea' },
+    {
+      name: 'botao',
+      label: 'Botão abaixo do aviso (opcional)',
+      type: 'group',
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'texto', label: 'Texto', type: 'text' },
+            { name: 'url', label: 'Link', type: 'text', defaultValue: '#cadastro' },
+          ],
+        },
+      ],
+    },
     camposSecao({ destaque: true }),
   ],
 }
