@@ -24,6 +24,8 @@ export function LeadForm({
   extraQuestions = [],
   consentText,
   secondaryButton,
+  perfilRequired = true,
+  segmentSelect,
 }: {
   origem: string
   segmento: string
@@ -32,6 +34,11 @@ export function LeadForm({
   extraQuestions?: ExtraQuestion[]
   consentText: string
   secondaryButton?: { text: string; url: string } | null
+  // Perfil obrigatório (LPs). No programa de parceiros, como na prévia, é opcional.
+  perfilRequired?: boolean
+  // Seletor de segmento visível (programa de parceiros). Sem ele, o segmento é
+  // o campo oculto `segmento` (LPs).
+  segmentSelect?: { label: string; emptyLabel: string; options: { value: string; label: string }[] }
 }) {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -48,7 +55,7 @@ export function LeadForm({
       email: String(fd.get('email') || '').trim(),
       whatsapp: String(fd.get('whatsapp') || '').trim(),
       cidade_uf: String(fd.get('cidade_uf') || '').trim(),
-      segmento,
+      segmento: segmentSelect ? String(fd.get('segmento') || '') : segmento,
       perfil: String(fd.get('perfil') || ''),
       consent: fd.get('consent') === 'on',
     }
@@ -57,7 +64,7 @@ export function LeadForm({
     if (!EMAIL_RE.test(raw.email)) errs.email = 'E-mail inválido'
     if (raw.whatsapp.length < 8) errs.whatsapp = 'WhatsApp inválido'
     if (raw.cidade_uf.length < 2) errs.cidade_uf = 'Cidade/UF obrigatória'
-    if (!raw.perfil) errs.perfil = 'Selecione seu perfil'
+    if (perfilRequired && !raw.perfil) errs.perfil = 'Selecione seu perfil'
     const extras: Record<string, string | string[]> = {}
     for (const q of extraQuestions) {
       const values = fd.getAll(q.name).map(String).filter(Boolean)
@@ -103,12 +110,21 @@ export function LeadForm({
         />
       </div>
 
-      <div className="grid gap-4">
-        <input type="hidden" name="segmento" value={segmento} />
+      <div className={segmentSelect ? 'grid sm:grid-cols-2 gap-4' : 'grid gap-4'}>
+        {segmentSelect ? (
+          <SelectField
+            label={segmentSelect.label}
+            name="segmento"
+            errorId={errId('segmento')}
+            options={[{ value: '', label: segmentSelect.emptyLabel }, ...segmentSelect.options]}
+          />
+        ) : (
+          <input type="hidden" name="segmento" value={segmento} />
+        )}
         <SelectField
           label="Seu perfil"
           name="perfil"
-          required
+          required={perfilRequired}
           error={errors.perfil}
           errorId={errId('perfil')}
           options={[{ value: '', label: 'Selecione…' }, ...profileOptions.map((p) => ({ value: p, label: p }))]}

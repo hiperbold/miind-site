@@ -90,12 +90,16 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    homepage: Homepage;
+    parceiros: Parceiro;
     planos: Plano;
     'faq-plataforma': FaqPlataforma;
     formulario: Formulario;
     rodape: Rodape;
   };
   globalsSelect: {
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+    parceiros: ParceirosSelect<false> | ParceirosSelect<true>;
     planos: PlanosSelect<false> | PlanosSelect<true>;
     'faq-plataforma': FaqPlataformaSelect<false> | FaqPlataformaSelect<true>;
     formulario: FormularioSelect<false> | FormularioSelect<true>;
@@ -153,6 +157,94 @@ export interface Pagina {
     rotulo?: string | null;
     ordem?: number | null;
   };
+  /**
+   * Opção no seletor de segmento do cadastro e cartão na grade de segmentos de /bu1lder/parceiros.
+   */
+  cartaoHub?: {
+    /**
+     * Vazio: usa o rótulo da navegação.
+     */
+    nome?: string | null;
+    mostrarNaGrade?: boolean | null;
+    icone?:
+      | (
+          | 'Activity'
+          | 'ArrowRight'
+          | 'BadgePercent'
+          | 'BarChart3'
+          | 'BellRing'
+          | 'Bot'
+          | 'Boxes'
+          | 'Briefcase'
+          | 'Building2'
+          | 'Cable'
+          | 'Calculator'
+          | 'CalendarCheck'
+          | 'CalendarClock'
+          | 'Car'
+          | 'CarFront'
+          | 'CheckCircle2'
+          | 'ClipboardCheck'
+          | 'ClipboardList'
+          | 'Clock'
+          | 'Cloud'
+          | 'Code'
+          | 'Code2'
+          | 'Cog'
+          | 'CreditCard'
+          | 'Database'
+          | 'Dumbbell'
+          | 'Eye'
+          | 'FileCheck'
+          | 'FileText'
+          | 'GaugeCircle'
+          | 'Gift'
+          | 'GitBranch'
+          | 'Hammer'
+          | 'Headphones'
+          | 'HeartPulse'
+          | 'Home'
+          | 'Layers'
+          | 'LayoutDashboard'
+          | 'Lock'
+          | 'Mail'
+          | 'Megaphone'
+          | 'MessageCircle'
+          | 'MessageSquare'
+          | 'PawPrint'
+          | 'PenLine'
+          | 'Phone'
+          | 'PiggyBank'
+          | 'Plug'
+          | 'Receipt'
+          | 'Repeat'
+          | 'RotateCcw'
+          | 'Scissors'
+          | 'ScrollText'
+          | 'Search'
+          | 'ShieldAlert'
+          | 'ShieldCheck'
+          | 'Slack'
+          | 'Smile'
+          | 'Sparkles'
+          | 'Stethoscope'
+          | 'Store'
+          | 'Syringe'
+          | 'TrendingDown'
+          | 'TrendingUp'
+          | 'Trophy'
+          | 'UserPlus'
+          | 'Users'
+          | 'UtensilsCrossed'
+          | 'Wallet'
+          | 'Workflow'
+          | 'Wrench'
+          | 'Zap'
+        )
+      | null;
+    estatistica?: string | null;
+    texto?: string | null;
+  };
   visual: 'ds' | 'original';
   temaClaroPadrao?: boolean | null;
   cabecalho?: {
@@ -205,39 +297,63 @@ export interface Pagina {
 export interface BlocoHeroCelular {
   icone?:
     | (
+        | 'Activity'
+        | 'ArrowRight'
         | 'BadgePercent'
         | 'BarChart3'
         | 'BellRing'
+        | 'Bot'
+        | 'Boxes'
         | 'Briefcase'
         | 'Building2'
+        | 'Cable'
         | 'Calculator'
         | 'CalendarCheck'
         | 'CalendarClock'
         | 'Car'
         | 'CarFront'
+        | 'CheckCircle2'
         | 'ClipboardCheck'
         | 'ClipboardList'
         | 'Clock'
+        | 'Cloud'
         | 'Code'
+        | 'Code2'
+        | 'Cog'
         | 'CreditCard'
+        | 'Database'
         | 'Dumbbell'
+        | 'Eye'
         | 'FileCheck'
         | 'FileText'
+        | 'GaugeCircle'
         | 'Gift'
+        | 'GitBranch'
+        | 'Hammer'
+        | 'Headphones'
         | 'HeartPulse'
-        | 'Layers'
         | 'Home'
+        | 'Layers'
+        | 'LayoutDashboard'
+        | 'Lock'
+        | 'Mail'
         | 'Megaphone'
         | 'MessageCircle'
+        | 'MessageSquare'
         | 'PawPrint'
+        | 'PenLine'
+        | 'Phone'
         | 'PiggyBank'
         | 'Plug'
         | 'Receipt'
         | 'Repeat'
         | 'RotateCcw'
         | 'Scissors'
+        | 'ScrollText'
         | 'Search'
+        | 'ShieldAlert'
         | 'ShieldCheck'
+        | 'Slack'
         | 'Smile'
         | 'Sparkles'
         | 'Stethoscope'
@@ -260,39 +376,63 @@ export interface BlocoHeroCelular {
   texto?: string | null;
   iconeDecisor?:
     | (
+        | 'Activity'
+        | 'ArrowRight'
         | 'BadgePercent'
         | 'BarChart3'
         | 'BellRing'
+        | 'Bot'
+        | 'Boxes'
         | 'Briefcase'
         | 'Building2'
+        | 'Cable'
         | 'Calculator'
         | 'CalendarCheck'
         | 'CalendarClock'
         | 'Car'
         | 'CarFront'
+        | 'CheckCircle2'
         | 'ClipboardCheck'
         | 'ClipboardList'
         | 'Clock'
+        | 'Cloud'
         | 'Code'
+        | 'Code2'
+        | 'Cog'
         | 'CreditCard'
+        | 'Database'
         | 'Dumbbell'
+        | 'Eye'
         | 'FileCheck'
         | 'FileText'
+        | 'GaugeCircle'
         | 'Gift'
+        | 'GitBranch'
+        | 'Hammer'
+        | 'Headphones'
         | 'HeartPulse'
-        | 'Layers'
         | 'Home'
+        | 'Layers'
+        | 'LayoutDashboard'
+        | 'Lock'
+        | 'Mail'
         | 'Megaphone'
         | 'MessageCircle'
+        | 'MessageSquare'
         | 'PawPrint'
+        | 'PenLine'
+        | 'Phone'
         | 'PiggyBank'
         | 'Plug'
         | 'Receipt'
         | 'Repeat'
         | 'RotateCcw'
         | 'Scissors'
+        | 'ScrollText'
         | 'Search'
+        | 'ShieldAlert'
         | 'ShieldCheck'
+        | 'Slack'
         | 'Smile'
         | 'Sparkles'
         | 'Stethoscope'
@@ -360,39 +500,63 @@ export interface BlocoHeroFluxo {
       | {
           icone?:
             | (
+                | 'Activity'
+                | 'ArrowRight'
                 | 'BadgePercent'
                 | 'BarChart3'
                 | 'BellRing'
+                | 'Bot'
+                | 'Boxes'
                 | 'Briefcase'
                 | 'Building2'
+                | 'Cable'
                 | 'Calculator'
                 | 'CalendarCheck'
                 | 'CalendarClock'
                 | 'Car'
                 | 'CarFront'
+                | 'CheckCircle2'
                 | 'ClipboardCheck'
                 | 'ClipboardList'
                 | 'Clock'
+                | 'Cloud'
                 | 'Code'
+                | 'Code2'
+                | 'Cog'
                 | 'CreditCard'
+                | 'Database'
                 | 'Dumbbell'
+                | 'Eye'
                 | 'FileCheck'
                 | 'FileText'
+                | 'GaugeCircle'
                 | 'Gift'
+                | 'GitBranch'
+                | 'Hammer'
+                | 'Headphones'
                 | 'HeartPulse'
-                | 'Layers'
                 | 'Home'
+                | 'Layers'
+                | 'LayoutDashboard'
+                | 'Lock'
+                | 'Mail'
                 | 'Megaphone'
                 | 'MessageCircle'
+                | 'MessageSquare'
                 | 'PawPrint'
+                | 'PenLine'
+                | 'Phone'
                 | 'PiggyBank'
                 | 'Plug'
                 | 'Receipt'
                 | 'Repeat'
                 | 'RotateCcw'
                 | 'Scissors'
+                | 'ScrollText'
                 | 'Search'
+                | 'ShieldAlert'
                 | 'ShieldCheck'
+                | 'Slack'
                 | 'Smile'
                 | 'Sparkles'
                 | 'Stethoscope'
@@ -429,39 +593,63 @@ export interface BlocoFaixaNumeros {
     | {
         icone?:
           | (
+              | 'Activity'
+              | 'ArrowRight'
               | 'BadgePercent'
               | 'BarChart3'
               | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
               | 'Briefcase'
               | 'Building2'
+              | 'Cable'
               | 'Calculator'
               | 'CalendarCheck'
               | 'CalendarClock'
               | 'Car'
               | 'CarFront'
+              | 'CheckCircle2'
               | 'ClipboardCheck'
               | 'ClipboardList'
               | 'Clock'
+              | 'Cloud'
               | 'Code'
+              | 'Code2'
+              | 'Cog'
               | 'CreditCard'
+              | 'Database'
               | 'Dumbbell'
+              | 'Eye'
               | 'FileCheck'
               | 'FileText'
+              | 'GaugeCircle'
               | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
               | 'HeartPulse'
-              | 'Layers'
               | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
               | 'Megaphone'
               | 'MessageCircle'
+              | 'MessageSquare'
               | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
               | 'PiggyBank'
               | 'Plug'
               | 'Receipt'
               | 'Repeat'
               | 'RotateCcw'
               | 'Scissors'
+              | 'ScrollText'
               | 'Search'
+              | 'ShieldAlert'
               | 'ShieldCheck'
+              | 'Slack'
               | 'Smile'
               | 'Sparkles'
               | 'Stethoscope'
@@ -526,39 +714,63 @@ export interface BlocoModulos {
     | {
         icone?:
           | (
+              | 'Activity'
+              | 'ArrowRight'
               | 'BadgePercent'
               | 'BarChart3'
               | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
               | 'Briefcase'
               | 'Building2'
+              | 'Cable'
               | 'Calculator'
               | 'CalendarCheck'
               | 'CalendarClock'
               | 'Car'
               | 'CarFront'
+              | 'CheckCircle2'
               | 'ClipboardCheck'
               | 'ClipboardList'
               | 'Clock'
+              | 'Cloud'
               | 'Code'
+              | 'Code2'
+              | 'Cog'
               | 'CreditCard'
+              | 'Database'
               | 'Dumbbell'
+              | 'Eye'
               | 'FileCheck'
               | 'FileText'
+              | 'GaugeCircle'
               | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
               | 'HeartPulse'
-              | 'Layers'
               | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
               | 'Megaphone'
               | 'MessageCircle'
+              | 'MessageSquare'
               | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
               | 'PiggyBank'
               | 'Plug'
               | 'Receipt'
               | 'Repeat'
               | 'RotateCcw'
               | 'Scissors'
+              | 'ScrollText'
               | 'Search'
+              | 'ShieldAlert'
               | 'ShieldCheck'
+              | 'Slack'
               | 'Smile'
               | 'Sparkles'
               | 'Stethoscope'
@@ -611,39 +823,63 @@ export interface BlocoCartoes {
          */
         icone?:
           | (
+              | 'Activity'
+              | 'ArrowRight'
               | 'BadgePercent'
               | 'BarChart3'
               | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
               | 'Briefcase'
               | 'Building2'
+              | 'Cable'
               | 'Calculator'
               | 'CalendarCheck'
               | 'CalendarClock'
               | 'Car'
               | 'CarFront'
+              | 'CheckCircle2'
               | 'ClipboardCheck'
               | 'ClipboardList'
               | 'Clock'
+              | 'Cloud'
               | 'Code'
+              | 'Code2'
+              | 'Cog'
               | 'CreditCard'
+              | 'Database'
               | 'Dumbbell'
+              | 'Eye'
               | 'FileCheck'
               | 'FileText'
+              | 'GaugeCircle'
               | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
               | 'HeartPulse'
-              | 'Layers'
               | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
               | 'Megaphone'
               | 'MessageCircle'
+              | 'MessageSquare'
               | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
               | 'PiggyBank'
               | 'Plug'
               | 'Receipt'
               | 'Repeat'
               | 'RotateCcw'
               | 'Scissors'
+              | 'ScrollText'
               | 'Search'
+              | 'ShieldAlert'
               | 'ShieldCheck'
+              | 'Slack'
               | 'Smile'
               | 'Sparkles'
               | 'Stethoscope'
@@ -688,39 +924,63 @@ export interface BlocoCartoesSegmento {
     | {
         icone?:
           | (
+              | 'Activity'
+              | 'ArrowRight'
               | 'BadgePercent'
               | 'BarChart3'
               | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
               | 'Briefcase'
               | 'Building2'
+              | 'Cable'
               | 'Calculator'
               | 'CalendarCheck'
               | 'CalendarClock'
               | 'Car'
               | 'CarFront'
+              | 'CheckCircle2'
               | 'ClipboardCheck'
               | 'ClipboardList'
               | 'Clock'
+              | 'Cloud'
               | 'Code'
+              | 'Code2'
+              | 'Cog'
               | 'CreditCard'
+              | 'Database'
               | 'Dumbbell'
+              | 'Eye'
               | 'FileCheck'
               | 'FileText'
+              | 'GaugeCircle'
               | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
               | 'HeartPulse'
-              | 'Layers'
               | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
               | 'Megaphone'
               | 'MessageCircle'
+              | 'MessageSquare'
               | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
               | 'PiggyBank'
               | 'Plug'
               | 'Receipt'
               | 'Repeat'
               | 'RotateCcw'
               | 'Scissors'
+              | 'ScrollText'
               | 'Search'
+              | 'ShieldAlert'
               | 'ShieldCheck'
+              | 'Slack'
               | 'Smile'
               | 'Sparkles'
               | 'Stethoscope'
@@ -787,39 +1047,63 @@ export interface BlocoDestaque {
     | {
         icone?:
           | (
+              | 'Activity'
+              | 'ArrowRight'
               | 'BadgePercent'
               | 'BarChart3'
               | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
               | 'Briefcase'
               | 'Building2'
+              | 'Cable'
               | 'Calculator'
               | 'CalendarCheck'
               | 'CalendarClock'
               | 'Car'
               | 'CarFront'
+              | 'CheckCircle2'
               | 'ClipboardCheck'
               | 'ClipboardList'
               | 'Clock'
+              | 'Cloud'
               | 'Code'
+              | 'Code2'
+              | 'Cog'
               | 'CreditCard'
+              | 'Database'
               | 'Dumbbell'
+              | 'Eye'
               | 'FileCheck'
               | 'FileText'
+              | 'GaugeCircle'
               | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
               | 'HeartPulse'
-              | 'Layers'
               | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
               | 'Megaphone'
               | 'MessageCircle'
+              | 'MessageSquare'
               | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
               | 'PiggyBank'
               | 'Plug'
               | 'Receipt'
               | 'Repeat'
               | 'RotateCcw'
               | 'Scissors'
+              | 'ScrollText'
               | 'Search'
+              | 'ShieldAlert'
               | 'ShieldCheck'
+              | 'Slack'
               | 'Smile'
               | 'Sparkles'
               | 'Stethoscope'
@@ -858,39 +1142,63 @@ export interface BlocoChecklist {
   cartao?: {
     icone?:
       | (
+          | 'Activity'
+          | 'ArrowRight'
           | 'BadgePercent'
           | 'BarChart3'
           | 'BellRing'
+          | 'Bot'
+          | 'Boxes'
           | 'Briefcase'
           | 'Building2'
+          | 'Cable'
           | 'Calculator'
           | 'CalendarCheck'
           | 'CalendarClock'
           | 'Car'
           | 'CarFront'
+          | 'CheckCircle2'
           | 'ClipboardCheck'
           | 'ClipboardList'
           | 'Clock'
+          | 'Cloud'
           | 'Code'
+          | 'Code2'
+          | 'Cog'
           | 'CreditCard'
+          | 'Database'
           | 'Dumbbell'
+          | 'Eye'
           | 'FileCheck'
           | 'FileText'
+          | 'GaugeCircle'
           | 'Gift'
+          | 'GitBranch'
+          | 'Hammer'
+          | 'Headphones'
           | 'HeartPulse'
-          | 'Layers'
           | 'Home'
+          | 'Layers'
+          | 'LayoutDashboard'
+          | 'Lock'
+          | 'Mail'
           | 'Megaphone'
           | 'MessageCircle'
+          | 'MessageSquare'
           | 'PawPrint'
+          | 'PenLine'
+          | 'Phone'
           | 'PiggyBank'
           | 'Plug'
           | 'Receipt'
           | 'Repeat'
           | 'RotateCcw'
           | 'Scissors'
+          | 'ScrollText'
           | 'Search'
+          | 'ShieldAlert'
           | 'ShieldCheck'
+          | 'Slack'
           | 'Smile'
           | 'Sparkles'
           | 'Stethoscope'
@@ -1252,6 +1560,15 @@ export interface PaginasSelect<T extends boolean = true> {
     | {
         rotulo?: T;
         ordem?: T;
+      };
+  cartaoHub?:
+    | T
+    | {
+        nome?: T;
+        mostrarNaGrade?: T;
+        icone?: T;
+        estatistica?: T;
+        texto?: T;
       };
   visual?: T;
   temaClaroPadrao?: T;
@@ -1792,6 +2109,1174 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Página /bu1lder/. Cabeçalho, seções e rodapé.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  cabecalho?: {
+    /**
+     * Link com # rola até a seção e fica marcado quando ela está na tela.
+     */
+    links?:
+      | {
+          rotulo: string;
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+    textoBotao?: string | null;
+    textoBotaoCelular?: string | null;
+    urlBotao?: string | null;
+  };
+  layout?:
+    | (
+        | BlocoHeroPlataforma
+        | BlocoHeroCadastro
+        | BlocoFaixaNomes
+        | BlocoFaixaEstatisticas
+        | BlocoGradeCartoes
+        | BlocoCamadas
+        | BlocoPublicoAlvo
+        | BlocoEtapasPlataforma
+        | BlocoPassosHub
+        | BlocoCasosUso
+        | BlocoMetricas
+        | BlocoDepoimentoDestaque
+        | BlocoManifesto
+        | BlocoCartoesLink
+        | BlocoGradeNichos
+        | BlocoFaqSecao
+        | BlocoConvite
+        | BlocoContato
+        | BlocoChamadaFinalCadastro
+      )[]
+    | null;
+  rodape?: {
+    etiqueta?: string | null;
+    /**
+     * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+     */
+    frase?: string | null;
+    texto?: string | null;
+    descricaoMarca?: string | null;
+    colunas?:
+      | {
+          titulo: string;
+          links?:
+            | {
+                rotulo: string;
+                url: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    direitos?: string | null;
+    assinatura?: string[] | null;
+  };
+  seo: {
+    title: string;
+    description?: string | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    /**
+     * Vazio: a imagem padrão do Bu1lder (1216 x 640).
+     */
+    ogImage?: (number | null) | Media;
+    keywords?: string | null;
+    /**
+     * As perguntas do JSON-LD saem das seções de perguntas frequentes da página.
+     */
+    dadosEstruturados?: {
+      nome?: string | null;
+      descricao?: string | null;
+      organizacao?: string | null;
+      slogan?: string | null;
+    };
+  };
+  /**
+   * Códigos colados aqui (pixels, tags) entram na página exatamente como estão, sem filtro. Só administradores editam.
+   */
+  scriptsPersonalizados?: {
+    /**
+     * Aceita <script>, <noscript>, <style>, <meta> e <link>.
+     */
+    head?: string | null;
+    bodyFim?: string | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroPlataforma".
+ */
+export interface BlocoHeroPlataforma {
+  etiqueta?: string | null;
+  tituloLinha1: string;
+  tituloLinha2?: string | null;
+  texto?: string | null;
+  botaoPrincipal?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  video?: {
+    textoBotao?: string | null;
+    tituloModal?: string | null;
+    /**
+     * Vazio: a janela mostra o aviso abaixo.
+     */
+    url?: string | null;
+    avisoSemVideo?: string | null;
+  };
+  selos?: string[] | null;
+  cartoes?: {
+    desempenho?: string | null;
+    economiaTitulo?: string | null;
+    economiaPeriodo?: string | null;
+    economiaValor?: number | null;
+    economiaVariacao?: string | null;
+  };
+  integracoes?: {
+    titulo?: string | null;
+    itens?:
+      | {
+          icone?:
+            | (
+                | 'Activity'
+                | 'ArrowRight'
+                | 'BadgePercent'
+                | 'BarChart3'
+                | 'BellRing'
+                | 'Bot'
+                | 'Boxes'
+                | 'Briefcase'
+                | 'Building2'
+                | 'Cable'
+                | 'Calculator'
+                | 'CalendarCheck'
+                | 'CalendarClock'
+                | 'Car'
+                | 'CarFront'
+                | 'CheckCircle2'
+                | 'ClipboardCheck'
+                | 'ClipboardList'
+                | 'Clock'
+                | 'Cloud'
+                | 'Code'
+                | 'Code2'
+                | 'Cog'
+                | 'CreditCard'
+                | 'Database'
+                | 'Dumbbell'
+                | 'Eye'
+                | 'FileCheck'
+                | 'FileText'
+                | 'GaugeCircle'
+                | 'Gift'
+                | 'GitBranch'
+                | 'Hammer'
+                | 'Headphones'
+                | 'HeartPulse'
+                | 'Home'
+                | 'Layers'
+                | 'LayoutDashboard'
+                | 'Lock'
+                | 'Mail'
+                | 'Megaphone'
+                | 'MessageCircle'
+                | 'MessageSquare'
+                | 'PawPrint'
+                | 'PenLine'
+                | 'Phone'
+                | 'PiggyBank'
+                | 'Plug'
+                | 'Receipt'
+                | 'Repeat'
+                | 'RotateCcw'
+                | 'Scissors'
+                | 'ScrollText'
+                | 'Search'
+                | 'ShieldAlert'
+                | 'ShieldCheck'
+                | 'Slack'
+                | 'Smile'
+                | 'Sparkles'
+                | 'Stethoscope'
+                | 'Store'
+                | 'Syringe'
+                | 'TrendingDown'
+                | 'TrendingUp'
+                | 'Trophy'
+                | 'UserPlus'
+                | 'Users'
+                | 'UtensilsCrossed'
+                | 'Wallet'
+                | 'Workflow'
+                | 'Wrench'
+                | 'Zap'
+              )
+            | null;
+          nome: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  rotuloRolagem?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroPlataforma';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroCadastro".
+ */
+export interface BlocoHeroCadastro {
+  etiqueta?: string | null;
+  /**
+   * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+   */
+  titulo: string;
+  texto?: string | null;
+  bullets?:
+    | {
+        icone?:
+          | (
+              | 'Activity'
+              | 'ArrowRight'
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Cable'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'CheckCircle2'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Cloud'
+              | 'Code'
+              | 'Code2'
+              | 'Cog'
+              | 'CreditCard'
+              | 'Database'
+              | 'Dumbbell'
+              | 'Eye'
+              | 'FileCheck'
+              | 'FileText'
+              | 'GaugeCircle'
+              | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'MessageSquare'
+              | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'ScrollText'
+              | 'Search'
+              | 'ShieldAlert'
+              | 'ShieldCheck'
+              | 'Slack'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        texto: string;
+        id?: string | null;
+      }[]
+    | null;
+  selos?: string[] | null;
+  cartao?: {
+    etiqueta?: string | null;
+    titulo?: string | null;
+    texto?: string | null;
+  };
+  /**
+   * Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   */
+  formulario?: {
+    origem?: string | null;
+    formId?: string | null;
+    rotuloSegmento?: string | null;
+    opcaoSemSegmento?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'heroCadastro';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaixaNomes".
+ */
+export interface BlocoFaixaNomes {
+  etiqueta?: string | null;
+  nomes?: string[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faixaNomes';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaixaEstatisticas".
+ */
+export interface BlocoFaixaEstatisticas {
+  itens?:
+    | {
+        valor: string;
+        rotulo: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faixaEstatisticas';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoGradeCartoes".
+ */
+export interface BlocoGradeCartoes {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    estiloEtiqueta?: ('pilula' | 'tracos') | null;
+    /**
+     * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+     */
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  variante: 'problema' | 'construir' | 'diferencial' | 'beneficio' | 'metodologia' | 'governanca';
+  /**
+   * Ex.: "Diferencial" gera "01 · Diferencial".
+   */
+  rotuloItem?: string | null;
+  itens?:
+    | {
+        /**
+         * Não usado nos desenhos com número.
+         */
+        icone?:
+          | (
+              | 'Activity'
+              | 'ArrowRight'
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Cable'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'CheckCircle2'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Cloud'
+              | 'Code'
+              | 'Code2'
+              | 'Cog'
+              | 'CreditCard'
+              | 'Database'
+              | 'Dumbbell'
+              | 'Eye'
+              | 'FileCheck'
+              | 'FileText'
+              | 'GaugeCircle'
+              | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'MessageSquare'
+              | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'ScrollText'
+              | 'Search'
+              | 'ShieldAlert'
+              | 'ShieldCheck'
+              | 'Slack'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        numero?: string | null;
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  fraseFinal?: {
+    texto?: string | null;
+    destaque?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gradeCartoes';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCamadas".
+ */
+export interface BlocoCamadas {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    estiloEtiqueta?: ('pilula' | 'tracos') | null;
+    /**
+     * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+     */
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  rotuloCamada?: string | null;
+  camadas?:
+    | {
+        icone?:
+          | (
+              | 'Activity'
+              | 'ArrowRight'
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Cable'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'CheckCircle2'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Cloud'
+              | 'Code'
+              | 'Code2'
+              | 'Cog'
+              | 'CreditCard'
+              | 'Database'
+              | 'Dumbbell'
+              | 'Eye'
+              | 'FileCheck'
+              | 'FileText'
+              | 'GaugeCircle'
+              | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'MessageSquare'
+              | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'ScrollText'
+              | 'Search'
+              | 'ShieldAlert'
+              | 'ShieldCheck'
+              | 'Slack'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        titulo: string;
+        cor?: ('ciano' | 'azul' | 'violeta' | 'menta') | null;
+        itens?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'camadas';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoPublicoAlvo".
+ */
+export interface BlocoPublicoAlvo {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    estiloEtiqueta?: ('pilula' | 'tracos') | null;
+    /**
+     * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+     */
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  itens?: string[] | null;
+  faixa?: {
+    titulo?: string | null;
+    itens?: string[] | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'publicoAlvo';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoEtapasPlataforma".
+ */
+export interface BlocoEtapasPlataforma {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    estiloEtiqueta?: ('pilula' | 'tracos') | null;
+    /**
+     * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+     */
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  rotuloEtapa?: string | null;
+  etapas?:
+    | {
+        icone?:
+          | (
+              | 'Activity'
+              | 'ArrowRight'
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Cable'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'CheckCircle2'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Cloud'
+              | 'Code'
+              | 'Code2'
+              | 'Cog'
+              | 'CreditCard'
+              | 'Database'
+              | 'Dumbbell'
+              | 'Eye'
+              | 'FileCheck'
+              | 'FileText'
+              | 'GaugeCircle'
+              | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'MessageSquare'
+              | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'ScrollText'
+              | 'Search'
+              | 'ShieldAlert'
+              | 'ShieldCheck'
+              | 'Slack'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  fraseFinal?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'etapasPlataforma';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoPassosHub".
+ */
+export interface BlocoPassosHub {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  rotuloPasso?: string | null;
+  passos?:
+    | {
+        icone?:
+          | (
+              | 'Activity'
+              | 'ArrowRight'
+              | 'BadgePercent'
+              | 'BarChart3'
+              | 'BellRing'
+              | 'Bot'
+              | 'Boxes'
+              | 'Briefcase'
+              | 'Building2'
+              | 'Cable'
+              | 'Calculator'
+              | 'CalendarCheck'
+              | 'CalendarClock'
+              | 'Car'
+              | 'CarFront'
+              | 'CheckCircle2'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Cloud'
+              | 'Code'
+              | 'Code2'
+              | 'Cog'
+              | 'CreditCard'
+              | 'Database'
+              | 'Dumbbell'
+              | 'Eye'
+              | 'FileCheck'
+              | 'FileText'
+              | 'GaugeCircle'
+              | 'Gift'
+              | 'GitBranch'
+              | 'Hammer'
+              | 'Headphones'
+              | 'HeartPulse'
+              | 'Home'
+              | 'Layers'
+              | 'LayoutDashboard'
+              | 'Lock'
+              | 'Mail'
+              | 'Megaphone'
+              | 'MessageCircle'
+              | 'MessageSquare'
+              | 'PawPrint'
+              | 'PenLine'
+              | 'Phone'
+              | 'PiggyBank'
+              | 'Plug'
+              | 'Receipt'
+              | 'Repeat'
+              | 'RotateCcw'
+              | 'Scissors'
+              | 'ScrollText'
+              | 'Search'
+              | 'ShieldAlert'
+              | 'ShieldCheck'
+              | 'Slack'
+              | 'Smile'
+              | 'Sparkles'
+              | 'Stethoscope'
+              | 'Store'
+              | 'Syringe'
+              | 'TrendingDown'
+              | 'TrendingUp'
+              | 'Trophy'
+              | 'UserPlus'
+              | 'Users'
+              | 'UtensilsCrossed'
+              | 'Wallet'
+              | 'Workflow'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'passosHub';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCasosUso".
+ */
+export interface BlocoCasosUso {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    estiloEtiqueta?: ('pilula' | 'tracos') | null;
+    /**
+     * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+     */
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  abas?:
+    | {
+        nome: string;
+        itens?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'casosUso';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoMetricas".
+ */
+export interface BlocoMetricas {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  marcador?: string | null;
+  etiqueta?: string | null;
+  /**
+   * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+   */
+  titulo?: string | null;
+  principal?: {
+    valor?: string | null;
+    rotulo?: string | null;
+  };
+  secundarios?:
+    | {
+        valor: string;
+        rotulo: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'metricas';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDepoimentoDestaque".
+ */
+export interface BlocoDepoimentoDestaque {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  /**
+   * Sem aspas. Use *texto* para o trecho em degradê.
+   */
+  texto: string;
+  iniciais?: string | null;
+  autor?: string | null;
+  cargo?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'depoimentoDestaque';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoManifesto".
+ */
+export interface BlocoManifesto {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  etiqueta?: string | null;
+  linhas?:
+    | {
+        /**
+         * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+         */
+        texto: string;
+        id?: string | null;
+      }[]
+    | null;
+  assinatura?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'manifesto';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCartoesLink".
+ */
+export interface BlocoCartoesLink {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  cartoes?:
+    | {
+        etiqueta?: string | null;
+        titulo: string;
+        texto?: string | null;
+        /**
+         * Ex.: /bu1lder/contabilidade
+         */
+        url: string;
+        textoLink?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cartoesLink';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoGradeNichos".
+ */
+export interface BlocoGradeNichos {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  cabecalho?: {
+    etiqueta?: string | null;
+    titulo?: string | null;
+    subtitulo?: string | null;
+  };
+  textoLink?: string | null;
+  textoLinkCurto?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gradeNichos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaqSecao".
+ */
+export interface BlocoFaqSecao {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  variante: 'plataforma' | 'programa';
+  etiqueta?: string | null;
+  titulo?: string | null;
+  incluirPerguntasPlataforma?: boolean | null;
+  itens?:
+    | {
+        pergunta: string;
+        resposta: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqSecao';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoConvite".
+ */
+export interface BlocoConvite {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  etiqueta?: string | null;
+  /**
+   * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+   */
+  titulo: string;
+  texto?: string | null;
+  botao?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  linkSecundario?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'convite';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoContato".
+ */
+export interface BlocoContato {
+  /**
+   * id da seção (alvo dos botões "Agendar demo").
+   */
+  ancora: string;
+  etiqueta?: string | null;
+  /**
+   * Use *texto* para o trecho em degradê e _texto_ para itálico em degradê.
+   */
+  titulo: string;
+  texto?: string | null;
+  itens?:
+    | {
+        titulo: string;
+        texto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  citacao?: {
+    texto?: string | null;
+    autor?: string | null;
+  };
+  /**
+   * Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   */
+  formulario?: {
+    opcoesVolume?:
+      | {
+          valor: string;
+          rotulo: string;
+          id?: string | null;
+        }[]
+      | null;
+    aviso?: string | null;
+    textoBotao?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contato';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoChamadaFinalCadastro".
+ */
+export interface BlocoChamadaFinalCadastro {
+  /**
+   * id da seção para links com # (opcional).
+   */
+  ancora?: string | null;
+  etiqueta?: string | null;
+  titulo: string;
+  texto?: string | null;
+  vantagens?: string[] | null;
+  linkCelular?: {
+    texto?: string | null;
+    url?: string | null;
+  };
+  /**
+   * Perfis e consentimento vêm do global "Formulário". As opções de segmento são as páginas de nicho publicadas. Nesta fase o formulário só valida no navegador; o envio entra na fase 3.
+   */
+  formulario?: {
+    origem?: string | null;
+    formId?: string | null;
+    rotuloSegmento?: string | null;
+    opcaoSemSegmento?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'chamadaFinalCadastro';
+}
+/**
+ * Página /bu1lder/parceiros. A grade de segmentos e o seletor do formulário vêm das páginas de nicho publicadas.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parceiros".
+ */
+export interface Parceiro {
+  id: number;
+  cabecalho?: {
+    textoBotao?: string | null;
+    textoBotaoCurto?: string | null;
+    urlBotao?: string | null;
+  };
+  layout?:
+    | (
+        | BlocoHeroPlataforma
+        | BlocoHeroCadastro
+        | BlocoFaixaNomes
+        | BlocoFaixaEstatisticas
+        | BlocoGradeCartoes
+        | BlocoCamadas
+        | BlocoPublicoAlvo
+        | BlocoEtapasPlataforma
+        | BlocoPassosHub
+        | BlocoCasosUso
+        | BlocoMetricas
+        | BlocoDepoimentoDestaque
+        | BlocoManifesto
+        | BlocoCartoesLink
+        | BlocoGradeNichos
+        | BlocoFaqSecao
+        | BlocoConvite
+        | BlocoContato
+        | BlocoChamadaFinalCadastro
+      )[]
+    | null;
+  rodape?: {
+    texto?: string | null;
+    textoLink?: string | null;
+    urlLink?: string | null;
+  };
+  seo: {
+    title: string;
+    description?: string | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    /**
+     * Vazio: a imagem padrão do Bu1lder (1216 x 640).
+     */
+    ogImage?: (number | null) | Media;
+  };
+  /**
+   * Códigos colados aqui (pixels, tags) entram na página exatamente como estão, sem filtro. Só administradores editam.
+   */
+  scriptsPersonalizados?: {
+    /**
+     * Aceita <script>, <noscript>, <style>, <meta> e <link>.
+     */
+    head?: string | null;
+    bodyFim?: string | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "planos".
  */
@@ -1862,6 +3347,639 @@ export interface Rodape {
   textoDireitos?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  cabecalho?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              rotulo?: T;
+              url?: T;
+              id?: T;
+            };
+        textoBotao?: T;
+        textoBotaoCelular?: T;
+        urlBotao?: T;
+      };
+  layout?:
+    | T
+    | {
+        heroPlataforma?: T | BlocoHeroPlataformaSelect<T>;
+        heroCadastro?: T | BlocoHeroCadastroSelect<T>;
+        faixaNomes?: T | BlocoFaixaNomesSelect<T>;
+        faixaEstatisticas?: T | BlocoFaixaEstatisticasSelect<T>;
+        gradeCartoes?: T | BlocoGradeCartoesSelect<T>;
+        camadas?: T | BlocoCamadasSelect<T>;
+        publicoAlvo?: T | BlocoPublicoAlvoSelect<T>;
+        etapasPlataforma?: T | BlocoEtapasPlataformaSelect<T>;
+        passosHub?: T | BlocoPassosHubSelect<T>;
+        casosUso?: T | BlocoCasosUsoSelect<T>;
+        metricas?: T | BlocoMetricasSelect<T>;
+        depoimentoDestaque?: T | BlocoDepoimentoDestaqueSelect<T>;
+        manifesto?: T | BlocoManifestoSelect<T>;
+        cartoesLink?: T | BlocoCartoesLinkSelect<T>;
+        gradeNichos?: T | BlocoGradeNichosSelect<T>;
+        faqSecao?: T | BlocoFaqSecaoSelect<T>;
+        convite?: T | BlocoConviteSelect<T>;
+        contato?: T | BlocoContatoSelect<T>;
+        chamadaFinalCadastro?: T | BlocoChamadaFinalCadastroSelect<T>;
+      };
+  rodape?:
+    | T
+    | {
+        etiqueta?: T;
+        frase?: T;
+        texto?: T;
+        descricaoMarca?: T;
+        colunas?:
+          | T
+          | {
+              titulo?: T;
+              links?:
+                | T
+                | {
+                    rotulo?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        direitos?: T;
+        assinatura?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+        keywords?: T;
+        dadosEstruturados?:
+          | T
+          | {
+              nome?: T;
+              descricao?: T;
+              organizacao?: T;
+              slogan?: T;
+            };
+      };
+  scriptsPersonalizados?:
+    | T
+    | {
+        head?: T;
+        bodyFim?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroPlataforma_select".
+ */
+export interface BlocoHeroPlataformaSelect<T extends boolean = true> {
+  etiqueta?: T;
+  tituloLinha1?: T;
+  tituloLinha2?: T;
+  texto?: T;
+  botaoPrincipal?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  video?:
+    | T
+    | {
+        textoBotao?: T;
+        tituloModal?: T;
+        url?: T;
+        avisoSemVideo?: T;
+      };
+  selos?: T;
+  cartoes?:
+    | T
+    | {
+        desempenho?: T;
+        economiaTitulo?: T;
+        economiaPeriodo?: T;
+        economiaValor?: T;
+        economiaVariacao?: T;
+      };
+  integracoes?:
+    | T
+    | {
+        titulo?: T;
+        itens?:
+          | T
+          | {
+              icone?: T;
+              nome?: T;
+              id?: T;
+            };
+      };
+  rotuloRolagem?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoHeroCadastro_select".
+ */
+export interface BlocoHeroCadastroSelect<T extends boolean = true> {
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  bullets?:
+    | T
+    | {
+        icone?: T;
+        texto?: T;
+        id?: T;
+      };
+  selos?: T;
+  cartao?:
+    | T
+    | {
+        etiqueta?: T;
+        titulo?: T;
+        texto?: T;
+      };
+  formulario?:
+    | T
+    | {
+        origem?: T;
+        formId?: T;
+        rotuloSegmento?: T;
+        opcaoSemSegmento?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaixaNomes_select".
+ */
+export interface BlocoFaixaNomesSelect<T extends boolean = true> {
+  etiqueta?: T;
+  nomes?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaixaEstatisticas_select".
+ */
+export interface BlocoFaixaEstatisticasSelect<T extends boolean = true> {
+  itens?:
+    | T
+    | {
+        valor?: T;
+        rotulo?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoGradeCartoes_select".
+ */
+export interface BlocoGradeCartoesSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        estiloEtiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  variante?: T;
+  rotuloItem?: T;
+  itens?:
+    | T
+    | {
+        icone?: T;
+        numero?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  fraseFinal?:
+    | T
+    | {
+        texto?: T;
+        destaque?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCamadas_select".
+ */
+export interface BlocoCamadasSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        estiloEtiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  rotuloCamada?: T;
+  camadas?:
+    | T
+    | {
+        icone?: T;
+        titulo?: T;
+        cor?: T;
+        itens?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoPublicoAlvo_select".
+ */
+export interface BlocoPublicoAlvoSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        estiloEtiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  itens?: T;
+  faixa?:
+    | T
+    | {
+        titulo?: T;
+        itens?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoEtapasPlataforma_select".
+ */
+export interface BlocoEtapasPlataformaSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        estiloEtiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  rotuloEtapa?: T;
+  etapas?:
+    | T
+    | {
+        icone?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  fraseFinal?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoPassosHub_select".
+ */
+export interface BlocoPassosHubSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  rotuloPasso?: T;
+  passos?:
+    | T
+    | {
+        icone?: T;
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCasosUso_select".
+ */
+export interface BlocoCasosUsoSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        estiloEtiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  abas?:
+    | T
+    | {
+        nome?: T;
+        itens?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoMetricas_select".
+ */
+export interface BlocoMetricasSelect<T extends boolean = true> {
+  ancora?: T;
+  marcador?: T;
+  etiqueta?: T;
+  titulo?: T;
+  principal?:
+    | T
+    | {
+        valor?: T;
+        rotulo?: T;
+      };
+  secundarios?:
+    | T
+    | {
+        valor?: T;
+        rotulo?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDepoimentoDestaque_select".
+ */
+export interface BlocoDepoimentoDestaqueSelect<T extends boolean = true> {
+  ancora?: T;
+  texto?: T;
+  iniciais?: T;
+  autor?: T;
+  cargo?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoManifesto_select".
+ */
+export interface BlocoManifestoSelect<T extends boolean = true> {
+  ancora?: T;
+  etiqueta?: T;
+  linhas?:
+    | T
+    | {
+        texto?: T;
+        id?: T;
+      };
+  assinatura?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoCartoesLink_select".
+ */
+export interface BlocoCartoesLinkSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  cartoes?:
+    | T
+    | {
+        etiqueta?: T;
+        titulo?: T;
+        texto?: T;
+        url?: T;
+        textoLink?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoGradeNichos_select".
+ */
+export interface BlocoGradeNichosSelect<T extends boolean = true> {
+  ancora?: T;
+  cabecalho?:
+    | T
+    | {
+        etiqueta?: T;
+        titulo?: T;
+        subtitulo?: T;
+      };
+  textoLink?: T;
+  textoLinkCurto?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoFaqSecao_select".
+ */
+export interface BlocoFaqSecaoSelect<T extends boolean = true> {
+  ancora?: T;
+  variante?: T;
+  etiqueta?: T;
+  titulo?: T;
+  incluirPerguntasPlataforma?: T;
+  itens?:
+    | T
+    | {
+        pergunta?: T;
+        resposta?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoConvite_select".
+ */
+export interface BlocoConviteSelect<T extends boolean = true> {
+  ancora?: T;
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  botao?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  linkSecundario?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoContato_select".
+ */
+export interface BlocoContatoSelect<T extends boolean = true> {
+  ancora?: T;
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  itens?:
+    | T
+    | {
+        titulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  citacao?:
+    | T
+    | {
+        texto?: T;
+        autor?: T;
+      };
+  formulario?:
+    | T
+    | {
+        opcoesVolume?:
+          | T
+          | {
+              valor?: T;
+              rotulo?: T;
+              id?: T;
+            };
+        aviso?: T;
+        textoBotao?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoChamadaFinalCadastro_select".
+ */
+export interface BlocoChamadaFinalCadastroSelect<T extends boolean = true> {
+  ancora?: T;
+  etiqueta?: T;
+  titulo?: T;
+  texto?: T;
+  vantagens?: T;
+  linkCelular?:
+    | T
+    | {
+        texto?: T;
+        url?: T;
+      };
+  formulario?:
+    | T
+    | {
+        origem?: T;
+        formId?: T;
+        rotuloSegmento?: T;
+        opcaoSemSegmento?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parceiros_select".
+ */
+export interface ParceirosSelect<T extends boolean = true> {
+  cabecalho?:
+    | T
+    | {
+        textoBotao?: T;
+        textoBotaoCurto?: T;
+        urlBotao?: T;
+      };
+  layout?:
+    | T
+    | {
+        heroPlataforma?: T | BlocoHeroPlataformaSelect<T>;
+        heroCadastro?: T | BlocoHeroCadastroSelect<T>;
+        faixaNomes?: T | BlocoFaixaNomesSelect<T>;
+        faixaEstatisticas?: T | BlocoFaixaEstatisticasSelect<T>;
+        gradeCartoes?: T | BlocoGradeCartoesSelect<T>;
+        camadas?: T | BlocoCamadasSelect<T>;
+        publicoAlvo?: T | BlocoPublicoAlvoSelect<T>;
+        etapasPlataforma?: T | BlocoEtapasPlataformaSelect<T>;
+        passosHub?: T | BlocoPassosHubSelect<T>;
+        casosUso?: T | BlocoCasosUsoSelect<T>;
+        metricas?: T | BlocoMetricasSelect<T>;
+        depoimentoDestaque?: T | BlocoDepoimentoDestaqueSelect<T>;
+        manifesto?: T | BlocoManifestoSelect<T>;
+        cartoesLink?: T | BlocoCartoesLinkSelect<T>;
+        gradeNichos?: T | BlocoGradeNichosSelect<T>;
+        faqSecao?: T | BlocoFaqSecaoSelect<T>;
+        convite?: T | BlocoConviteSelect<T>;
+        contato?: T | BlocoContatoSelect<T>;
+        chamadaFinalCadastro?: T | BlocoChamadaFinalCadastroSelect<T>;
+      };
+  rodape?:
+    | T
+    | {
+        texto?: T;
+        textoLink?: T;
+        urlLink?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+      };
+  scriptsPersonalizados?:
+    | T
+    | {
+        head?: T;
+        bodyFim?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,13 +1,19 @@
 import config from '@payload-config'
 import { type DataFromGlobalSlug, getPayload, type GlobalSlug } from 'payload'
 
+import { cartoesHubSeed } from './seed/cartoes-hub'
 import { faqPlataformaSeed, formularioSeed, planosSeed, rodapeSeed } from './seed/globais'
+import { homepageSeed } from './seed/homepage'
 import { paginasSeed } from './seed/paginas'
+import { parceirosSeed } from './seed/parceiros'
 
 // Seed idempotente:
 // 1. admin de SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD, se o e-mail ainda não existir;
-// 2. globais (planos, FAQ da plataforma, formulário, rodapé) que nunca foram salvos;
-// 3. as 11 LPs (10 nichos e agência), publicadas, procuradas pelo slug (cria as que faltam).
+// 2. globais (homepage, parceiros, planos, FAQ da plataforma, formulário, rodapé)
+//    que nunca foram salvos; homepage e parceiros saem publicados;
+// 3. as 11 LPs (10 nichos e agência), publicadas, procuradas pelo slug (cria as que faltam);
+//    o grupo "No programa de parceiros" (cartaoHub) vem de seed/cartoes-hub.ts e é
+//    preenchido também em páginas já existentes que ainda não o têm.
 // O que já existe não é tocado, para não apagar edições feitas no admin.
 // Para sobrescrever com o conteúdo do seed: SEED_ATUALIZAR=1 pnpm seed
 // No fim, se o servidor estiver no ar, pede a revalidação das LPs.
@@ -53,6 +59,8 @@ async function gravarGlobal<S extends GlobalSlug>(slug: S, data: Omit<DataFromGl
   } else console.log(`Global "${slug}" já existe. Mantido.`)
 }
 
+await gravarGlobal('homepage', homepageSeed)
+await gravarGlobal('parceiros', parceirosSeed)
 await gravarGlobal('planos', planosSeed)
 await gravarGlobal('faq-plataforma', faqPlataformaSeed)
 await gravarGlobal('formulario', formularioSeed)
@@ -67,7 +75,7 @@ async function acharPagina(slug: string) {
     limit: 1,
     depth: 0,
   })
-  if (publicada.docs[0]) return publicada.docs[0].id
+  if (publicada.docs[0]) return publicada.docs[0].id as number
   const rascunho = await payload.findVersions({
     collection: 'paginas',
     where: { 'version.slug': { equals: slug } },
@@ -80,7 +88,9 @@ async function acharPagina(slug: string) {
   return null
 }
 
-for (const pagina of paginasSeed) {
+for (const paginaBase of paginasSeed) {
+  const cartaoHub = cartoesHubSeed[paginaBase.slug as keyof typeof cartoesHubSeed]
+  const pagina = cartaoHub ? { ...paginaBase, cartaoHub } : paginaBase
   const id = await acharPagina(pagina.slug)
   if (!id) {
     await payload.create({ collection: 'paginas', data: { ...pagina, _status: 'published' }, context })
@@ -91,7 +101,13 @@ for (const pagina of paginasSeed) {
     mudou = true
     console.log(`Página atualizada e publicada: /bu1lder/${pagina.slug}`)
   } else {
-    console.log(`Página já existe: /bu1lder/${pagina.slug}. Mantida.`)
+    const atual = await payload.findByID({ collection: 'paginas', id, depth: 0, draft: false })
+    if (cartaoHub && !atual.cartaoHub?.nome) {
+      // só o grupo novo; o resto da página fica como está
+      await payload.update({ collection: 'paginas', id, data: { cartaoHub }, context })
+      mudou = true
+      console.log(`Página já existe: /bu1lder/${pagina.slug}. Cartão do programa preenchido.`)
+    } else console.log(`Página já existe: /bu1lder/${pagina.slug}. Mantida.`)
   }
 }
 

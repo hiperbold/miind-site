@@ -116,6 +116,7 @@ export const agenciaMarketing: PaginaSeed = {
       blockType: 'cartoesSegmento',
       etiqueta: 'A sua carteira já precisa disso',
       titulo: 'Uma solução pronta para cada tipo de cliente',
+      subtitulo: 'Você escolhe os módulos com o cliente. A MIIND constrói e opera.',
       cartoes: [
         {
           icone: 'Scissors',
@@ -145,8 +146,7 @@ export const agenciaMarketing: PaginaSeed = {
       blockType: 'simulador',
       etiqueta: 'Como a agência ganha',
       titulo: 'Você fica com parte da mensalidade de cada cliente, enquanto ele estiver ativo.',
-      subtitulo:
-        'Simule a oferta de soluções de IA para os negócios que sua agência já atende. Escolha um plano de referência e ajuste a quantidade de clientes.',
+      subtitulo: 'Escolha um plano de referência e a quantidade de clientes para ver um exemplo.',
       plano: 'Performance',
       permitirEscolherPlano: true,
       cabecalhoCartao: 'Exemplo · Plano {plano}',

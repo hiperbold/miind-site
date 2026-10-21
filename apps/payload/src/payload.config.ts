@@ -11,6 +11,8 @@ import { Paginas } from './collections/Paginas'
 import { Users } from './collections/Users'
 import { FaqPlataforma } from './globals/FaqPlataforma'
 import { Formulario } from './globals/Formulario'
+import { Homepage } from './globals/Homepage'
+import { Parceiros } from './globals/Parceiros'
 import { Planos } from './globals/Planos'
 import { Rodape } from './globals/Rodape'
 
@@ -29,7 +31,7 @@ export default buildConfig({
     fallbackLanguage: 'pt',
   },
   collections: [Paginas, Users, Media],
-  globals: [Planos, FaqPlataforma, Formulario, Rodape],
+  globals: [Homepage, Parceiros, Planos, FaqPlataforma, Formulario, Rodape],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || '',

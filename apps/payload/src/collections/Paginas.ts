@@ -2,6 +2,7 @@ import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 import { ValidationError } from 'payload'
 
 import { blocosPagina } from '@/blocks'
+import { campoIcone } from '@/fields/comuns'
 import { logado, publicadoOuLogado } from '@/lib/acesso'
 import { revalidarAgora, revalidarPaginas } from '@/lib/revalidar'
 
@@ -128,6 +129,33 @@ export const Paginas: CollectionConfig = {
       fields: [
         { name: 'rotulo', label: 'Rótulo', type: 'text', admin: { description: 'Vazio: usa o título.' } },
         { name: 'ordem', label: 'Ordem', type: 'number', defaultValue: 100 },
+      ],
+    },
+    {
+      name: 'cartaoHub',
+      label: 'No programa de parceiros',
+      type: 'group',
+      admin: {
+        position: 'sidebar',
+        condition: (data) => data?.tipo === 'nicho',
+        description: 'Opção no seletor de segmento do cadastro e cartão na grade de segmentos de /bu1lder/parceiros.',
+      },
+      fields: [
+        { name: 'nome', label: 'Nome curto', type: 'text', admin: { description: 'Vazio: usa o rótulo da navegação.' } },
+        { name: 'mostrarNaGrade', label: 'Mostrar na grade de segmentos', type: 'checkbox', defaultValue: false },
+        campoIcone({ admin: { condition: (_, s) => Boolean(s?.mostrarNaGrade) } }),
+        {
+          name: 'estatistica',
+          label: 'Número do mercado',
+          type: 'text',
+          admin: { condition: (_, s) => Boolean(s?.mostrarNaGrade) },
+        },
+        {
+          name: 'texto',
+          label: 'Texto do cartão',
+          type: 'textarea',
+          admin: { condition: (_, s) => Boolean(s?.mostrarNaGrade) },
+        },
       ],
     },
     {

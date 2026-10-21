@@ -1,7 +1,8 @@
 import { revalidatePath } from 'next/cache'
 import { after } from 'next/server'
 
-// Revalida todas as páginas em /bu1lder/[slug] (layout incluso). A navegação de
+// Revalida todas as páginas em /bu1lder/[slug] (layout incluso), a homepage e o
+// programa de parceiros. A navegação de
 // segmentos, os globais e as imagens aparecem em todas as LPs, então qualquer
 // mudança em página, global ou mídia invalida o conjunto inteiro.
 //
@@ -15,8 +16,13 @@ import { after } from 'next/server'
 //   `after` lança erro e a função não faz nada.
 const PADRAO = '/(site)/bu1lder/[slug]'
 
+// Homepage e programa de parceiros são rotas fixas: a grade e o seletor de
+// segmentos dependem das páginas de nicho, e a homepage usa o FAQ da plataforma.
+const ROTAS_FIXAS = ['/bu1lder', '/bu1lder/parceiros']
+
 export function revalidarAgora() {
   revalidatePath(PADRAO, 'layout')
+  for (const rota of ROTAS_FIXAS) revalidatePath(rota)
 }
 
 export function revalidarPaginas(motivo?: { context?: Record<string, unknown> }) {
