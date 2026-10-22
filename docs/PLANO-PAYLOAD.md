@@ -51,7 +51,8 @@ A revisão de copy de contabilidade e agência (chat Estrategista, aguardando OK
 ## Andamento
 
 - 21/10/2026: fases 1 e 2 concluídas (base, blocos, as 14 páginas). Publicação de teste no EasyPanel, projeto `client-project-5` (serviço `bu1lder-site`, banco `bu1lder-db`), em https://client-project-5-bu1lder-site.z0oemb.easypanel.host/bu1lder/ com `SITE_NOINDEX=1`. Conferido no ar: 14 páginas 200, 404 para slug inexistente, redirecionamentos de barra, 51 links e recursos sem erro, sem erro de console, sem rolagem lateral no celular, login do admin.
-- Próximo: fase 3 (formulário real, campos ocultos, webhook do n8n, ty-page) e fase 4 (módulo de tracking 1.3.0).
+- 21-22/10/2026: fase 3 concluída (formulários gravando em `cadastros`, webhook do n8n com `X-Webhook-Secret`, campos ocultos, ty-page com `window.bu1lderLead`) e endurecida após auditoria de segurança (IP só confiado vindo do Cloudflare, limites, papéis admin/editor, API pública restrita a envio, mídia e saúde). Publicada no EasyPanel e conferida no ar: 14 páginas 200, 56 links sem erro, cabeçalhos de segurança, `/bu1lder/api/users/login` 404, IP forjado ignorado (429 no 6º envio), nenhum cadastro gravado pelos testes.
+- Pendente: teste ponta a ponta com o n8n real (aguarda OK do Filipe, cria lead de teste no CRM), Turnstile (sem chaves), fase 4 (módulo de tracking 1.3.0) e a regra do Cloudflare da MIIND para `/bu1lder/*`.
 
 ## Fases
 
