@@ -1,3 +1,4 @@
+import { trackingPlugin } from '@hiperbold/payload-tracking'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { pt } from '@payloadcms/translations/languages/pt'
@@ -20,6 +21,7 @@ import { Parceiros } from './globals/Parceiros'
 import { Planos } from './globals/Planos'
 import { Rodape } from './globals/Rodape'
 import { TyPage } from './globals/TyPage'
+import { trackingOptions } from './tracking/options'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -98,5 +100,7 @@ export default buildConfig({
     if (process.env.SEED_CONTEUDO_NO_INIT?.trim() === '1') await seedNoInit(payload)
   },
   sharp,
-  plugins: [],
+  // Tracking (Meta Pixel/CAPI, GA4, Google Ads) com consentimento c15t.
+  // Tags e Eventos ficam no admin, começam vazios.
+  plugins: [trackingPlugin(trackingOptions)],
 })

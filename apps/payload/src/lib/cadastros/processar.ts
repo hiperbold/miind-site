@@ -8,6 +8,7 @@ import { extrairIp, extrairUserAgent } from './ip'
 import { limiteEnvios, limiteGlobal, type LimiteGlobal, type LimitePorChave } from './limite'
 import { CAMPO_TURNSTILE, segredoTurnstile, validarTurnstile } from './turnstile'
 import { esquemaCorpo, TAMANHO_MAXIMO_CORPO, validarEnvio } from './validacao'
+import { completarAtribuicao, registrarLeadServidor } from './tracking'
 import { enviarWebhook, montarCorpoWebhook, type OpcoesEnvio } from './webhook'
 
 export type RespostaEnvio = {
@@ -107,6 +108,8 @@ export type OpcoesReceber = {
   // Como rodar o envio ao webhook. Padrão: aguarda. No endpoint: after() do
   // Next, para a resposta não esperar o n8n.
   agendar?: (tarefa: () => Promise<unknown>) => void | Promise<unknown>
+  // false: não registra o lead no tracking (padrão: registra).
+  tracking?: boolean
 }
 
 // Lê um corpo de requisição até `maximo` bytes; acima disso, para e devolve null.
@@ -209,7 +212,7 @@ export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio>
         formulario: config.formulario,
         tipo: config.tipo,
         pagina: config.pagina,
-        ...d.ocultos,
+        ...completarAtribuicao(d.ocultos, headers),
         ip,
         user_agent: extrairUserAgent(headers),
         token,
@@ -223,6 +226,26 @@ export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio>
   }
 
   global.registrar()
+
+  // Lead pelo servidor, com o mesmo event_id devolvido ao navegador. Só grava
+  // na outbox (o worker entrega); nunca lança. Desligável nos testes.
+  if (op.tracking !== false) {
+    await registrarLeadServidor(
+      payload,
+      {
+        eventId,
+        pagina: config.pagina,
+        origem: cadastro.origem,
+        email: d.email,
+        whatsapp: d.whatsapp,
+        perfil: d.perfil,
+        empresas_atendidas: d.empresas_atendidas,
+        clientes_atendidos: d.clientes_atendidos,
+      },
+      headers,
+    )
+  }
+
   const tarefa = () => enviarEAtualizar(payload, cadastro, op.webhook, op.opcoesEnvio)
   if (op.agendar) await op.agendar(tarefa)
   else await tarefa()

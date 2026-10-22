@@ -34,7 +34,7 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 | Página de obrigado | http://localhost:3010/bu1lder/ty-page (global `ty-page`) |
 | Saúde | http://localhost:3010/api/saude e /bu1lder/api/saude |
 | Admin | http://localhost:3010/admin |
-| API REST | http://localhost:3010/api/... (login: `/api/users/login`). Por /bu1lder/api/ só o envio do formulário, a mídia e a saúde |
+| API REST | http://localhost:3010/api/... (login: `/api/users/login`). Por /bu1lder/api/ só o envio do formulário, a mídia, a saúde, os três endpoints do navegador do tracking e o POST do banner no c15t |
 
 `/` redireciona para `/bu1lder/`.
 
@@ -75,6 +75,19 @@ Outros scripts: `pnpm build`, `pnpm start` (porta 3010), `pnpm db:down`, `pnpm l
 
 - `/bu1lder/ty-page?nicho=<slug>&cadastro=<token>`, conteúdo no global `ty-page` (título, texto, próximos passos, agenda por iframe ou código, botão, variações por nicho, scripts, "Expor nome, e-mail e WhatsApp aos scripts", desligado por padrão). Tema claro, sempre noindex, sem canonical.
 - O formulário guarda o contexto em `sessionStorage['bu1lder:lead']`. Com o mesmo token da URL, a página define `window.bu1lderLead` (origem, perfil, segmentos, `primeiroNome`, `emailSha256`, `telefoneSha256` dos dígitos com DDI sem `+`, formato da Meta, e `telefoneSha256E164` do E.164 com `+`, formato do Google, `novo`), dispara `bu1lder:lead` e `dataLayer.push({event: 'bu1lder_lead'})` uma vez por token (o reload não repete; `novo: false`). Os scripts do fim do `<body>` rodam depois disso, no navegador. Nenhum dado pessoal vai na URL.
+
+## Tracking (fase 4)
+
+- Módulo `@hiperbold/payload-tracking` 1.3.0, instalado de `vendor/hiperbold-payload-tracking-1.3.0.tgz` (pacote privado da Hiperbold, versionado; nunca reempacotar com a mesma versão). Opções em `src/tracking/options.ts`, usadas pelo plugin, pelo worker e pelo lead do servidor.
+- Tags e Eventos no admin (só admin), começam vazios. Eventos que o site usa: `lead` (tipo Lead, gatilhos Server-side e Manual com chave `lead`) e `schedule` (tipo Agendamento, gatilho Manual `schedule`). PageView da Meta é um Evento com gatilho de visualização de página; page_view do GA4 é automático.
+- Consentimento: checkbox "Exigir banner de consentimento" nas páginas (`paginas`, só admin altera). As 11 LPs saem desmarcadas (migração `tracking_1_3_0` e seed); página nova nasce marcada. `/bu1lder/ty-page` é isenta. Homepage e programa usam o banner (`components/bu1lder/BannerConsentimento.tsx`): browser-token, `POST /bu1lder/api/c15t/subjects` (só POST), `refreshConsent()`.
+- Lead: o envio do cadastro grava, chama `trackServerEvent('lead')` com o `event_id` do cadastro, `pagePath` da página e os headers do navegador; o navegador dispara `track('lead', ..., { eventId })` e só então vai à página de obrigado. Parâmetros: `perfil`, `empresas_atendidas`, `clientes_atendidos`, `pagina` (sem dado pessoal). `fbp`, `fbc`, `gclid` e `gbraid` vazios no formulário são completados pelos cookies das plataformas.
+- Reunião agendada: na ty-page, `window.bu1lderAgendou()` ou o `postMessage` `calendly.event_scheduled` do Calendly disparam `schedule` uma vez por cadastro.
+- `?cadastro=` está em `stripUrlParams`: na ty-page o Pixel não carrega (regra do módulo para URL com parâmetro removido); PageView e Schedule da Meta saem pela CAPI.
+- c15t em `/api/c15t/*` (banco próprio, `C15T_DATABASE_URI`). No start (`src/instrumentation.ts`), fora do build: cria o banco do c15t se faltar (mesmo servidor do `DATABASE_URI`), migra e liga o worker de entregas (`TRACKING_WORKER=0` desliga).
+- `@c15t/backend` fica em `serverExternalPackages` (o Turbopack não resolve um import opcional dele).
+
+Variáveis novas: `PAYLOAD_TRACKING_ENCRYPTION_KEYS`, `PAYLOAD_TRACKING_ACTIVE_KEY_ID`, `PAYLOAD_TRACKING_BROWSER_TOKEN_KEYS`, `PAYLOAD_TRACKING_BROWSER_TOKEN_ACTIVE_KEY_ID`, `C15T_DATABASE_URI`; opcionais `TRACKING_WORKER`, `TRACKING_TRUSTED_PROXIES`, `C15T_BACKEND_URL` (ver `.env.example`).
 
 ## Usuários e segurança
 

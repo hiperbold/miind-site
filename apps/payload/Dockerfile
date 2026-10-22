@@ -17,6 +17,8 @@ WORKDIR /app
 # Dependências (camada em cache enquanto o lock não muda).
 FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# Pacote privado do tracking (file:vendor/...): precisa estar aqui antes do install.
+COPY vendor ./vendor
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile --store-dir /pnpm/store
 

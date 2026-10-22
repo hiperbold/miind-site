@@ -7,11 +7,23 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 // Endpoints da API alcançáveis por /bu1lder/api/... (reescritos para /api/...).
-const ROTAS_API_PUBLICAS = ['/cadastros/enviar', '/media/file/:path*', '/saude']
+// Os três do tracking são os endpoints do navegador do módulo; o c15t não entra
+// aqui (o banner grava por app/(site)/bu1lder/api/c15t/subjects, só POST).
+const ROTAS_API_PUBLICAS = [
+  '/cadastros/enviar',
+  '/media/file/:path*',
+  '/saude',
+  '/tracking/browser-token',
+  '/tracking/collect',
+  '/tracking/public-config',
+]
 
 const nextConfig: NextConfig = {
   // Imagem Docker enxuta: só .next/standalone + .next/static + public.
   output: 'standalone',
+  // c15t fora do bundle: o hono-openapi dele tem import opcional (zod-openapi)
+  // que o Turbopack não resolve. Carregado do node_modules em execução.
+  serverExternalPackages: ['@c15t/backend'],
   // Sem basePath: o prefixo /bu1lder é uma pasta de rotas em app/(site)/bu1lder.
   // Barra final: sem barra em todas as rotas, exceto a homepage, que é /bu1lder/
   // (o Cloudflare da MIIND só encaminha /bu1lder/*). O redirecionamento é feito

@@ -4,9 +4,11 @@ import '@/styles/bu1lder/styles.css'
 import '@/styles/bu1lder/miind-fonts.css'
 import '@/styles/bu1lder/miind-ds.css'
 
+import { TrackingProvider } from '@hiperbold/payload-tracking/client'
 import type { Metadata } from 'next'
-import React from 'react'
+import React, { Suspense } from 'react'
 
+import { BannerConsentimento } from '@/components/bu1lder/BannerConsentimento'
 import { CapturaParametros } from '@/components/bu1lder/CamposOcultos'
 import { metadataRobots } from '@/lib/noindex'
 import { buscarPagina } from '@/lib/paginas'
@@ -46,6 +48,11 @@ export default async function PaginaLayout({
       </head>
       <body>
         <CapturaParametros />
+        <Suspense fallback={null}>
+          <TrackingProvider apiBase="/bu1lder/api" />
+        </Suspense>
+        {/* LP com "Exigir banner de consentimento" marcado no admin */}
+        {pagina && pagina.trackingConsentRequired !== false && <BannerConsentimento />}
         {children}
         <ScriptsBodyFim html={pagina?.scriptsPersonalizados?.bodyFim} />
       </body>

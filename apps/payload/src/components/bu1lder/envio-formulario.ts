@@ -1,7 +1,10 @@
 'use client'
 
+import { track } from '@hiperbold/payload-tracking/client'
+
 import { preencherOcultos } from './CamposOcultos'
 import { CHAVE_LEAD, type ContextoLead } from '@/lib/cadastros/lead'
+import { propriedadesLead } from '@/lib/cadastros/propriedades-lead'
 
 export type RespostaServidor =
   | { ok: true; token: string; eventId: string }
@@ -107,4 +110,31 @@ export function guardarContextoLead(dados: {
 export function urlObrigado(nicho: string, token: string): string {
   const q = new URLSearchParams({ nicho, cadastro: token })
   return `/bu1lder/ty-page?${q.toString()}`
+}
+
+const texto = (v: string | string[] | undefined) => (Array.isArray(v) ? v.join(', ') : (v ?? ''))
+
+// Lead no navegador (Pixel e conversão do gtag do Ads) com o MESMO event_id do
+// servidor (CAPI, GA4 MP). Chamar só no sucesso, antes de ir para a página de
+// obrigado: a Promise resolve quando os disparos saíram (teto de 1 s), nunca
+// rejeita, e é no-op sem consentimento ou sem Evento cadastrado.
+export async function dispararLead(
+  eventId: string,
+  pagina: string,
+  campos: Record<string, string | string[]>,
+): Promise<void> {
+  try {
+    await track(
+      'lead',
+      propriedadesLead({
+        pagina,
+        perfil: texto(campos.perfil),
+        empresas_atendidas: texto(campos.empresas_atendidas),
+        clientes_atendidos: texto(campos.clientes_atendidos),
+      }),
+      { eventId },
+    )
+  } catch {
+    // o tracking nunca impede a ida para a página de obrigado
+  }
 }

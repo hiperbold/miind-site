@@ -73,11 +73,11 @@ export async function executarSeed(payload: Payload, opcoes: OpcoesSeed = {}): P
     const pagina = cartaoHub ? { ...paginaBase, cartaoHub } : paginaBase
     const id = await acharPagina(pagina.slug)
     if (!id) {
-      await payload.create({ collection: 'paginas', data: { ...pagina, _status: 'published' }, context })
+      await payload.create({ collection: 'paginas', data: { ...pagina, trackingConsentRequired: false, _status: 'published' }, context })
       mudou = true
       log(`Página criada e publicada: /bu1lder/${pagina.slug}`)
     } else if (atualizar) {
-      await payload.update({ collection: 'paginas', id, data: { ...pagina, _status: 'published' }, context })
+      await payload.update({ collection: 'paginas', id, data: { ...pagina, trackingConsentRequired: false, _status: 'published' }, context })
       mudou = true
       log(`Página atualizada e publicada: /bu1lder/${pagina.slug}`)
     } else {

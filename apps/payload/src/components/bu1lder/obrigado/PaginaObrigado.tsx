@@ -5,6 +5,7 @@ import { NicheFooter, type FooterLink } from '@/components/bu1lder/NicheFooter'
 import { ThemeToggle } from '@/components/bu1lder/ThemeToggle'
 import type { TyPage } from '@/payload-types'
 
+import { AgendamentoTracking } from './AgendamentoTracking'
 import { EmbedAgenda, LeadObrigado } from './LeadObrigado'
 
 // Página de obrigado (/bu1lder/ty-page). Conteúdo do global "ty-page"; título
@@ -105,6 +106,8 @@ export function PaginaObrigado({
 
       <NicheFooter linksTitle={rodape.tituloLinks} links={rodape.links} rightsText={rodape.textoDireitos} />
 
+      {/* antes do LeadObrigado: window.bu1lderAgendou já existe quando os scripts do fim do body rodam */}
+      <AgendamentoTracking token={token} />
       <LeadObrigado
         token={token}
         exporContato={Boolean(conteudo.exporContatoAosScripts)}

@@ -4,9 +4,10 @@ import '@/styles/bu1lder/styles.css'
 import '@/styles/bu1lder/miind-fonts.css'
 import '@/styles/bu1lder/miind-ds.css'
 
+import { TrackingProvider } from '@hiperbold/payload-tracking/client'
 import type { Metadata } from 'next'
 import { connection } from 'next/server'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import { CapturaParametros } from '@/components/bu1lder/CamposOcultos'
 import { buscarTyPage } from '@/lib/paginas'
@@ -37,6 +38,9 @@ export default async function ObrigadoLayout({ children }: { children: React.Rea
       </head>
       <body>
         <CapturaParametros />
+        <Suspense fallback={null}>
+          <TrackingProvider apiBase="/bu1lder/api" />
+        </Suspense>
         {children}
       </body>
     </html>

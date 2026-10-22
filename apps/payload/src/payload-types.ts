@@ -7,6 +7,11 @@
  */
 
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrackingTagPlatform".
+ */
+export type TrackingTagPlatform = 'meta' | 'ga4' | 'googleAds';
+/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -71,6 +76,10 @@ export interface Config {
     cadastros: Cadastro;
     users: User;
     media: Media;
+    'tracking-tags': TrackingTag;
+    'tracking-events': TrackingEvent;
+    'tracking-deliveries': TrackingDelivery;
+    'tracking-vault': TrackingVault;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -82,6 +91,10 @@ export interface Config {
     cadastros: CadastrosSelect<false> | CadastrosSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'tracking-tags': TrackingTagsSelect<false> | TrackingTagsSelect<true>;
+    'tracking-events': TrackingEventsSelect<false> | TrackingEventsSelect<true>;
+    'tracking-deliveries': TrackingDeliveriesSelect<false> | TrackingDeliveriesSelect<true>;
+    'tracking-vault': TrackingVaultSelect<false> | TrackingVaultSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -290,6 +303,10 @@ export interface Pagina {
     head?: string | null;
     bodyFim?: string | null;
   };
+  /**
+   * Desmarcado: os eventos de tracking desta página disparam SEM consentimento do visitante e sem exibir o banner. Use só em páginas cuja base legal foi decidida pelo dono do site.
+   */
+  trackingConsentRequired?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1557,6 +1574,244 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Tags de plataforma (Meta, GA4, Google Ads) usadas pelos Eventos.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-tags".
+ */
+export interface TrackingTag {
+  id: number;
+  name: string;
+  enabled?: boolean | null;
+  platform: TrackingTagPlatform;
+  meta?: {
+    /**
+     * ID numérico do Pixel. Público; o token CAPI vai no vault.
+     */
+    pixelId?: string | null;
+    /**
+     * Cole o token para definir ou substituir. Deixe vazio para manter o atual. Nunca é exibido de volta.
+     */
+    capiToken?: string | null;
+    /**
+     * Código de teste do Test Events. Write-only, como o token.
+     */
+    testEventCode?: string | null;
+    /**
+     * Marque para REMOVER o token CAPI guardado.
+     */
+    clearCapiToken?: boolean | null;
+    /**
+     * Marque para REMOVER o test event code guardado.
+     */
+    clearTestEventCode?: boolean | null;
+  };
+  ga4?: {
+    /**
+     * Formato G-XXXXXXXX. Público; o API secret vai no vault.
+     */
+    measurementId?: string | null;
+    /**
+     * API secret do Measurement Protocol (opcional). Write-only: criptografado no vault, nunca exibido.
+     */
+    apiSecret?: string | null;
+    /**
+     * Marque para REMOVER o API secret guardado.
+     */
+    clearApiSecret?: boolean | null;
+  };
+  googleAds?: {
+    /**
+     * Formato AW-XXXXXXXXX. O conversion label pertence ao destino, dentro do Evento.
+     */
+    tagId?: string | null;
+    /**
+     * Loja virtual: número do Merchant Center (só dígitos). Público. Vazio: a compra sai sem aw_merchant_id (os demais dados do carrinho vão).
+     */
+    merchantId?: string | null;
+    /**
+     * Loja virtual: país do feed de produtos, 2 letras maiúsculas. Vazio usa BR.
+     */
+    feedCountry?: string | null;
+    /**
+     * Loja virtual: idioma do feed de produtos, 2 letras minúsculas. Vazio usa pt.
+     */
+    feedLanguage?: string | null;
+    /**
+     * Loja virtual, compra também pelo servidor (Data Manager API): ID da conta do Google Ads que recebe a conversão, 10 dígitos sem hífen. Público. Sem ele e sem a conta de serviço, a conversão sai só pelo navegador.
+     */
+    customerId?: string | null;
+    /**
+     * Opcional: ID da conta gerente (MCC) onde a conta de serviço tem acesso, 10 dígitos sem hífen. Vazio quando a conta de serviço tem acesso direto à conta acima.
+     */
+    loginCustomerId?: string | null;
+    /**
+     * Cole o JSON da conta de serviço do Google Cloud para definir ou substituir. Deixe vazio para manter o atual. Nunca é exibido de volta.
+     */
+    serviceAccount?: string | null;
+    /**
+     * Marque para REMOVER a conta de serviço guardada.
+     */
+    clearServiceAccount?: boolean | null;
+    /**
+     * Só validar: a Data Manager API confere cada conversão do servidor e não grava nenhuma. Use para testar a credencial e a ação de conversão; desmarque para valer.
+     */
+    validateOnly?: boolean | null;
+  };
+  /**
+   * Derivado do vault; nunca contém o segredo.
+   */
+  credentialsConfigured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Eventos rastreáveis: gatilhos + destinos.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-events".
+ */
+export interface TrackingEvent {
+  id: number;
+  name: string;
+  /**
+   * Identificador técnico imutável: minúsculas, dígitos, ponto, hífen e sublinhado (até 64).
+   */
+  key: string;
+  enabled?: boolean | null;
+  /**
+   * Define o nome padrão do evento em cada plataforma (GA4: o próprio tipo, lead vira generate_lead; Meta: ViewContent, AddToCart, Purchase, Lead, Schedule...). O nome do evento do destino, quando preenchido, vence. Lead e Agendamento: itens e valor opcionais; com gatilho Server-side, o servidor é a fonte do CAPI, do GA4 e do Google Ads pela API, e o navegador só dispara o Pixel e a conversão do gtag com o mesmo id. Deixe vazio para um evento comum (clique, formulário).
+   */
+  commerceType?:
+    | (
+        | 'view_item_list'
+        | 'select_item'
+        | 'view_item'
+        | 'search'
+        | 'add_to_wishlist'
+        | 'add_to_cart'
+        | 'remove_from_cart'
+        | 'view_cart'
+        | 'begin_checkout'
+        | 'add_shipping_info'
+        | 'add_payment_info'
+        | 'purchase'
+        | 'lead'
+        | 'schedule'
+      )
+    | null;
+  /**
+   * Evento de comércio nasce com "Sempre" (cada ação conta). Para mudar, edite depois de criar. A compra no navegador ignora este campo: sai uma vez por pedido.
+   */
+  frequency: 'page' | 'session' | 'always';
+  /**
+   * Gatilhos em OU: qualquer um dispara o Evento.
+   */
+  triggers: {
+    type: 'pageView' | 'linkClick' | 'formSubmit' | 'scroll' | 'manual' | 'server';
+    /**
+     * A query string participa da comparação e do escopo de frequência?
+     */
+    includeQuery?: boolean | null;
+    match?: {
+      operator?: ('equals' | 'startsWith' | 'contains') | null;
+      value?: string | null;
+    };
+    field?: ('id' | 'name' | 'action') | null;
+    value?: string | null;
+    percentage?: number | null;
+    /**
+     * Chave recebida por track() / trackServerEvent().
+     */
+    key?: string | null;
+    /**
+     * Grupo E (F7-16): o gatilho só dispara se a página atual TAMBÉM casar com a condição abaixo. Entre linhas de gatilho continua valendo OU.
+     */
+    pageEnabled?: boolean | null;
+    pageMatch?: {
+      operator?: ('startsWith' | 'equals' | 'contains') | null;
+      value?: string | null;
+    };
+    /**
+     * Considerar a query string (?utm=…) na comparação da página.
+     */
+    pageIncludeQuery?: boolean | null;
+    id?: string | null;
+  }[];
+  /**
+   * Cada destino dispara de forma independente para a Tag relacionada.
+   */
+  destinations: {
+    tag: number | TrackingTag;
+    /**
+     * Nome do evento na plataforma (opcional). Vazio usa o padrão do tipo de comércio do Evento, quando houver; destino Meta de um tipo sem evento padrão exige o nome.
+     */
+    eventName?: string | null;
+    /**
+     * Somente destinos Google Ads: o label da ação de conversão (send_to = AW-ID/LABEL).
+     */
+    conversionLabel?: string | null;
+    /**
+     * Somente destinos Google Ads de um Evento do tipo Compra, Lead ou Agendamento: ID numérico da ação de conversão para a Data Manager API (o evento também sai pelo servidor). Fonte adicional (padrão): o ID da MESMA ação do rótulo de conversão do gtag; no Google Ads abra a ação (Metas > Conversões) e leia o parâmetro ctId na URL. Offline: o ID da ação separada do tipo "Website (importar de cliques)". Vazio: a compra sai só pelo navegador.
+     */
+    conversionActionId?: string | null;
+    /**
+     * Como a compra do servidor entra no Google Ads. Fonte adicional (recomendado; vazio vale isto): usa a MESMA ação do gtag e o Google deduplica pelo id da compra, o mesmo transaction_id opaco do gtag (ação do tipo Website/tag; o dado do servidor só entra no lance após 14 dias). Offline: ação separada "Website (importar de cliques)"; ATENÇÃO: não deduplica com o navegador, e se a ação do navegador também conta compra, a compra conta EM DOBRO. Só preencha com o ID da ação acima.
+     */
+    serverConversionMode?: ('fonteAdicional' | 'offline') | null;
+    /**
+     * Parâmetros FIXOS enviados junto do evento neste destino (ex.: content_name, lead_type). Valor fornecido em runtime pelo track() com a mesma chave VENCE o fixo. Sem JavaScript, sem leitura de window.
+     */
+    params?:
+      | {
+          key: string;
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+    enabled?: boolean | null;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-deliveries".
+ */
+export interface TrackingDelivery {
+  id: number;
+  eventKey: string;
+  status: 'pending' | 'leased' | 'delivered' | 'retryable' | 'cancelled' | 'dead';
+  idempotencyKey: string;
+  orderKey?: string | null;
+  destinationId: string;
+  eventId: string;
+  subjectId: string;
+  snapshot?: string | null;
+  attempts?: number | null;
+  leasedUntil?: string | null;
+  nextAttemptAt?: string | null;
+  lastError?: string | null;
+  lastLatencyMs?: number | null;
+  consentBasis?: ('consent' | 'page_policy_none') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-vault".
+ */
+export interface TrackingVault {
+  id: number;
+  entryId: string;
+  tagId: string;
+  credentialType: string;
+  envelope: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -1595,6 +1850,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'tracking-tags';
+        value: number | TrackingTag;
+      } | null)
+    | ({
+        relationTo: 'tracking-events';
+        value: number | TrackingEvent;
+      } | null)
+    | ({
+        relationTo: 'tracking-deliveries';
+        value: number | TrackingDelivery;
+      } | null)
+    | ({
+        relationTo: 'tracking-vault';
+        value: number | TrackingVault;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1702,6 +1973,7 @@ export interface PaginasSelect<T extends boolean = true> {
         head?: T;
         bodyFim?: T;
       };
+  trackingConsentRequired?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -2225,6 +2497,137 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-tags_select".
+ */
+export interface TrackingTagsSelect<T extends boolean = true> {
+  name?: T;
+  enabled?: T;
+  platform?: T;
+  meta?:
+    | T
+    | {
+        pixelId?: T;
+        capiToken?: T;
+        testEventCode?: T;
+        clearCapiToken?: T;
+        clearTestEventCode?: T;
+      };
+  ga4?:
+    | T
+    | {
+        measurementId?: T;
+        apiSecret?: T;
+        clearApiSecret?: T;
+      };
+  googleAds?:
+    | T
+    | {
+        tagId?: T;
+        merchantId?: T;
+        feedCountry?: T;
+        feedLanguage?: T;
+        customerId?: T;
+        loginCustomerId?: T;
+        serviceAccount?: T;
+        clearServiceAccount?: T;
+        validateOnly?: T;
+      };
+  credentialsConfigured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-events_select".
+ */
+export interface TrackingEventsSelect<T extends boolean = true> {
+  name?: T;
+  key?: T;
+  enabled?: T;
+  commerceType?: T;
+  frequency?: T;
+  triggers?:
+    | T
+    | {
+        type?: T;
+        includeQuery?: T;
+        match?:
+          | T
+          | {
+              operator?: T;
+              value?: T;
+            };
+        field?: T;
+        value?: T;
+        percentage?: T;
+        key?: T;
+        pageEnabled?: T;
+        pageMatch?:
+          | T
+          | {
+              operator?: T;
+              value?: T;
+            };
+        pageIncludeQuery?: T;
+        id?: T;
+      };
+  destinations?:
+    | T
+    | {
+        tag?: T;
+        eventName?: T;
+        conversionLabel?: T;
+        conversionActionId?: T;
+        serverConversionMode?: T;
+        params?:
+          | T
+          | {
+              key?: T;
+              value?: T;
+              id?: T;
+            };
+        enabled?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-deliveries_select".
+ */
+export interface TrackingDeliveriesSelect<T extends boolean = true> {
+  eventKey?: T;
+  status?: T;
+  idempotencyKey?: T;
+  orderKey?: T;
+  destinationId?: T;
+  eventId?: T;
+  subjectId?: T;
+  snapshot?: T;
+  attempts?: T;
+  leasedUntil?: T;
+  nextAttemptAt?: T;
+  lastError?: T;
+  lastLatencyMs?: T;
+  consentBasis?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tracking-vault_select".
+ */
+export interface TrackingVaultSelect<T extends boolean = true> {
+  entryId?: T;
+  tagId?: T;
+  credentialType?: T;
+  envelope?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

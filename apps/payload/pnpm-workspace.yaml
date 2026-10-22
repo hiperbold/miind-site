@@ -3,3 +3,6 @@ allowBuilds:
   sharp: true
   esbuild: true
   unrs-resolver: true
+# Pacote privado da Hiperbold, instalado de vendor/ (não existe no registro público).
+minimumReleaseAgeExclude:
+  - '@hiperbold/payload-tracking'

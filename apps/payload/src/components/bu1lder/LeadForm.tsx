@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { CamposOcultos } from './CamposOcultos'
-import { enviarFormulario, guardarContextoLead, urlObrigado } from './envio-formulario'
+import { dispararLead, enviarFormulario, guardarContextoLead, urlObrigado } from './envio-formulario'
 import { resetarTurnstile, Turnstile } from './Turnstile'
 
 export type ExtraQuestion = {
@@ -110,6 +110,7 @@ export function LeadForm({
       campos,
       contato: { nome: raw.nome, email: raw.email, whatsapp: raw.whatsapp },
     })
+    await dispararLead(resposta.eventId, pagina, campos)
     // o botão continua em "Enviando..." até a página de obrigado abrir
     router.push(urlObrigado(pagina, resposta.token))
   }

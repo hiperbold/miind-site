@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { CamposOcultos } from '@/components/bu1lder/CamposOcultos'
-import { enviarFormulario, guardarContextoLead, urlObrigado } from '@/components/bu1lder/envio-formulario'
+import { dispararLead, enviarFormulario, guardarContextoLead, urlObrigado } from '@/components/bu1lder/envio-formulario'
 import { resetarTurnstile, Turnstile } from '@/components/bu1lder/Turnstile'
 import { botaoClasses } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -97,6 +97,7 @@ export function FormularioContato({
       campos,
       contato: { nome: dados.name, email: dados.email, whatsapp: dados.phone },
     })
+    await dispararLead(resposta.eventId, pagina, campos)
     // o botão continua em "Enviando..." até a página de obrigado abrir
     router.push(urlObrigado(pagina, resposta.token))
   }
