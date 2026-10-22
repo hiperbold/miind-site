@@ -12,7 +12,7 @@ import { trackingOptions } from '@/tracking/options'
 import { PAGINA_HOMEPAGE, PAGINA_PARCEIROS } from './ids'
 import { TAMANHO_MAXIMO_PARAMETRO } from './parametros'
 import type { Ocultos } from './validacao'
-import { propriedadesLead } from './propriedades-lead'
+import { EVENTO_LEAD, propriedadesLead } from './propriedades-lead'
 
 // Lead pelo servidor (Meta CAPI, GA4 Measurement Protocol, Google Ads API),
 // depois de o cadastro estar gravado, com o MESMO event_id que o navegador usa
@@ -52,6 +52,8 @@ export function completarAtribuicao(ocultos: Ocultos, headers: HeadersLike): Ocu
 
 export type DadosLeadServidor = {
   eventId: string
+  // chave do Evento (padrão: lead); contato da plataforma: contato_plataforma
+  evento?: string
   pagina: string
   origem?: string | null
   email: string
@@ -69,7 +71,7 @@ export async function registrarLeadServidor(
 ): Promise<ServerTrackResult | null> {
   try {
     const cliente = createTrackingClient(payload, opcoes())
-    const r = await cliente.trackServerEvent('lead', propriedadesLead(dados), {
+    const r = await cliente.trackServerEvent(dados.evento ?? EVENTO_LEAD, propriedadesLead(dados), {
       eventId: dados.eventId,
       headers,
       pagePath: caminhoDaPagina(dados.pagina),
@@ -77,11 +79,11 @@ export async function registrarLeadServidor(
       user: { email: dados.email, phone: dados.whatsapp },
     })
     if (r.accepted === 0 && r.reason !== 'replayed' && r.reason !== 'event_not_found') {
-      payload.logger.warn(`[tracking] lead ${dados.eventId} não enfileirado: ${r.reason}${r.message ? ` (${r.message})` : ''}`)
+      payload.logger.warn(`[tracking] ${dados.evento ?? EVENTO_LEAD} ${dados.eventId} não enfileirado: ${r.reason}${r.message ? ` (${r.message})` : ''}`)
     }
     return r
   } catch (err) {
-    payload.logger.error(`[tracking] lead ${dados.eventId}: ${err instanceof Error ? err.message : 'erro'}`)
+    payload.logger.error(`[tracking] ${dados.evento ?? EVENTO_LEAD} ${dados.eventId}: ${err instanceof Error ? err.message : 'erro'}`)
     return null
   }
 }

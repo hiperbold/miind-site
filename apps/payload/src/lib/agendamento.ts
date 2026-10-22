@@ -27,6 +27,8 @@ export type OpcoesAgendamento = {
 }
 
 // Devolve a função exposta em window.bu1lderAgendou(). true = disparou agora.
+// A marca de "já agendou" no sessionStorage só é gravada depois de o disparo
+// resolver; se ele rejeitar, nada é gravado e uma nova chamada tenta de novo.
 export function criarAgendamento(op: OpcoesAgendamento): () => boolean {
   let feito = false
   return () => {
@@ -37,13 +39,26 @@ export function criarAgendamento(op: OpcoesAgendamento): () => boolean {
           feito = true
           return false
         }
-        op.armazenamento?.setItem(chaveAgendado(op.token), '1')
       } catch {
         // sem sessionStorage: vale a trava desta página
       }
     }
     feito = true
-    void op.disparar(`sched_${op.novoId()}`)
+    const token = op.token
+    void (async () => {
+      try {
+        await op.disparar(`sched_${op.novoId()}`)
+      } catch {
+        feito = false
+        return
+      }
+      if (!token) return
+      try {
+        op.armazenamento?.setItem(chaveAgendado(token), '1')
+      } catch {
+        // sem sessionStorage: vale a trava desta página
+      }
+    })()
     return true
   }
 }

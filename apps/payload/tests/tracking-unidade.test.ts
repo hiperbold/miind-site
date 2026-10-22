@@ -117,12 +117,14 @@ describe('banner de consentimento', () => {
 })
 
 describe('reunião agendada na ty-page', () => {
-  it('dispara uma vez, com id sched_, mesmo chamado várias vezes ou depois de recarregar', () => {
+  it('dispara uma vez, com id sched_, mesmo chamado várias vezes ou depois de recarregar', async () => {
     const s = memoria()
     const ids: string[] = []
     const um = criarAgendamento({ token: 'tok', armazenamento: s, novoId: () => 'u1', disparar: (id) => ids.push(id) })
     expect(um()).toBe(true)
     expect(um()).toBe(false)
+    // a marca é gravada depois de o disparo resolver
+    await new Promise((r) => setTimeout(r, 0))
     const recarregado = criarAgendamento({ token: 'tok', armazenamento: s, novoId: () => 'u2', disparar: (id) => ids.push(id) })
     expect(recarregado()).toBe(false)
     expect(ids).toEqual(['sched_u1'])

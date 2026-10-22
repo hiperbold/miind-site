@@ -8,6 +8,7 @@ import { CamposOcultos } from '@/components/bu1lder/CamposOcultos'
 import { dispararLead, enviarFormulario, guardarContextoLead, urlObrigado } from '@/components/bu1lder/envio-formulario'
 import { resetarTurnstile, Turnstile } from '@/components/bu1lder/Turnstile'
 import { botaoClasses } from '@/components/ui/button'
+import { EVENTO_CONTATO_PLATAFORMA } from '@/lib/cadastros/propriedades-lead'
 import { cn } from '@/lib/utils'
 
 // Porte de ContactForm (apps/bu1lder/src/components/site/ContactForm.tsx), com
@@ -97,7 +98,9 @@ export function FormularioContato({
       campos,
       contato: { nome: dados.name, email: dados.email, whatsapp: dados.phone },
     })
-    await dispararLead(resposta.eventId, pagina, campos)
+    // não é o lead (conversão primária é o cadastro Bu1lder): chave própria,
+    // mesmo event_id do servidor; sem Evento com essa chave, nada sai
+    await dispararLead(resposta.eventId, pagina, campos, EVENTO_CONTATO_PLATAFORMA)
     // o botão continua em "Enviando..." até a página de obrigado abrir
     router.push(urlObrigado(pagina, resposta.token))
   }

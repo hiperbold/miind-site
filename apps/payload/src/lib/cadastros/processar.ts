@@ -8,7 +8,8 @@ import { extrairIp, extrairUserAgent } from './ip'
 import { limiteEnvios, limiteGlobal, type LimiteGlobal, type LimitePorChave } from './limite'
 import { CAMPO_TURNSTILE, segredoTurnstile, validarTurnstile } from './turnstile'
 import { esquemaCorpo, TAMANHO_MAXIMO_CORPO, validarEnvio } from './validacao'
-import { completarAtribuicao, registrarLeadServidor } from './tracking'
+import { eventoDoFormulario } from './propriedades-lead'
+import { completarAtribuicao, registrarLeadServidor, type DadosLeadServidor } from './tracking'
 import { enviarWebhook, montarCorpoWebhook, type OpcoesEnvio } from './webhook'
 
 export type RespostaEnvio = {
@@ -110,6 +111,9 @@ export type OpcoesReceber = {
   agendar?: (tarefa: () => Promise<unknown>) => void | Promise<unknown>
   // false: não registra o lead no tracking (padrão: registra).
   tracking?: boolean
+  // Registro do lead no tracking (padrão: registrarLeadServidor). Roda depois
+  // de o envio ao n8n estar agendado; falha aqui nunca afeta o envio nem a resposta.
+  registrarLead?: (dados: DadosLeadServidor, headers: Headers) => Promise<unknown>
 }
 
 // Lê um corpo de requisição até `maximo` bytes; acima disso, para e devolve null.
@@ -227,28 +231,41 @@ export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio>
 
   global.registrar()
 
-  // Lead pelo servidor, com o mesmo event_id devolvido ao navegador. Só grava
-  // na outbox (o worker entrega); nunca lança. Desligável nos testes.
-  if (op.tracking !== false) {
-    await registrarLeadServidor(
-      payload,
-      {
-        eventId,
-        pagina: config.pagina,
-        origem: cadastro.origem,
-        email: d.email,
-        whatsapp: d.whatsapp,
-        perfil: d.perfil,
-        empresas_atendidas: d.empresas_atendidas,
-        clientes_atendidos: d.clientes_atendidos,
-      },
-      headers,
-    )
-  }
-
+  // 1) envio ao n8n agendado primeiro; 2) só então o lead do tracking, também
+  // fora do caminho da resposta, com o mesmo event_id devolvido ao navegador
+  // (dedup com o Pixel). O módulo só grava na outbox (o worker entrega).
   const tarefa = () => enviarEAtualizar(payload, cadastro, op.webhook, op.opcoesEnvio)
   if (op.agendar) await op.agendar(tarefa)
   else await tarefa()
+
+  if (op.tracking !== false) {
+    const dados: DadosLeadServidor = {
+      eventId,
+      evento: eventoDoFormulario(config.tipo),
+      pagina: config.pagina,
+      origem: cadastro.origem,
+      email: d.email,
+      whatsapp: d.whatsapp,
+      perfil: d.perfil,
+      empresas_atendidas: d.empresas_atendidas,
+      clientes_atendidos: d.clientes_atendidos,
+    }
+    const cabecalhos = new Headers(headers)
+    const registrar = op.registrarLead ?? ((x: DadosLeadServidor, h: Headers) => registrarLeadServidor(payload, x, h))
+    const tarefaTracking = async () => {
+      try {
+        await registrar(dados, cabecalhos)
+      } catch (err) {
+        payload.logger.error(`[tracking] ${dados.evento} ${eventId}: ${err instanceof Error ? err.message : 'erro'}`)
+      }
+    }
+    try {
+      if (op.agendar) await op.agendar(tarefaTracking)
+      else await tarefaTracking()
+    } catch (err) {
+      payload.logger.error(`[tracking] não foi possível agendar ${dados.evento} ${eventId}: ${err instanceof Error ? err.message : 'erro'}`)
+    }
+  }
 
   return { status: 200, corpo: { ok: true, token, eventId } }
 }

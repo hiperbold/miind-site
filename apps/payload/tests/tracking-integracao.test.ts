@@ -6,7 +6,7 @@ import { POST as postSubjects } from '@/app/(site)/bu1lder/api/c15t/subjects/rou
 import { LimiteGlobal, LimitePorChave } from '@/lib/cadastros/limite'
 import { receberCadastro } from '@/lib/cadastros/processar'
 import { registrarLeadServidor } from '@/lib/cadastros/tracking'
-import { c15t, migrateC15t } from '@/tracking/c15t'
+import { c15tHandler, migrateC15t } from '@/tracking/c15t'
 
 import { abrirSnapshot } from './helpers/outbox'
 
@@ -37,7 +37,7 @@ beforeAll(async () => {
   await migrateC15t()
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input)
-    if (url.includes('/api/c15t/')) return c15t.handler(new Request(url, init))
+    if (url.includes('/api/c15t/')) return c15tHandler(new Request(url, init))
     return fetchReal(input as never, init)
   }) as typeof fetch
   payload = await getPayload({ config })
@@ -192,7 +192,7 @@ describe('lead pelo servidor no envio do cadastro', () => {
     const resp = await postSubjects(
       new Request('http://localhost:3010/bu1lder/api/c15t/subjects', {
         method: 'POST',
-        headers: { 'content-type': 'application/json', origin: 'http://localhost:3010' },
+        headers: { 'content-type': 'application/json', origin: 'http://localhost:3010', cookie, 'x-real-ip': '203.0.113.31' },
         body: JSON.stringify({
           domain: 'localhost',
           givenAt: Date.now(),

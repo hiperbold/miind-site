@@ -4,7 +4,7 @@ import { track } from '@hiperbold/payload-tracking/client'
 
 import { preencherOcultos } from './CamposOcultos'
 import { CHAVE_LEAD, type ContextoLead } from '@/lib/cadastros/lead'
-import { propriedadesLead } from '@/lib/cadastros/propriedades-lead'
+import { EVENTO_LEAD, propriedadesLead } from '@/lib/cadastros/propriedades-lead'
 
 export type RespostaServidor =
   | { ok: true; token: string; eventId: string }
@@ -117,15 +117,17 @@ const texto = (v: string | string[] | undefined) => (Array.isArray(v) ? v.join('
 // Lead no navegador (Pixel e conversão do gtag do Ads) com o MESMO event_id do
 // servidor (CAPI, GA4 MP). Chamar só no sucesso, antes de ir para a página de
 // obrigado: a Promise resolve quando os disparos saíram (teto de 1 s), nunca
-// rejeita, e é no-op sem consentimento ou sem Evento cadastrado.
+// rejeita, e é no-op sem consentimento ou sem Evento cadastrado. `evento`:
+// lead (cadastro Bu1lder) ou contato_plataforma (contato da plataforma enterprise).
 export async function dispararLead(
   eventId: string,
   pagina: string,
   campos: Record<string, string | string[]>,
+  evento: string = EVENTO_LEAD,
 ): Promise<void> {
   try {
     await track(
-      'lead',
+      evento,
       propriedadesLead({
         pagina,
         perfil: texto(campos.perfil),
