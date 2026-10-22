@@ -1,6 +1,7 @@
 import type { Block } from 'payload'
 
 import { campoIcone } from '@/fields/comuns'
+import { validarUrl } from '@/lib/url-segura'
 
 const botao = (name: string, label: string, url: string) => ({
   name,
@@ -11,7 +12,7 @@ const botao = (name: string, label: string, url: string) => ({
       type: 'row' as const,
       fields: [
         { name: 'texto', label: 'Texto', type: 'text' as const },
-        { name: 'url', label: 'Link', type: 'text' as const, defaultValue: url },
+        { name: 'url', label: 'Link', type: 'text' as const, validate: validarUrl, defaultValue: url },
       ],
     },
   ],

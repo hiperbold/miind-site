@@ -4,6 +4,7 @@ import { blocosPlataforma } from '@/blocks/plataforma'
 import { campoScriptsPersonalizados, campoSeoGlobal } from '@/fields/seo-scripts'
 import { logado, publicadoOuLogado } from '@/lib/acesso'
 import { revalidarPaginas } from '@/lib/revalidar'
+import { validarUrl } from '@/lib/url-segura'
 
 // Programa de parceiros (/bu1lder/parceiros). Rascunho e publicação: o site só
 // mostra a versão publicada.
@@ -34,7 +35,7 @@ export const Parceiros: GlobalConfig = {
                   fields: [
                     { name: 'textoBotao', label: 'Botão', type: 'text' },
                     { name: 'textoBotaoCurto', label: 'Botão no celular', type: 'text' },
-                    { name: 'urlBotao', label: 'Link do botão', type: 'text', defaultValue: '#cadastro' },
+                    { name: 'urlBotao', label: 'Link do botão', type: 'text', validate: validarUrl, defaultValue: '#cadastro' },
                   ],
                 },
               ],
@@ -50,7 +51,7 @@ export const Parceiros: GlobalConfig = {
                   type: 'row',
                   fields: [
                     { name: 'textoLink', label: 'Texto do link', type: 'text' },
-                    { name: 'urlLink', label: 'Link', type: 'text', defaultValue: '/bu1lder/' },
+                    { name: 'urlLink', label: 'Link', type: 'text', validate: validarUrl, defaultValue: '/bu1lder/' },
                   ],
                 },
               ],

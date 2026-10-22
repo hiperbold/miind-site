@@ -26,6 +26,11 @@ export const CHAVES_WEBHOOK = [
   'consentimento',
   'event_id',
   'criado_em',
+  // contato da homepage (null nos outros formulários)
+  'empresa',
+  'cargo',
+  'volume',
+  'desafio',
 ] as const
 
 export type CorpoWebhook = Record<(typeof CHAVES_WEBHOOK)[number], string | number | boolean | string[] | null>
@@ -57,6 +62,10 @@ export function montarCorpoWebhook(c: Cadastro): CorpoWebhook {
     consentimento: Boolean(c.consentimento?.aceito),
     event_id: texto(c.event_id),
     criado_em: texto(c.createdAt),
+    empresa: texto(c.contato?.empresa),
+    cargo: texto(c.contato?.cargo),
+    volume: texto(c.contato?.volume),
+    desafio: texto(c.contato?.desafio),
   } satisfies CorpoWebhook
   return corpo
 }
@@ -73,6 +82,8 @@ export type OpcoesEnvio = {
   timeoutMs?: number
   // tentativas extras em erro de rede, timeout ou 5xx
   novasTentativas?: number
+  // N8N_WEBHOOK_SECRET: vai no cabeçalho X-Webhook-Secret
+  segredo?: string | null
   fetch?: typeof fetch
 }
 
@@ -98,7 +109,10 @@ export async function enviarWebhook(url: string, corpo: CorpoWebhook, opcoes: Op
     try {
       const res = await f(url, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+          ...(opcoes.segredo ? { 'x-webhook-secret': opcoes.segredo } : {}),
+        },
         body: JSON.stringify(corpo),
         signal: AbortSignal.timeout(timeoutMs),
         redirect: 'error',

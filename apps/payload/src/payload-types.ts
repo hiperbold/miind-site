@@ -1529,11 +1529,14 @@ export interface Cadastro {
   createdAt: string;
 }
 /**
+ * Admin gerencia usuários e scripts. Editor edita conteúdo. Recuperar senha por e-mail exige um adaptador de e-mail, ainda não configurado.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -2187,6 +2190,7 @@ export interface CadastrosSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

@@ -26,8 +26,9 @@ export async function criarAdminInicial(
 
     await payload.create({
       collection: 'users',
-      data: { email, password: senha },
+      data: { email, password: senha, role: 'admin' },
       overrideAccess: true,
+      context: { criacaoPeloSistema: true },
     })
     payload.logger.info(`Admin inicial criado: ${email}`)
     return 'criado'

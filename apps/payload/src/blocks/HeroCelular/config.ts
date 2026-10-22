@@ -1,6 +1,7 @@
 import type { Block } from 'payload'
 
 import { campoIcone } from '@/fields/comuns'
+import { validarUrl } from '@/lib/url-segura'
 
 export const HeroCelular: Block = {
   slug: 'heroCelular',
@@ -32,7 +33,7 @@ export const HeroCelular: Block = {
           type: 'row',
           fields: [
             { name: 'texto', label: 'Texto', type: 'text' },
-            { name: 'url', label: 'Link', type: 'text', defaultValue: '#cadastro' },
+            { name: 'url', label: 'Link', type: 'text', validate: validarUrl, defaultValue: '#cadastro' },
           ],
         },
       ],
@@ -46,7 +47,7 @@ export const HeroCelular: Block = {
           type: 'row',
           fields: [
             { name: 'texto', label: 'Texto', type: 'text' },
-            { name: 'url', label: 'Link', type: 'text', defaultValue: '#solucoes' },
+            { name: 'url', label: 'Link', type: 'text', validate: validarUrl, defaultValue: '#solucoes' },
           ],
         },
       ],

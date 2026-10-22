@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { validarUrl } from '@/lib/url-segura'
 
 export const ChamadaCadastro: Block = {
   slug: 'chamadaCadastro',
@@ -96,7 +97,7 @@ export const ChamadaCadastro: Block = {
               type: 'row',
               fields: [
                 { name: 'texto', label: 'Texto', type: 'text' },
-                { name: 'url', label: 'Link', type: 'text' },
+                { name: 'url', label: 'Link', type: 'text', validate: validarUrl },
               ],
             },
           ],

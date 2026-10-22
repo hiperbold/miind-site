@@ -30,13 +30,15 @@ describe('formulário de contato da homepage', () => {
     phone: '11999998888',
     volume: '100-500',
     challenge: 'Atendimento manual no WhatsApp',
+    consent: 'on',
   }
   it('aceita dados válidos e acusa cada campo inválido', () => {
     expect(validarContato(ok)).toEqual({})
-    expect(validarContato({ ...ok, email: 'x@', volume: '', challenge: 'curto' })).toEqual({
+    expect(validarContato({ ...ok, email: 'x@', volume: '', challenge: 'curto', consent: '' })).toEqual({
       email: 'E-mail inválido',
       volume: 'Selecione uma opção',
       challenge: 'Descreva o desafio',
+      consent: 'Confirme o consentimento LGPD',
     })
   })
 })

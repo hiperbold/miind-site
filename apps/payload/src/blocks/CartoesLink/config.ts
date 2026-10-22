@@ -1,6 +1,7 @@
 import type { Block } from 'payload'
 
 import { campoAncora, campoCabecalhoHub } from '@/fields/plataforma'
+import { validarUrl } from '@/lib/url-segura'
 
 export const CartoesLink: Block = {
   slug: 'cartoesLink',
@@ -25,7 +26,7 @@ export const CartoesLink: Block = {
         {
           type: 'row',
           fields: [
-            { name: 'url', label: 'Link', type: 'text', required: true, admin: { description: 'Ex.: /bu1lder/contabilidade' } },
+            { name: 'url', label: 'Link', type: 'text', validate: validarUrl, required: true, admin: { description: 'Ex.: /bu1lder/contabilidade' } },
             { name: 'textoLink', label: 'Texto do link', type: 'text' },
           ],
         },

@@ -1,7 +1,7 @@
 import { after } from 'next/server'
 import type { Endpoint } from 'payload'
 
-import { enviarEAtualizar, receberCadastro } from './processar'
+import { destinoDoAmbiente, enviarEAtualizar, lerCorpoLimitado, receberCadastro } from './processar'
 
 // Roda depois da resposta (o navegador não espera o n8n). Fora de uma
 // requisição do Next, roda na hora.
@@ -19,12 +19,12 @@ export const endpointEnviar: Endpoint = {
   path: '/enviar',
   method: 'post',
   handler: async (req) => {
-    const textoCorpo = req.text ? await req.text() : ''
     const r = await receberCadastro({
       payload: req.payload,
       headers: req.headers,
-      textoCorpo,
-      webhookUrl: process.env.N8N_WEBHOOK_URL,
+      // o corpo só é lido depois do limite por IP, com teto de tamanho
+      lerCorpo: (maximo) => lerCorpoLimitado(req.body, maximo),
+      webhook: destinoDoAmbiente(),
       agendar: depoisDaResposta,
     })
     return Response.json(r.corpo, { status: r.status, headers: { 'cache-control': 'no-store' } })
@@ -43,7 +43,7 @@ export const endpointReenviar: Endpoint = {
       .findByID({ collection: 'cadastros', id, depth: 0, overrideAccess: false, user: req.user, disableErrors: true })
       .catch(() => null)
     if (!cadastro) return Response.json({ ok: false, erro: 'Cadastro não encontrado.' }, { status: 404 })
-    const r = await enviarEAtualizar(req.payload, cadastro, process.env.N8N_WEBHOOK_URL)
+    const r = await enviarEAtualizar(req.payload, cadastro, destinoDoAmbiente())
     return Response.json({ ok: r.ok, status: r.status }, { status: 200, headers: { 'cache-control': 'no-store' } })
   },
 }

@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 import { CamposOcultos } from '@/components/bu1lder/CamposOcultos'
 import { enviarFormulario, guardarContextoLead, urlObrigado } from '@/components/bu1lder/envio-formulario'
+import { resetarTurnstile, Turnstile } from '@/components/bu1lder/Turnstile'
 import { botaoClasses } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -22,7 +23,7 @@ const CLASSE_TEXTAREA =
 const CLASSE_SELECT =
   'flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background cursor-pointer focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
 
-type Campo = 'name' | 'company' | 'role' | 'email' | 'phone' | 'volume' | 'challenge'
+type Campo = 'name' | 'company' | 'role' | 'email' | 'phone' | 'volume' | 'challenge' | 'consent'
 
 export function validarContato(d: Record<Campo, string>): Partial<Record<Campo, string>> {
   const e: Partial<Record<Campo, string>> = {}
@@ -34,6 +35,7 @@ export function validarContato(d: Record<Campo, string>): Partial<Record<Campo, 
   if (t(d.phone).length < 8 || t(d.phone).length > 30) e.phone = 'Telefone inválido'
   if (t(d.challenge).length < 10 || t(d.challenge).length > 1000) e.challenge = 'Descreva o desafio'
   if (!d.volume) e.volume = 'Selecione uma opção'
+  if (d.consent !== 'on') e.consent = 'Confirme o consentimento LGPD'
   return e
 }
 
@@ -43,10 +45,14 @@ export function FormularioContato({
   opcoesVolume,
   aviso,
   textoBotao,
+  textoConsentimento,
+  turnstileSiteKey,
 }: {
   // 'homepage' ou 'parceiros'; vai como ?nicho= na página de obrigado
   pagina: string
   formId: string
+  textoConsentimento: string
+  turnstileSiteKey?: string | null
   opcoesVolume: { valor: string; rotulo: string }[]
   aviso: string
   textoBotao: string
@@ -64,7 +70,7 @@ export function FormularioContato({
     const form = e.currentTarget
     const fd = new FormData(form)
     const dados = Object.fromEntries(
-      (['name', 'company', 'role', 'email', 'phone', 'volume', 'challenge'] as Campo[]).map((c) => [
+      (['name', 'company', 'role', 'email', 'phone', 'volume', 'challenge', 'consent'] as Campo[]).map((c) => [
         c,
         String(fd.get(c) ?? ''),
       ]),
@@ -78,6 +84,7 @@ export function FormularioContato({
       setErros((resposta.erros ?? {}) as Partial<Record<Campo, string>>)
       setFalha(resposta.erro)
       setEnviando(false)
+      resetarTurnstile(form)
       return
     }
     guardarContextoLead({
@@ -151,6 +158,30 @@ export function FormularioContato({
             />
           </CampoRotulado>
         </div>
+
+        <div className="md:col-span-2">
+          <label className="flex items-start gap-3 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              name="consent"
+              required
+              aria-required="true"
+              aria-invalid={Boolean(erros.consent) || undefined}
+              aria-describedby={erros.consent ? idErro('consent') : undefined}
+              className="mt-1 size-4 rounded border-input"
+            />
+            <span>
+              {textoConsentimento} <span className="opacity-70">(obrigatório)</span>
+            </span>
+          </label>
+          {erros.consent && (
+            <p id={idErro('consent')} role="alert" className="mt-1 text-[11px] text-destructive">
+              {erros.consent}
+            </p>
+          )}
+        </div>
+
+        <Turnstile siteKey={turnstileSiteKey} />
 
         {falha && (
           <p role="alert" className="md:col-span-2 text-sm text-brand-violet">

@@ -1,4 +1,5 @@
 import type { Field } from 'payload'
+import { validarUrl } from '@/lib/url-segura'
 
 // Campos comuns dos blocos da homepage e do programa de parceiros.
 
@@ -64,7 +65,7 @@ export const campoBotao = (name: string, label: string, url: string): Field => (
       type: 'row',
       fields: [
         { name: 'texto', label: 'Texto', type: 'text' },
-        { name: 'url', label: 'Link', type: 'text', defaultValue: url },
+        { name: 'url', label: 'Link', type: 'text', validate: validarUrl, defaultValue: url },
       ],
     },
   ],

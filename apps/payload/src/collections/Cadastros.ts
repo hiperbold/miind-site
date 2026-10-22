@@ -2,7 +2,7 @@ import type { CollectionConfig, Field } from 'payload'
 
 import { endpointEnviar, endpointReenviar } from '@/lib/cadastros/endpoints'
 import { CAMPOS_OCULTOS } from '@/lib/cadastros/parametros'
-import { logado } from '@/lib/acesso'
+import { logado, soAdmin } from '@/lib/acesso'
 
 const lerSo = { readOnly: true } as const
 
@@ -24,7 +24,7 @@ export const Cadastros: CollectionConfig = {
   access: {
     read: logado,
     update: logado,
-    delete: logado,
+    delete: soAdmin,
     create: () => false,
     readVersions: () => false,
   },

@@ -5,6 +5,7 @@ import { DESCRICAO_MARCACAO } from '@/fields/plataforma'
 import { campoScriptsPersonalizados, campoSeoGlobal } from '@/fields/seo-scripts'
 import { logado, publicadoOuLogado } from '@/lib/acesso'
 import { revalidarPaginas } from '@/lib/revalidar'
+import { validarUrl } from '@/lib/url-segura'
 
 const link = (name: string, label: string) => ({
   name,
@@ -15,7 +16,7 @@ const link = (name: string, label: string) => ({
       type: 'row' as const,
       fields: [
         { name: 'rotulo', label: 'Texto', type: 'text' as const, required: true },
-        { name: 'url', label: 'Link', type: 'text' as const, required: true },
+        { name: 'url', label: 'Link', type: 'text' as const, validate: validarUrl, required: true },
       ],
     },
   ],
@@ -51,7 +52,7 @@ export const Homepage: GlobalConfig = {
                   fields: [
                     { name: 'textoBotao', label: 'Botão (desktop)', type: 'text' },
                     { name: 'textoBotaoCelular', label: 'Botão (menu do celular)', type: 'text' },
-                    { name: 'urlBotao', label: 'Link do botão', type: 'text', defaultValue: '#contato' },
+                    { name: 'urlBotao', label: 'Link do botão', type: 'text', validate: validarUrl, defaultValue: '#contato' },
                   ],
                 },
               ],

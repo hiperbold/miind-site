@@ -170,9 +170,12 @@ function validarContato(config: ConfigContato, campos: Record<string, unknown>):
       .max(100)
       .refine((v) => !!v && (config.volumes.length === 0 || config.volumes.includes(v)), 'Selecione uma opção'),
     challenge: texto(10, 1000, 'Descreva o desafio'),
+    consent: z.literal('on', { error: 'Confirme o consentimento LGPD' }),
   })
   const r = esquema.safeParse(
-    Object.fromEntries(['name', 'company', 'role', 'email', 'phone', 'volume', 'challenge'].map((k) => [k, um(campos[k])])),
+    Object.fromEntries(
+      ['name', 'company', 'role', 'email', 'phone', 'volume', 'challenge', 'consent'].map((k) => [k, um(campos[k])]),
+    ),
   )
   if (!r.success) return { ok: false, erros: errosDe(r) }
   const d = r.data
@@ -191,8 +194,7 @@ function validarContato(config: ConfigContato, campos: Record<string, unknown>):
       uso: null,
       extras: {},
       contato: { empresa: d.company, cargo: d.role, volume: d.volume, desafio: d.challenge },
-      // o formulário de contato da homepage não tem caixa de consentimento
-      consentimento: { aceito: false, texto: null },
+      consentimento: { aceito: true, texto: config.textoConsentimento },
       ocultos: lerOcultos(campos),
     },
   }

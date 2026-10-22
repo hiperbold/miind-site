@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { extrairIp, extrairUserAgent } from '@/lib/cadastros/ip'
+import { ehCloudflare, extrairIp, extrairUserAgent, normalizarIp } from '@/lib/cadastros/ip'
 import { normalizarTelefoneBR, lerContexto, montarDetalhe, type ContextoLead } from '@/lib/cadastros/lead'
-import { LimitePorChave } from '@/lib/cadastros/limite'
+import { LimiteGlobal, LimitePorChave } from '@/lib/cadastros/limite'
+import { urlSegura } from '@/lib/url-segura'
 import {
   decodificarGuardados,
   lerCookie,
@@ -17,19 +18,33 @@ import { montarCorpoWebhook } from '@/lib/cadastros/webhook'
 import type { Cadastro } from '@/payload-types'
 
 describe('IP e user agent', () => {
-  it('prefere CF-Connecting-IP', () => {
-    const h = new Headers({ 'cf-connecting-ip': '203.0.113.9', 'x-forwarded-for': '10.0.0.1', 'x-real-ip': '10.0.0.2' })
+  it('par do Cloudflare: vale o CF-Connecting-IP', () => {
+    const h = new Headers({ 'x-real-ip': '173.245.48.10', 'cf-connecting-ip': '203.0.113.9' })
     expect(extrairIp(h)).toBe('203.0.113.9')
+    const v6 = new Headers({ 'x-real-ip': '2606:4700::1', 'cf-connecting-ip': '2001:db8::5' })
+    expect(extrairIp(v6)).toBe('2001:db8::5')
   })
-  it('sem Cloudflare usa o primeiro de X-Forwarded-For', () => {
-    expect(extrairIp(new Headers({ 'x-forwarded-for': ' 198.51.100.4 , 10.0.0.1', 'x-real-ip': '10.0.0.2' }))).toBe(
+  it('par comum: CF-Connecting-IP forjado é ignorado e vale o IP do par', () => {
+    expect(extrairIp(new Headers({ 'x-real-ip': '198.51.100.4', 'cf-connecting-ip': '1.2.3.4' }))).toBe('198.51.100.4')
+  })
+  it('sem X-Real-IP: último item de X-Forwarded-For é o par', () => {
+    expect(extrairIp(new Headers({ 'x-forwarded-for': '1.2.3.4, 198.51.100.4', 'cf-connecting-ip': '9.9.9.9' }))).toBe(
       '198.51.100.4',
     )
+    expect(extrairIp(new Headers({ 'x-forwarded-for': '1.2.3.4, 162.158.1.1', 'cf-connecting-ip': '203.0.113.7' }))).toBe(
+      '203.0.113.7',
+    )
   })
-  it('depois X-Real-IP; sem nada, null', () => {
-    expect(extrairIp(new Headers({ 'x-real-ip': '192.0.2.7' }))).toBe('192.0.2.7')
-    expect(extrairIp(new Headers({ 'x-forwarded-for': ' , ' }))).toBeNull()
+  it('sem cabeçalhos ou com lixo: null', () => {
     expect(extrairIp(new Headers())).toBeNull()
+    expect(extrairIp(new Headers({ 'cf-connecting-ip': '203.0.113.9' }))).toBeNull()
+    expect(extrairIp(new Headers({ 'x-real-ip': 'não-é-ip' }))).toBeNull()
+  })
+  it('normaliza ::ffff: e porta', () => {
+    expect(normalizarIp('::ffff:198.51.100.4')).toBe('198.51.100.4')
+    expect(normalizarIp('198.51.100.4:5555')).toBe('198.51.100.4')
+    expect(ehCloudflare('104.16.0.1')).toBe(true)
+    expect(ehCloudflare('8.8.8.8')).toBe(false)
   })
   it('user agent do cabeçalho', () => {
     expect(extrairUserAgent(new Headers({ 'user-agent': 'Navegador/1.0' }))).toBe('Navegador/1.0')
@@ -112,7 +127,7 @@ describe('corpo do webhook', () => {
       'nome', 'whatsapp', 'email', 'id', 'perfil', 'empresas_atendidas', 'clientes_atendidos', 'segmentos', 'uso',
       'cidade_uf', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'gclid', 'gbraid',
       'wbraid', 'waclid', 'fbclid', 'fbc', 'fbp', 'xcod', 'src', 'origem', 'ip', 'user_agent', 'formulario', 'tipo',
-      'pagina', 'segmento', 'consentimento', 'event_id', 'criado_em',
+      'pagina', 'segmento', 'consentimento', 'event_id', 'criado_em', 'empresa', 'cargo', 'volume', 'desafio',
     ]
     expect(Object.keys(corpo).sort()).toEqual([...esperado].sort())
     expect(corpo).toMatchObject({
@@ -200,14 +215,19 @@ describe('validação do envio', () => {
   })
 
   it('contato da homepage', () => {
-    const contato: ConfigFormulario = { tipo: 'contato-plataforma', pagina: 'homepage', formulario: 'contato-form', volumes: ['ate-100', '100-500'] }
-    const base = { name: 'Bia', company: 'ACME', role: 'CEO', email: 'bia@acme.com', phone: '11999990000', volume: 'ate-100', challenge: 'Automatizar o atendimento' }
+    const contato: ConfigFormulario = { tipo: 'contato-plataforma', pagina: 'homepage', formulario: 'contato-form', volumes: ['ate-100', '100-500'], textoConsentimento: 'Autorizo.' }
+    const base = { name: 'Bia', company: 'ACME', role: 'CEO', email: 'bia@acme.com', phone: '11999990000', volume: 'ate-100', challenge: 'Automatizar o atendimento', consent: 'on' }
     expect(validarEnvio(contato, base)).toMatchObject({
       ok: true,
-      dados: { nome: 'Bia', whatsapp: '11999990000', contato: { empresa: 'ACME', cargo: 'CEO', volume: 'ate-100' } },
+      dados: {
+        nome: 'Bia',
+        whatsapp: '11999990000',
+        contato: { empresa: 'ACME', cargo: 'CEO', volume: 'ate-100' },
+        consentimento: { aceito: true, texto: 'Autorizo.' },
+      },
     })
-    const r = validarEnvio(contato, { ...base, volume: 'x', challenge: 'curto' })
-    expect(r.ok ? [] : Object.keys(r.erros).sort()).toEqual(['challenge', 'volume'])
+    const r = validarEnvio(contato, { ...base, volume: 'x', challenge: 'curto', consent: '' })
+    expect(r.ok ? [] : Object.keys(r.erros).sort()).toEqual(['challenge', 'consent', 'volume'])
   })
 })
 
@@ -218,6 +238,30 @@ describe('limite por IP', () => {
     expect(l.permitir('1.1.1.1', 2000)).toBe(false)
     expect(l.permitir('2.2.2.2', 2000)).toBe(true)
     expect(l.permitir('1.1.1.1', 1000 + 10 * 60 * 1000 + 1)).toBe(true)
+  })
+  it('teto de chaves: descarta as mais antigas', () => {
+    const l = new LimitePorChave(5, 60_000, 3)
+    for (const ip of ['a', 'b', 'c', 'd']) l.permitir(ip, 1)
+    expect(l.tamanho).toBe(3)
+    // "a" saiu: conta do zero de novo
+    for (let i = 0; i < 5; i++) expect(l.permitir('a', 2)).toBe(true)
+  })
+  it('limite global de envios aceitos', () => {
+    const g = new LimiteGlobal(2, 60_000)
+    expect(g.podeAceitar(1)).toBe(true)
+    g.registrar(1)
+    g.registrar(2)
+    expect(g.podeAceitar(3)).toBe(false)
+    expect(g.podeAceitar(60_002)).toBe(true)
+  })
+})
+
+describe('links editáveis', () => {
+  it('aceita http(s), relativo, mailto e tel; recusa o resto', () => {
+    for (const ok of ['https://www.miind.com.br/x', 'http://a.b', '/bu1lder/', '#cadastro', '?a=1', 'mailto:a@b.c', 'tel:+5551981652778'])
+      expect(urlSegura(ok)).toBe(true)
+    for (const ruim of ['javascript:alert(1)', ' JavaScript:alert(1)', 'data:text/html,x', '//evil.com', 'vbscript:x', 'ftp://a', ''])
+      expect(urlSegura(ruim)).toBe(false)
   })
 })
 
@@ -235,11 +279,11 @@ describe('dados da página de obrigado', () => {
     expect(lerContexto(JSON.stringify(c), 'T2')).toBeNull()
     expect(lerContexto('{quebrado', 'T1')).toBeNull()
     const lido = lerContexto(JSON.stringify(c), 'T1')!
-    const sem = montarDetalhe(lido, { exporContato: false, emailSha256: 'h1', telefoneSha256: 'h2', novo: true })
-    expect(sem).toMatchObject({ primeiroNome: 'Ana', emailSha256: 'h1', telefoneSha256: 'h2', novo: true })
+    const sem = montarDetalhe(lido, { exporContato: false, emailSha256: 'h1', telefoneSha256: 'h2', telefoneSha256E164: 'h3', novo: true })
+    expect(sem).toMatchObject({ primeiroNome: 'Ana', emailSha256: 'h1', telefoneSha256: 'h2', telefoneSha256E164: 'h3', novo: true })
     expect(sem).not.toHaveProperty('email')
     expect(sem).not.toHaveProperty('nome')
-    const com = montarDetalhe(lido, { exporContato: true, emailSha256: null, telefoneSha256: null, novo: false })
+    const com = montarDetalhe(lido, { exporContato: true, emailSha256: null, telefoneSha256: null, telefoneSha256E164: null, novo: false })
     expect(com).toMatchObject({ nome: 'Ana Souza', email: 'a@b.c', whatsapp: '11' })
   })
 })

@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 import { CamposOcultos } from './CamposOcultos'
 import { enviarFormulario, guardarContextoLead, urlObrigado } from './envio-formulario'
+import { resetarTurnstile, Turnstile } from './Turnstile'
 
 export type ExtraQuestion = {
   label: string
@@ -32,6 +33,7 @@ export function LeadForm({
   secondaryButton,
   perfilRequired = true,
   segmentSelect,
+  turnstileSiteKey,
 }: {
   // slug da página (LP) ou "parceiros"/"homepage"; vai como ?nicho= na página de obrigado
   pagina: string
@@ -47,6 +49,8 @@ export function LeadForm({
   // Seletor de segmento visível (programa de parceiros). Sem ele, o segmento é
   // o campo oculto `segmento` (LPs).
   segmentSelect?: { label: string; emptyLabel: string; options: { value: string; label: string }[] }
+  // Turnstile opcional (chave do site; vazio = sem desafio)
+  turnstileSiteKey?: string | null
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -93,6 +97,7 @@ export function LeadForm({
       setErrors(resposta.erros ?? {})
       setServerError(resposta.erro)
       setLoading(false)
+      resetarTurnstile(form)
       return
     }
     guardarContextoLead({
@@ -188,6 +193,8 @@ export function LeadForm({
           {errors.consent}
         </p>
       )}
+
+      <Turnstile siteKey={turnstileSiteKey} />
 
       {serverError && (
         <p className="text-sm text-brand-violet" role="alert">

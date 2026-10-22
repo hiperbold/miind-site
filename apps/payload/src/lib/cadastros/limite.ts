@@ -1,34 +1,38 @@
-// Limite simples de envios por IP, em memória (um processo). Reinicia com o
-// servidor; serve para conter repetição, não substitui um WAF.
+// Limites de envio em memória (um processo). Reiniciam com o servidor; servem
+// para conter repetição e robôs simples, não substituem um WAF.
+
 export class LimitePorChave {
   private registros = new Map<string, number[]>()
 
   constructor(
     private readonly maximo: number,
     private readonly janelaMs: number,
+    // teto de chaves guardadas: acima dele, descarta as mais antigas
+    private readonly maxChaves = 10000,
   ) {}
 
   // true: pode seguir (e conta a tentativa); false: passou do limite.
   permitir(chave: string, agoraMs = Date.now()): boolean {
     const inicio = agoraMs - this.janelaMs
     const anteriores = (this.registros.get(chave) ?? []).filter((t) => t > inicio)
+    // reinsere no fim: a ordem do Map fica da chave menos para a mais recente
+    this.registros.delete(chave)
     if (anteriores.length >= this.maximo) {
       this.registros.set(chave, anteriores)
       return false
     }
     anteriores.push(agoraMs)
     this.registros.set(chave, anteriores)
-    if (this.registros.size > 10000) this.limpar(agoraMs)
+    while (this.registros.size > this.maxChaves) {
+      const maisAntiga = this.registros.keys().next().value
+      if (maisAntiga === undefined) break
+      this.registros.delete(maisAntiga)
+    }
     return true
   }
 
-  limpar(agoraMs = Date.now()) {
-    const inicio = agoraMs - this.janelaMs
-    for (const [chave, tempos] of this.registros) {
-      const vivos = tempos.filter((t) => t > inicio)
-      if (vivos.length === 0) this.registros.delete(chave)
-      else this.registros.set(chave, vivos)
-    }
+  get tamanho() {
+    return this.registros.size
   }
 
   zerar() {
@@ -36,5 +40,39 @@ export class LimitePorChave {
   }
 }
 
-// 5 envios por IP a cada 10 minutos.
-export const limiteEnvios = new LimitePorChave(5, 10 * 60 * 1000)
+// Contador de envios aceitos no processo inteiro (todas as origens).
+export class LimiteGlobal {
+  private tempos: number[] = []
+
+  constructor(
+    private readonly maximo: number,
+    private readonly janelaMs: number,
+  ) {}
+
+  podeAceitar(agoraMs = Date.now()): boolean {
+    const inicio = agoraMs - this.janelaMs
+    this.tempos = this.tempos.filter((t) => t > inicio)
+    return this.tempos.length < this.maximo
+  }
+
+  registrar(agoraMs = Date.now()) {
+    this.tempos.push(agoraMs)
+  }
+
+  zerar() {
+    this.tempos = []
+  }
+}
+
+const DEZ_MINUTOS = 10 * 60 * 1000
+
+function inteiroDoAmbiente(nome: string, padrao: number): number {
+  const v = Number(process.env[nome])
+  return Number.isInteger(v) && v > 0 ? v : padrao
+}
+
+// 5 envios por IP a cada 10 minutos (conta todo pedido, inclusive inválido ou honeypot).
+export const limiteEnvios = new LimitePorChave(5, DEZ_MINUTOS)
+
+// Envios aceitos (gravados) por processo a cada 10 minutos. FORM_LIMITE_GLOBAL muda o teto (padrão 60).
+export const limiteGlobal = new LimiteGlobal(inteiroDoAmbiente('FORM_LIMITE_GLOBAL', 60), DEZ_MINUTOS)

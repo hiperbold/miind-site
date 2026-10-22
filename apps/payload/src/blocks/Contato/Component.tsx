@@ -1,6 +1,7 @@
 import { TextoMarcado } from '@/components/bu1lder/plataforma/TextoMarcado'
 import { FormularioContato } from '@/components/bu1lder/plataforma/FormularioContato'
 import { formIdContato } from '@/lib/cadastros/ids'
+import { chaveSiteTurnstile } from '@/lib/cadastros/turnstile'
 import type { BlocoContato } from '@/payload-types'
 
 import type { ContextoPlataforma } from '../contexto-plataforma'
@@ -56,6 +57,8 @@ export function ContatoBloco({ bloco, contexto }: { bloco: BlocoContato; context
           <div className="lg:sticky lg:top-28">
             <FormularioContato
               pagina={contexto.pagina}
+              textoConsentimento={contexto.formulario.textoConsentimento}
+              turnstileSiteKey={chaveSiteTurnstile()}
               formId={formIdContato(bloco.ancora)}
               opcoesVolume={(form?.opcoesVolume ?? []).map((o) => ({ valor: o.valor, rotulo: o.rotulo }))}
               aviso={form?.aviso ?? ''}

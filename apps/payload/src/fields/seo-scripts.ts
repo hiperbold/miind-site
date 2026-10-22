@@ -1,10 +1,14 @@
 import type { Field } from 'payload'
 
+import { campoSoAdmin } from '@/lib/acesso'
+
 // Aba de scripts personalizados, igual à da coleção "paginas".
 export const campoScriptsPersonalizados: Field = {
   name: 'scriptsPersonalizados',
   label: 'Scripts personalizados',
   type: 'group',
+  // só admin grava; editor vê, mas não altera
+  access: { create: campoSoAdmin, update: campoSoAdmin },
   admin: {
     description:
       'Códigos colados aqui (pixels, tags) entram na página exatamente como estão, sem filtro. Só administradores editam.',

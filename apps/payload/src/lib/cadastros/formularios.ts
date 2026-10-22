@@ -33,6 +33,7 @@ export type ConfigContato = {
   pagina: string
   formulario: string
   volumes: string[]
+  textoConsentimento: string
 }
 
 export type ConfigFormulario = ConfigCadastro | ConfigContato
@@ -62,11 +63,13 @@ async function configPlataforma(
   })) as Pick<Homepage, 'layout'>
   for (const bloco of global.layout ?? []) {
     if (bloco.blockType === 'contato' && formIdContato(bloco.ancora) === formulario) {
+      const padroes = await payload.findGlobal({ slug: 'formulario', depth: 0 })
       return {
         tipo: 'contato-plataforma',
         pagina,
         formulario,
         volumes: (bloco.formulario?.opcoesVolume ?? []).map((o) => o.valor),
+        textoConsentimento: padroes.textoConsentimento,
       }
     }
     if (bloco.blockType === 'heroCadastro' || bloco.blockType === 'chamadaFinalCadastro') {

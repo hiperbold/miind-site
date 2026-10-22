@@ -2,6 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { logado, publico } from '@/lib/acesso'
 import { revalidarPaginas } from '@/lib/revalidar'
+import { validarUrl } from '@/lib/url-segura'
 
 export const Rodape: GlobalConfig = {
   slug: 'rodape',
@@ -20,7 +21,7 @@ export const Rodape: GlobalConfig = {
           type: 'row',
           fields: [
             { name: 'rotulo', label: 'Texto', type: 'text', required: true },
-            { name: 'url', label: 'Link', type: 'text', required: true },
+            { name: 'url', label: 'Link', type: 'text', validate: validarUrl, required: true },
           ],
         },
       ],

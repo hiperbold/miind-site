@@ -2,6 +2,7 @@ import { Quote, Sparkles } from 'lucide-react'
 
 import { LeadForm, type ExtraQuestion } from '@/components/bu1lder/LeadForm'
 import { formIdLp } from '@/lib/cadastros/ids'
+import { chaveSiteTurnstile } from '@/lib/cadastros/turnstile'
 import type { BlocoChamadaCadastro } from '@/payload-types'
 
 import type { ContextoBloco } from '../contexto'
@@ -63,6 +64,7 @@ export function ChamadaCadastroBloco({ bloco, contexto }: { bloco: BlocoChamadaC
         <LeadForm
           pagina={contexto.slug}
           tipo="lp"
+          turnstileSiteKey={chaveSiteTurnstile()}
           segmento={contexto.slug}
           formId={formIdLp(contexto.slug, form?.formId)}
           profileOptions={perfis}

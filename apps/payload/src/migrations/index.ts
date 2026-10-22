@@ -4,6 +4,7 @@ import * as migration_20261021_204804_simulador_textos from './20261021_204804_s
 import * as migration_20261021_211137_agencia_blocos from './20261021_211137_agencia_blocos';
 import * as migration_20261021_220422_homepage_parceiros from './20261021_220422_homepage_parceiros';
 import * as migration_20261021_232122_cadastros_ty_page from './20261021_232122_cadastros_ty_page';
+import * as migration_20261022_000210_papeis_usuarios from './20261022_000210_papeis_usuarios';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261021_232122_cadastros_ty_page.up,
     down: migration_20261021_232122_cadastros_ty_page.down,
-    name: '20261021_232122_cadastros_ty_page'
+    name: '20261021_232122_cadastros_ty_page',
+  },
+  {
+    up: migration_20261022_000210_papeis_usuarios.up,
+    down: migration_20261022_000210_papeis_usuarios.down,
+    name: '20261022_000210_papeis_usuarios'
   },
 ];

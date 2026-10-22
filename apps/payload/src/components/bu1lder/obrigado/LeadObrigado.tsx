@@ -62,11 +62,19 @@ export function LeadObrigado({
           } catch {
             jaDisparado = false
           }
-          const [emailSha256, telefoneSha256] = await Promise.all([
+          const e164 = normalizarTelefoneBR(contexto.whatsapp ?? '')
+          const [emailSha256, telefoneSha256, telefoneSha256E164] = await Promise.all([
             sha256(normalizarEmail(contexto.email ?? '')),
-            sha256(normalizarTelefoneBR(contexto.whatsapp ?? '')),
+            sha256(e164 ? e164.slice(1) : null),
+            sha256(e164),
           ])
-          const detalhe = montarDetalhe(contexto, { exporContato, emailSha256, telefoneSha256, novo: !jaDisparado })
+          const detalhe = montarDetalhe(contexto, {
+            exporContato,
+            emailSha256,
+            telefoneSha256,
+            telefoneSha256E164,
+            novo: !jaDisparado,
+          })
           window.bu1lderLead = detalhe
           if (!jaDisparado) {
             try {

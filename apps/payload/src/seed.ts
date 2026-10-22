@@ -33,7 +33,9 @@ if (existing.totalDocs > 0) {
 } else {
   await payload.create({
     collection: 'users',
-    data: { email, password },
+    data: { email, password, role: 'admin' },
+    overrideAccess: true,
+    context: { criacaoPeloSistema: true },
   })
   console.log(`Admin criado (${email}).`)
 }

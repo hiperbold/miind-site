@@ -1,5 +1,6 @@
 import { LeadForm } from '@/components/bu1lder/LeadForm'
 import type { ContextoPlataforma } from '@/blocks/contexto-plataforma'
+import { chaveSiteTurnstile } from '@/lib/cadastros/turnstile'
 
 type FormularioHub = {
   origem?: string | null
@@ -25,6 +26,7 @@ export function CadastroHub({
     <LeadForm
       pagina={contexto.pagina}
       tipo="hub"
+      turnstileSiteKey={chaveSiteTurnstile()}
       segmento=""
       formId={formulario?.formId || padraoId}
       profileOptions={contexto.formulario.perfis ?? []}

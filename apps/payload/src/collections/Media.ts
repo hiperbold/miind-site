@@ -24,6 +24,8 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    // só imagens raster; SVG fica de fora (pode carregar script)
+    mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/avif', 'image/gif'],
     // MEDIA_DIR (caminho absoluto) na imagem Docker: /app/media, montado como
     // volume. Sem a variável: pasta local ignorada pelo git (apps/payload/media).
     staticDir: process.env.MEDIA_DIR?.trim() || path.resolve(dirname, '../../media'),

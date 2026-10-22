@@ -5,7 +5,8 @@ import type { Cadastro } from '@/payload-types'
 
 import { buscarConfigFormulario } from './formularios'
 import { extrairIp, extrairUserAgent } from './ip'
-import { limiteEnvios, type LimitePorChave } from './limite'
+import { limiteEnvios, limiteGlobal, type LimiteGlobal, type LimitePorChave } from './limite'
+import { CAMPO_TURNSTILE, segredoTurnstile, validarTurnstile } from './turnstile'
 import { esquemaCorpo, TAMANHO_MAXIMO_CORPO, validarEnvio } from './validacao'
 import { enviarWebhook, montarCorpoWebhook, type OpcoesEnvio } from './webhook'
 
@@ -44,13 +45,22 @@ function urlValida(url: string | undefined): string | null {
 }
 
 // Envia o cadastro ao webhook e grava a situação do envio. Nunca lança.
+export type DestinoWebhook = { url: string | undefined; segredo?: string | null }
+
+// URL e segredo do ambiente (N8N_WEBHOOK_URL, N8N_WEBHOOK_SECRET).
+export const destinoDoAmbiente = (): DestinoWebhook => ({
+  url: process.env.N8N_WEBHOOK_URL,
+  segredo: process.env.N8N_WEBHOOK_SECRET?.trim() || null,
+})
+
 export async function enviarEAtualizar(
   payload: Payload,
   cadastro: Cadastro,
-  webhookUrl: string | undefined,
+  destino: DestinoWebhook,
   opcoes: OpcoesEnvio = {},
 ): Promise<{ ok: boolean; status: 'enviado' | 'falha' }> {
   const anteriores = cadastro.envio?.tentativas ?? 0
+  const webhookUrl = destino.url
   const url = urlValida(webhookUrl)
   let envio: NonNullable<Cadastro['envio']>
   if (!url) {
@@ -61,7 +71,7 @@ export async function enviarEAtualizar(
       respostaStatus: null,
     }
   } else {
-    const r = await enviarWebhook(url, montarCorpoWebhook(cadastro), opcoes)
+    const r = await enviarWebhook(url, montarCorpoWebhook(cadastro), { segredo: destino.segredo, ...opcoes })
     envio = r.ok
       ? {
           status: 'enviado',
@@ -86,17 +96,45 @@ export async function enviarEAtualizar(
 export type OpcoesReceber = {
   payload: Payload
   headers: Headers
-  textoCorpo: string
-  webhookUrl: string | undefined
+  // Lê o corpo com teto de tamanho; null = passou do teto.
+  lerCorpo: (maximo: number) => Promise<string | null>
+  webhook: DestinoWebhook
   limite?: LimitePorChave
+  global?: LimiteGlobal
   opcoesEnvio?: OpcoesEnvio
+  // Turnstile: segredo (padrão: do ambiente, só com as duas chaves) e fetch da validação.
+  turnstile?: { segredo: string | null; fetch?: typeof fetch }
   // Como rodar o envio ao webhook. Padrão: aguarda. No endpoint: after() do
   // Next, para a resposta não esperar o n8n.
   agendar?: (tarefa: () => Promise<unknown>) => void | Promise<unknown>
 }
 
-// Recebe o envio de um formulário do site: limite por IP, validação pela
-// configuração publicada, gravação e envio ao webhook.
+// Lê um corpo de requisição até `maximo` bytes; acima disso, para e devolve null.
+export async function lerCorpoLimitado(
+  corpo: ReadableStream<Uint8Array> | null | undefined,
+  maximo: number,
+): Promise<string | null> {
+  if (!corpo) return ''
+  const leitor = corpo.getReader()
+  const partes: Uint8Array[] = []
+  let total = 0
+  for (;;) {
+    const { done, value } = await leitor.read()
+    if (done) break
+    total += value.byteLength
+    if (total > maximo) {
+      await leitor.cancel().catch(() => {})
+      return null
+    }
+    partes.push(value)
+  }
+  return Buffer.concat(partes).toString('utf8')
+}
+
+// Recebe o envio de um formulário do site, nesta ordem: limite por IP (conta
+// todo pedido, inclusive inválido ou honeypot), tamanho, validação pela
+// configuração publicada (honeypot incluso), Turnstile, limite global, gravação
+// e envio ao webhook.
 export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio> {
   const { payload, headers } = op
   const ip = extrairIp(headers)
@@ -104,11 +142,14 @@ export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio>
   if (!limite.permitir(ip ?? 'sem-ip')) {
     return falha(429, 'Muitos envios seguidos. Aguarde alguns minutos e tente de novo.')
   }
-  if (op.textoCorpo.length > TAMANHO_MAXIMO_CORPO) return falha(413, MENSAGEM_GENERICA)
+  const tamanhoDeclarado = Number(headers.get('content-length'))
+  if (Number.isFinite(tamanhoDeclarado) && tamanhoDeclarado > TAMANHO_MAXIMO_CORPO) return falha(413, MENSAGEM_GENERICA)
+  const textoCorpo = await op.lerCorpo(TAMANHO_MAXIMO_CORPO)
+  if (textoCorpo === null) return falha(413, MENSAGEM_GENERICA)
 
   let json: unknown
   try {
-    json = JSON.parse(op.textoCorpo)
+    json = JSON.parse(textoCorpo)
   } catch {
     return falha(400, MENSAGEM_GENERICA)
   }
@@ -123,6 +164,19 @@ export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio>
     if (v.honeypot) return falha(400, MENSAGEM_GENERICA)
     return falha(400, 'Confira os campos destacados.', v.erros)
   }
+
+  const segredo = op.turnstile ? op.turnstile.segredo : segredoTurnstile()
+  if (segredo) {
+    const bruto = corpo.data.campos[CAMPO_TURNSTILE]
+    const token = typeof bruto === 'string' ? bruto : ''
+    if (!(await validarTurnstile(segredo, token, ip, op.turnstile?.fetch))) {
+      return falha(400, 'Não foi possível confirmar que você não é um robô. Refaça a verificação e envie de novo.')
+    }
+  }
+
+  const global = op.global ?? limiteGlobal
+  if (!global.podeAceitar()) return falha(429, 'Muitos cadastros neste momento. Tente de novo em alguns minutos.')
+
   const d = v.dados
   const token = novoToken()
   const eventId = novoEventId()
@@ -168,7 +222,8 @@ export async function receberCadastro(op: OpcoesReceber): Promise<RespostaEnvio>
     return falha(500, MENSAGEM_GENERICA)
   }
 
-  const tarefa = () => enviarEAtualizar(payload, cadastro, op.webhookUrl, op.opcoesEnvio)
+  global.registrar()
+  const tarefa = () => enviarEAtualizar(payload, cadastro, op.webhook, op.opcoesEnvio)
   if (op.agendar) await op.agendar(tarefa)
   else await tarefa()
 

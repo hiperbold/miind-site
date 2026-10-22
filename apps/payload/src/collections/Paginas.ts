@@ -3,7 +3,7 @@ import { ValidationError } from 'payload'
 
 import { blocosPagina } from '@/blocks'
 import { campoIcone } from '@/fields/comuns'
-import { logado, publicadoOuLogado } from '@/lib/acesso'
+import { campoSoAdmin, logado, publicadoOuLogado } from '@/lib/acesso'
 import { revalidarAgora, revalidarPaginas } from '@/lib/revalidar'
 
 // Slugs que já são rotas próprias em /bu1lder/* ou reservados.
@@ -233,6 +233,7 @@ export const Paginas: CollectionConfig = {
               name: 'scriptsPersonalizados',
               label: 'Scripts personalizados',
               type: 'group',
+              access: { create: campoSoAdmin, update: campoSoAdmin },
               admin: {
                 description:
                   'Códigos colados aqui (pixels, tags) entram na página exatamente como estão, sem filtro. Só administradores editam.',

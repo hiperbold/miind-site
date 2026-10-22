@@ -1,7 +1,8 @@
 import type { GlobalConfig, GroupField } from 'payload'
 
 import { campoScriptsPersonalizados } from '@/fields/seo-scripts'
-import { logado, publico } from '@/lib/acesso'
+import { campoSoAdmin, logado, publico } from '@/lib/acesso'
+import { validarUrl } from '@/lib/url-segura'
 
 const ROTA = '/bu1lder/ty-page'
 
@@ -48,6 +49,7 @@ export const TyPage: GlobalConfig = {
                   name: 'url',
                   label: 'URL da agenda (iframe)',
                   type: 'text',
+                  access: { update: campoSoAdmin },
                   admin: { description: 'Ex.: o link do Calendly. Só https.' },
                   validate: (value: string | null | undefined) =>
                     !value || /^https:\/\/[^\s"'<>]+$/.test(value) || 'Use um endereço https completo.',
@@ -57,6 +59,7 @@ export const TyPage: GlobalConfig = {
                   name: 'embed',
                   label: 'Código de incorporação',
                   type: 'code',
+                  access: { update: campoSoAdmin },
                   admin: {
                     language: 'html',
                     description: 'Alternativa ao iframe (ex.: widget do Calendly). Entra como foi colado; os <script> rodam.',
@@ -73,7 +76,7 @@ export const TyPage: GlobalConfig = {
                   type: 'row',
                   fields: [
                     { name: 'texto', label: 'Texto', type: 'text' },
-                    { name: 'url', label: 'Link', type: 'text' },
+                    { name: 'url', label: 'Link', type: 'text', validate: validarUrl },
                   ],
                 },
               ],
@@ -105,6 +108,7 @@ export const TyPage: GlobalConfig = {
               name: 'exporContatoAosScripts',
               label: 'Expor nome, e-mail e WhatsApp aos scripts',
               type: 'checkbox',
+              access: { update: campoSoAdmin },
               defaultValue: false,
               admin: {
                 description:

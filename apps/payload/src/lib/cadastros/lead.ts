@@ -41,7 +41,10 @@ export type ContextoLead = {
 export type DetalheLead = Omit<ContextoLead, 'nome' | 'email' | 'whatsapp'> & {
   primeiroNome: string
   emailSha256: string | null
+  // SHA-256 dos dígitos com DDI, sem "+" (formato da Meta: 5511999998888)
   telefoneSha256: string | null
+  // SHA-256 do E.164 com "+" (formato do Google: +5511999998888)
+  telefoneSha256E164: string | null
   // false quando a página foi recarregada (o evento já disparou para este token)
   novo: boolean
   nome?: string
@@ -83,7 +86,13 @@ export function lerContexto(bruto: string | null, token: string | null): Context
 
 export function montarDetalhe(
   c: ContextoLead,
-  opcoes: { exporContato: boolean; emailSha256: string | null; telefoneSha256: string | null; novo: boolean },
+  opcoes: {
+    exporContato: boolean
+    emailSha256: string | null
+    telefoneSha256: string | null
+    telefoneSha256E164: string | null
+    novo: boolean
+  },
 ): DetalheLead {
   const { nome, email, whatsapp, ...resto } = c
   const detalhe: DetalheLead = {
@@ -92,6 +101,7 @@ export function montarDetalhe(
     primeiroNome: primeiroNome(nome ?? ''),
     emailSha256: opcoes.emailSha256,
     telefoneSha256: opcoes.telefoneSha256,
+    telefoneSha256E164: opcoes.telefoneSha256E164,
     novo: opcoes.novo,
   }
   if (opcoes.exporContato) Object.assign(detalhe, { nome, email, whatsapp })

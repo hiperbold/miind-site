@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 import { camposCabecalho, camposSecao } from '@/fields/comuns'
 import { CHAVES_PLANOS } from '@/globals/Planos'
+import { validarUrl } from '@/lib/url-segura'
 
 export const Simulador: Block = {
   slug: 'simulador',
@@ -86,7 +87,7 @@ export const Simulador: Block = {
           type: 'row',
           fields: [
             { name: 'texto', label: 'Texto', type: 'text' },
-            { name: 'url', label: 'Link', type: 'text', defaultValue: '#cadastro' },
+            { name: 'url', label: 'Link', type: 'text', validate: validarUrl, defaultValue: '#cadastro' },
           ],
         },
       ],
